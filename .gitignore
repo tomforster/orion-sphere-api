@@ -2,3 +2,5 @@
 /config/
 /.idea/
 /orion-sphere-api.iml
+/node_modules/
+/ormconfig.json
