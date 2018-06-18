@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "class-validator": "^0.8.5",
+    "corser": "^2.0.1",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",

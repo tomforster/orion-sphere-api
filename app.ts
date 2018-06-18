@@ -4,6 +4,7 @@ import {Request, Response} from "express";
 import createError = require('http-errors');
 import {connectionPromise} from "./db";
 import {Routes} from "./routes/routes";
+import corser = require("corser");
 
 export const appPromise = connectionPromise.then(async connection =>
 {
@@ -12,6 +13,8 @@ export const appPromise = connectionPromise.then(async connection =>
     app.use(logger('dev'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    
+    app.use(corser.create());
     
     // register all application routes
     Routes.forEach(route => {
