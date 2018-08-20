@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node -r ts-node/register --inspect bin/www",
     "migrate": "node tsnode-typeorm.js migration:run",
+    "create": "node tsnode-typeorm.js migration:create -n",
     "generate": "node tsnode-typeorm.js migration:generate -n"
   },
   "dependencies": {
