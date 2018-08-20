@@ -1,5 +1,6 @@
 import {getManager} from "typeorm";
 import {Repository} from "typeorm/repository/Repository";
+import {Page} from "../app";
 
 export abstract class Service<T>
 {
@@ -10,25 +11,26 @@ export abstract class Service<T>
         return getManager().getRepository(this.entityClass);
     }
     
-    findAll(params: {offset:number, limit:number}):Promise<T[]>
+    findAll(page:number, size:number):Promise<Page<T>>
     {
-        return this.getRepository().find({skip:params.offset, take:params.limit});
+        return this.getRepository().find({skip:page*size, take:size})
+            .then(res => new Page<T>(res, page, size));
     }
     
-    findById(params:{id:number}):Promise<T>
+    findById(id:number):Promise<T>
     {
-        if(!params || !Service.validateId(params.id)) throw new Error("Invalid argument");
-        return this.getRepository().findOne(params.id);
+        if(!Service.validateId(id)) throw new Error("Invalid argument");
+        return this.getRepository().findOne(id);
     }
     
-    abstract create(params:T):Promise<T>;
+    abstract create(entity:T):Promise<T>;
     
-    abstract update(params:T):Promise<T>;
+    abstract update(entity:T):Promise<T>;
     
-    delete(params:{id:number}):Promise<boolean>
+    delete(id):Promise<boolean>
     {
-        if(!params || !Service.validateId(params.id)) throw new Error("Invalid argument");
-        return this.getRepository().delete(params.id).then(result => {console.log(result); return true});
+        if(!Service.validateId(id)) throw new Error("Invalid argument");
+        return this.getRepository().delete(id).then(result => {console.log(result); return true});
     }
     
     protected static validateId(id):boolean

@@ -6,6 +6,20 @@ import {connectionPromise} from "./db";
 import {Routes} from "./routes/routes";
 import corser = require("corser");
 
+export class Page<T>
+{
+    content:T[];
+    page:number;
+    size:number;
+    
+    constructor(content:T[], page:number, size:number)
+    {
+        this.content = content;
+        this.page = page;
+        this.size = size;
+    }
+}
+
 export const appPromise = connectionPromise.then(async connection =>
 {
     const app = express();
@@ -18,20 +32,47 @@ export const appPromise = connectionPromise.then(async connection =>
     
     // register all application routes
     Routes.forEach(route => {
-        app[route.method](route.path, (request: Request, response: Response, next: Function) => {
+        const method = route.method;
+        app[method](route.path, (request: Request, response: Response, next: Function) => {
             let routePromise;
-            if(route.isPaged)
+            
+            switch(method)
             {
-                request.params.page = isFinite(request.params.page) && request.params.page > 0 && request.params.page || 0;
-                request.params.size = isFinite(request.params.size) && request.params.size > 0 && request.params.size || 10;
-                routePromise = route.action(request.params);
-            }
-            else
-            {
-                routePromise = route.action(request.params);
+                case "get":
+                {
+                    if(route.isPaged)
+                    {
+                        const page = isFinite(request.query.page) && request.query.page > 0 && request.query.page || 0;
+                        const size = isFinite(request.query.size) && request.query.size > 0 && request.query.size || 10;
+                        routePromise = route.action(page, size)
+                    }
+                    else
+                    {
+                        routePromise = route.action(request.params.id || 0);
+                    }
+                    break;
+                }
+                case "post":
+                case "put":
+                {
+                    routePromise = route.action(request.body);
+                    break;
+                }
+                case "delete":
+                {
+                    routePromise = route.action(request.body.id || 0);
+                    break;
+                }
+                default:
+                {
+                    throw new Error("Unknown method");
+                }
+                
             }
             
-            routePromise.then(res => response.send(res))
+            routePromise
+                .then(res => {console.log(res); return res})
+                .then(res => response.send(res))
                 .then(() => next)
                 .catch(err => next(err));
         });

@@ -10,7 +10,7 @@ export const Routes:{
     path:string,
     method:string,
     isPaged?: boolean,
-    action: (params:any) => Promise<any>
+    action: Function
 }[] =
 [
     {
