@@ -10,11 +10,14 @@ export class Ability extends DomainEntity
     @MinLength(1)
     @MaxLength(255)
     @Column()
-    name:string;
+    description:string;
     
     @OneToMany(type => Mod, mod => mod.ability)
     mods:Mod[];
     
     @OneToMany(type => ItemModel, itemModel => itemModel.abilities)
     itemModels:ItemModel[];
+    
+    @Column({type: "int", default: "0"})
+    chargeCost:number;
 }

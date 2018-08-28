@@ -11,15 +11,18 @@ export class Mod extends DomainEntity
     @MinLength(1)
     @MaxLength(255)
     @Column()
-    name:string;
+    description:string;
     
     @IsEnum(ModType)
     @Column()
-    itemType:ModType;
+    modType:ModType;
     
     @ManyToOne(type => Ability, ability => ability.mods)
     ability:Ability;
     
     @ManyToMany(type => Item, item => item.mods)
     items:Item[];
+    
+    @Column({type: "int", default: "1"})
+    maxStacks:number;
 }

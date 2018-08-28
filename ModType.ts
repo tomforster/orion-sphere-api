@@ -3,6 +3,7 @@ export enum ModType
     GEN = "Generic",
     CUL = "Cultural",
     EW = "Energy Weapon",
+    HEW = "Heavy Energy Weapon",
     MW = "Melee Weapon",
     SMW = "Small Melee Weapon",
     MMW = "Medium Melee Weapon",

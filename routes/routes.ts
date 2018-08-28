@@ -1,10 +1,12 @@
 import {ItemModelService} from "../service/ItemModelService";
 import {ItemService} from "../service/ItemService";
 import {ItemTypeService} from "../service/ItemTypeService";
+import {ModService} from "../service/ModService";
 
 const itemDefinitionService = new ItemModelService();
 export const itemService = new ItemService();
 const itemTypeService = new ItemTypeService();
+const modService = new ModService();
 
 export const Routes:{
     path:string,
@@ -46,9 +48,15 @@ export const Routes:{
         action: itemService.findAll.bind(itemService)
     },
     {
-        path: "/item-type",
+        path: "/mod",
         method: "get",
         isPaged: true,
+        action: modService.findAll.bind(modService)
+    },
+    {
+        path: "/item-type",
+        method: "get",
+        isPaged: true, //todo fix this
         action: itemTypeService.findAll.bind(itemTypeService)
     }
 ];
