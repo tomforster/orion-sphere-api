@@ -1,24 +1,24 @@
 export enum ItemType
 {
-    EnergyLight,
-    EnergyMedium,
-    EnergyHeavy,
+    EL = "Light Energy Weapon",
+    EM = "Medium Energy Weapon",
+    EH = "Heavy Energy Weapon",
     
-    MeleeSmall,
-    MeleeMedium,
-    MeleeLarge,
+    MS = "Small Melee Weapon",
+    MM = "Medium Melee Weapon",
+    ML = "Large Melee Weapon",
     
-    Projectile,
+    PR = "Projectile",
     
-    Shield,
+    SH = "Shield",
     
-    ArmourLight,
-    ArmourMedium,
-    ArmourHeavy,
+    AL = "Light Armour",
+    AM = "Medium Armour",
+    AH = "Heavy Armour",
     
-    EnergyField,
+    EF = "Energy Field",
     
-    DeviceScience,
-    DeviceMedical,
-    DeviceGeneral
+    DS = "Science Device",
+    DM = "Medical Device",
+    DG = "General Device"
 }

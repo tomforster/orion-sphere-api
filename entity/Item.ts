@@ -1,21 +1,25 @@
-import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn} from "typeorm";
-import {ItemDefinition} from "./ItemDefinition";
-import {IsPositive} from "class-validator";
+import {Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne} from "typeorm";
+import {ItemModel} from "./ItemModel";
+import {DomainEntity} from "./DomainEntity";
+import {Mod} from "./Mod";
 
 @Entity()
-export class Item
+export class Item extends DomainEntity
 {
-    @IsPositive()
-    @PrimaryGeneratedColumn()
-    id:number;
-    
-    @OneToOne(type => ItemDefinition)
+    @ManyToOne(type => ItemModel, "itemModel", {eager: true})
     @JoinColumn()
-    itemDefinition:ItemDefinition;
+    itemModel:ItemModel;
     
-    constructor(id:number = 0, itemDefinition:ItemDefinition)
+    @ManyToMany(type => Mod, mod => mod.items)
+    @JoinTable()
+    mods:Mod[];
+    
+    serial:string;
+    
+    constructor(id:number = 0, itemModel:ItemModel)
     {
+        super();
         this.id = id;
-        this.itemDefinition = itemDefinition;
+        this.itemModel = itemModel;
     }
 }

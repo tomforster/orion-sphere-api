@@ -1,9 +1,9 @@
-import {ItemDefinitionService} from "../service/ItemDefinitionService";
+import {ItemModelService} from "../service/ItemModelService";
 import {ItemService} from "../service/ItemService";
 import {ItemTypeService} from "../service/ItemTypeService";
 
-const itemDefinitionService = new ItemDefinitionService();
-const itemService = new ItemService();
+const itemDefinitionService = new ItemModelService();
+export const itemService = new ItemService();
 const itemTypeService = new ItemTypeService();
 
 export const Routes:{
@@ -14,28 +14,28 @@ export const Routes:{
 }[] =
 [
     {
-        path: "/item-definition",
+        path: "/item-model",
         method: "post",
         action: itemDefinitionService.create.bind(itemDefinitionService)
     },
     {
-        path: "/item-definition",
+        path: "/item-model",
         method: "get",
         isPaged: true,
         action: itemDefinitionService.findAll.bind(itemDefinitionService)
     },
     {
-        path: "/item-definition/:id",
+        path: "/item-model/:id",
         method: "patch",
         action: itemDefinitionService.update.bind(itemDefinitionService)
     },
     {
-        path: "/item-definition/:id",
+        path: "/item-model/:id",
         method: "get",
         action: itemDefinitionService.findById.bind(itemDefinitionService)
     },
     {
-        path: "/item-definition/:id",
+        path: "/item-model/:id",
         method: "delete",
         action: itemDefinitionService.delete.bind(itemDefinitionService)
     },

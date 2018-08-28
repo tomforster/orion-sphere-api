@@ -3,20 +3,26 @@ import express = require("express");
 import {Request, Response} from "express";
 import createError = require('http-errors');
 import {connectionPromise} from "./db";
-import {Routes} from "./routes/routes";
-import corser = require("corser");
+import {itemService, Routes} from "./routes/routes";
+import corser = require("corser");//for cors
 
 export class Page<T>
 {
     content:T[];
-    page:number;
+    number:number;
     size:number;
+    first:boolean;
+    last:boolean;
+    totalPages:number;
     
-    constructor(content:T[], page:number, size:number)
+    constructor(content:T[], number:number, size:number, totalPages:number, first:boolean = false, last:boolean = false)
     {
         this.content = content;
-        this.page = page;
+        this.number = number;
+        this.totalPages = totalPages;
         this.size = size;
+        this.first = first;
+        this.last = last;
     }
 }
 
@@ -42,8 +48,10 @@ export const appPromise = connectionPromise.then(async connection =>
                 {
                     if(route.isPaged)
                     {
-                        const page = isFinite(request.query.page) && request.query.page > 0 && request.query.page || 0;
-                        const size = isFinite(request.query.size) && request.query.size > 0 && request.query.size || 10;
+                        let page = parseInt(request.query.page);
+                        page = isFinite(page) && page > 0 && page || 0;
+                        let size = parseInt(request.query.size);
+                        size = isFinite(size) && size > 0 && size || 10;
                         routePromise = route.action(page, size)
                     }
                     else
@@ -76,6 +84,14 @@ export const appPromise = connectionPromise.then(async connection =>
                 .then(() => next)
                 .catch(err => next(err));
         });
+    });
+    
+    app.post("/lammies", (req, res, next) =>
+    {
+        itemService.getRepository().findByIds(req.body)
+            .then(items => res.send(items))
+            .then(() => next)
+            .catch(err => next(err));
     });
     
     // catch 404 and forward to error handler

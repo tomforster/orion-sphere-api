@@ -1,8 +1,9 @@
 import {getManager} from "typeorm";
 import {Repository} from "typeorm/repository/Repository";
 import {Page} from "../app";
+import {DomainEntity} from "../entity/DomainEntity";
 
-export abstract class Service<T>
+export abstract class Service<T extends DomainEntity>
 {
     entityClass:any;
     
@@ -11,10 +12,17 @@ export abstract class Service<T>
         return getManager().getRepository(this.entityClass);
     }
     
-    findAll(page:number, size:number):Promise<Page<T>>
+    async findAll(page:number, size:number):Promise<Page<T>>
     {
-        return this.getRepository().find({skip:page*size, take:size})
-            .then(res => new Page<T>(res, page, size));
+        const result = await this.getRepository().find({skip:page*size, take:size+1});
+        const count = await this.getRepository().count();
+        let last = false;
+        let first = page == 0;
+        if(result.length > size)
+        {
+            last = false;
+        }
+        return new Page<T>(result.slice(0,size).map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count, first, last);
     }
     
     findById(id:number):Promise<T>
