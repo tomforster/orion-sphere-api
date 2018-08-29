@@ -1,0 +1,38 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        link(rel="stylesheet" href="./lammie-template.css")
+    body
+        .lammie.lammie-front
+            .lammie-header
+                .lammie-title Test Item 1234
+                .lammie-id MW0001-0001
+
+            .lammie-body
+                .lammie-text
+                    div Charges: 3
+                    div Base Cost: 300
+
+        .lammie.lammie-back
+            .lammie-header
+                .lammie-title Test Item 1234
+                .lammie-id MW0001-0001
+
+            .lammie-body
+                .lammie-text
+                    div Mods:
+
+                .lammie-qr-container
+                    #qr.lammie-qr
+
+
+    script(src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js) //todo make this available offline
+    script.
+        new QRCode(document.getElementById("qr"), {
+            text: "MW0001-0001",
+            width: 70,
+            height: 70,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H});
