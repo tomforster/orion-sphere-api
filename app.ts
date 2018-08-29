@@ -5,6 +5,7 @@ import createError = require('http-errors');
 import {connectionPromise} from "./db";
 import {itemService, Routes} from "./routes/routes";
 import corser = require("corser");//for cors
+import "pug";
 
 export class Page<T>
 {
@@ -35,6 +36,8 @@ export const appPromise = connectionPromise.then(async connection =>
     app.use(express.urlencoded({ extended: true }));
     
     app.use(corser.create());
+    
+    app.set('view engine', 'pug');
     
     // register all application routes
     Routes.forEach(route => {
@@ -94,6 +97,22 @@ export const appPromise = connectionPromise.then(async connection =>
             .catch(err => next(err));
     });
     
+    app.get("/lammie-html", (req, res, next) =>
+    {
+        // const ids = req.params.ids.split(",").map(idString => parseInt(idString)).filter(idNum => isFinite(idNum) && idNum > 0);
+        
+        // itemService.getRepository().findByIds(ids)
+        //     .then(items => res.render("lammie-template", items))
+        //     .then(() => next)
+        //     .catch(err => next(err));
+    
+        res.render("lammie-template", {items: [
+                {serial:"MW0001-0001", itemModel: {name:"Test item 1"}},
+                {serial:"MW0001-0002", itemModel: {name:"Test item 2"}},
+                {serial:"MW0001-0003", itemModel: {name:"Test item 3"}},
+                {serial:"MW0001-0004", itemModel: {name:"Test item 4"}}
+            ]});
+    });
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
         next(createError(404));

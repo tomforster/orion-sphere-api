@@ -1,0 +1,120 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        style.
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: monospace;
+            }
+
+            .lammie {
+                display: flex;
+                flex-direction: column;
+                width: 300px;
+                height: 180px;
+                border: solid 2px black;
+                margin: 5px;
+                padding: 3px;
+                page-break-inside: avoid;
+            }
+
+            .lammie-back .lammie-body {
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+
+            .lammie-body {
+                display: flex;
+                flex: 1 0;
+                overflow: hidden;
+            }
+
+            .lammie-text {
+                flex: 1 0;
+                overflow: hidden;
+                margin: 3px;
+            }
+
+            .lammie-header {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px;
+                border: 2px solid black;
+                margin: 3px;
+                flex: auto 0;
+            }
+
+            .lammie-qr {
+                width: 70px;
+                height: 70px;
+                margin: 3px;
+            }
+
+            .lammie-qr-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+
+            .lammie-page
+            {
+                page-break-after: always;
+                display: flex;
+
+                flex-wrap: wrap;
+            }
+
+            .lammie-page.lammie-back
+            {
+                flex-direction: row-reverse;
+                /*flex-wrap: wrap-reverse;*/
+            }
+body
+    .lammie-page
+        each item in items
+            .lammie
+                .lammie-header
+                    .lammie-title= item.itemModel.name
+                    .lammie-id= item.serial
+
+                .lammie-body
+                    .lammie-text
+                        div Charges: 3
+                        div Base Cost: 300
+
+    .lammie-page.lammie-back
+        each item in items
+            .lammie
+                .lammie-header
+                    .lammie-title= item.itemModel.name
+                    .lammie-id= item.serial
+
+                .lammie-body
+                    .lammie-text
+                        div Mods:
+
+                    .lammie-qr-container
+                        .lammie-qr(id=item.serial)
+
+
+script(src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js")
+script.
+    const elements = [].slice.call(document.getElementsByClassName("lammie-qr"));
+
+    console.log(elements);
+
+    elements.forEach(element => new QRCode(element, {
+            text: element.id,
+            width: 70,
+            height: 70,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        }));
