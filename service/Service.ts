@@ -5,7 +5,7 @@ import {DomainEntity} from "../entity/DomainEntity";
 
 export abstract class Service<T extends DomainEntity>
 {
-    entityClass:any;
+    abstract entityClass:any;
     
     getRepository():Repository<T>
     {
