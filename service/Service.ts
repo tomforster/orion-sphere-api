@@ -49,6 +49,6 @@ export abstract class Service<T extends DomainEntity>
     
     protected static validateId(id):boolean
     {
-        return id && !isFinite(id) && id > 0;
+        return id && isFinite(id) && id > 0;
     }
 }
