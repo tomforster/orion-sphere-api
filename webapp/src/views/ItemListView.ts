@@ -27,6 +27,6 @@ export class ItemListView extends ListView<Item>
     
     getControls():Vnode
     {
-        return m(`a.button.level-item`, {href: `http://localhost:3000/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`,disabled: !this.selectedItems.length}, "Print Lammies");
+        return m(`a.button.level-item`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`,disabled: !this.selectedItems.length}, "Print Lammies");
     }
 }
