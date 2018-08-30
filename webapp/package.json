@@ -1,0 +1,38 @@
+{
+  "name": "orion-sphere-admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node_modules/.bin/webpack -d --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomforster/orion-sphere.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomforster/orion-sphere/issues"
+  },
+  "homepage": "https://github.com/tomforster/orion-sphere#readme",
+  "dependencies": {
+    "@types/classnames": "^2.2.6",
+    "@types/mithril": "^1.1.12",
+    "bulma": "^0.7.1",
+    "classnames": "^2.2.6",
+    "css-loader": "^1.0.0",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
+    "mithril": "^1.1.6",
+    "style-loader": "^0.22.1",
+    "ts-loader": "^4.4.1",
+    "typescript": "^2.9.2"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.5.2",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8"
+  }
+}
