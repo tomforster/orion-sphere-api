@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node_modules/.bin/webpack -d",
+    "install": "node_modules/.bin/webpack -d",
     "start": "node_modules/.bin/webpack -d --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -6,6 +6,7 @@ import {connectionPromise} from "./db";
 import {itemService, Routes} from "./routes/routes";
 import corser = require("corser");//for cors
 import "pug";
+import * as path from "path";
 
 export class Page<T>
 {
@@ -37,7 +38,7 @@ export const appPromise = connectionPromise.then(async connection =>
     
     app.use(corser.create());
     
-    app.use(express.static('static'));
+    app.use(express.static(path.join("process.env.PWD", 'static')));
     app.set('view engine', 'pug');
     
     // register all application routes
