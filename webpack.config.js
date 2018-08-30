@@ -4,10 +4,10 @@ const path = require('path');
 module.exports = {
     mode: "development",
     devtool: "inline-source-map",
-    entry: "./src/index.ts",
+    entry: "./webapp/src/index.ts",
     output: {
         filename: "app.js",
-        path: path.resolve(__dirname, '../static')
+        path: path.resolve(__dirname, 'static')
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -38,6 +38,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new CopyWebpackPlugin(["./index.html"])
+        new CopyWebpackPlugin(["./webapp/index.html"])
     ]
 };
