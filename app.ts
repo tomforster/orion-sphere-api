@@ -91,19 +91,11 @@ export const appPromise = connectionPromise.then(async connection =>
         });
     });
     
-    app.post("/lammies", (req, res, next) =>
-    {
-        itemService.getRepository().findByIds(req.body)
-            .then(items => res.send(items))
-            .then(() => next)
-            .catch(err => next(err));
-    });
-    
     app.get("/lammie-html", (req, res, next) =>
     {
         const ids = req.query.ids.split(",").map(idString => parseInt(idString)).filter(idNum => isFinite(idNum) && idNum > 0);
         
-        itemService.getRepository().findByIds(ids)
+        itemService.findByIds(ids)
             .then(items => res.render("lammie-template", {items}))
             .then(() => next)
             .catch(err => next(err));

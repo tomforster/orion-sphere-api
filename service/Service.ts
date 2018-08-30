@@ -7,7 +7,7 @@ export abstract class Service<T extends DomainEntity>
 {
     abstract entityClass:any;
     
-    getRepository():Repository<T>
+    protected getRepository():Repository<T>
     {
         return getManager().getRepository(this.entityClass);
     }
@@ -29,6 +29,12 @@ export abstract class Service<T extends DomainEntity>
     {
         if(!Service.validateId(id)) throw new Error("Invalid argument");
         return this.getRepository().findOne(id);
+    }
+    
+    findByIds(ids:number[]):Promise<T[]>
+    {
+        if (ids.map(id => Service.validateId(id)).some(res => !res)) throw new Error("Invalid argument");
+        return this.getRepository().findByIds(ids);
     }
     
     abstract create(entity:T):Promise<T>;

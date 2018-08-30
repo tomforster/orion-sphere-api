@@ -28,6 +28,14 @@ export class ItemService extends Service<Item>
         return result;
     }
     
+    
+    async findByIds(ids:number[]):Promise<Item[]>
+    {
+        const result = await super.findByIds(ids);
+        result.forEach(i => i.serial = this.generateSerial(i));
+        return result;
+    }
+    
     private generateSerial(item:Item):string
     {
         if(!item) return "";
