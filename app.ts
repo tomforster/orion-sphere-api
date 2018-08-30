@@ -38,7 +38,7 @@ export const appPromise = connectionPromise.then(async connection =>
     
     app.use(corser.create());
     
-    app.use(express.static(path.join("process.env.PWD", 'static')));
+    app.use(express.static(path.join(process.env.PWD, 'static')));
     app.set('view engine', 'pug');
     
     // register all application routes
