@@ -10,6 +10,7 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
     selectedItems:any[] = [];
     itemTypePromise:Promise<ItemType[]>;
     itemTypes:ItemType[] | undefined;
+    selectMode:boolean = false;
     
     constructor(itemTypePromise:Promise<ItemType[]>)
     {
@@ -38,6 +39,7 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
     
     selectRow(item:any)
     {
+        if(!this.selectMode) return;
         const index = this.selectedItems.findIndex(selectedItem => item.id == selectedItem.id);
         
         if(index > -1)
@@ -52,6 +54,7 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
     
     isSelected(item:any)
     {
+        if(!this.selectMode) return false;
         const index = this.selectedItems.findIndex(selectedItem => item.id == selectedItem.id);
         return index > -1;
     }
@@ -102,16 +105,11 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
                 m(".level-right", m(`a.button.level-item[href=/${this.getUrlPath()}/${this.page.number+2}]`, {oncreate: m.route.link, disabled: this.page.last}, "Next")));
             
             const table = m("table.table.is-fullwidth.is-narrow",
-                m("thead", m("tr", [m("th"), ...this.getColumns().map(h => m("th", h))])),
-                m("tbody", this.page.content.map((r:any) =>
-                    m("tr",
-                        {
-                            onclick: this.selectRow.bind(this, r),
-                            class: this.isSelected(r) ? "is-selected" : ""
-                        },
-                        [
-                            m("td", m("input[type='checkbox']", {checked: this.isSelected(r)})),
-                            ...this.getRowTemplate()(r).map((t:any) => m("td", t))]))));
+                m("thead", m("tr", [this.selectMode ? m("th") : []].concat(this.getColumns().map(h => m("th", h))))),
+                m("tbody", this.page.content.map((r:any) => m("tr", {
+                    onclick: this.selectRow.bind(this, r),
+                    class: this.isSelected(r) ? "is-selected" : ""
+                }, (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : []).concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))))));
             
             return m(".container", titleBar, filters, table, paging);
         }

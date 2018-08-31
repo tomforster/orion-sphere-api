@@ -31,7 +31,7 @@ export class gendata1535301003213 implements MigrationInterface {
             return Array.from({ length: numItems}, () => 0)
                 .map((_,i) => {
                     const selectedItemDef = Math.floor(Math.random() * itemDefs.length);
-                    return {id:i+1, def: itemDefs[selectedItemDef].id};
+                    return {id:i+1, def: itemDefs[selectedItemDef].id, type: itemDefs[selectedItemDef].type};
                 })
         }
     
@@ -39,10 +39,15 @@ export class gendata1535301003213 implements MigrationInterface {
         const items = itemGen(itemDefs, 2000);
         
         await queryRunner.query(`insert into "orion_sphere"."item_model" (id, "itemType", name, "baseCost") values ${itemDefs.map(itemDef => `(${itemDef.id},'${itemDef.type}','${itemDef.name}', ${itemDef.baseCost})`).join(",")}`);
-        return await queryRunner.query(`insert into "orion_sphere"."item" (id, "itemModelId") values ${items.map(item => `(${item.id},${item.def})`).join(",")}`);
+        return await queryRunner.query(`insert into "orion_sphere"."item" (id, "itemModelId", serial) values ${items.map(item => `(${item.id},${item.def}, '${this.generateSerial(item)}')`).join(",")}`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
+    }
+    
+    private generateSerial(item)
+    {
+        return item.type + item.def.toString().padStart(4, "0") + "-" + item.id.toString().padStart(4, "0");
     }
 
 }

@@ -1,4 +1,4 @@
-import {Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne} from "typeorm";
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne} from "typeorm";
 import {ItemModel} from "./ItemModel";
 import {DomainEntity} from "./DomainEntity";
 import {Mod} from "./Mod";
@@ -14,6 +14,7 @@ export class Item extends DomainEntity
     @JoinTable()
     mods:Mod[];
     
+    @Column()
     serial:string;
     
     constructor(id:number = 0, itemModel:ItemModel)

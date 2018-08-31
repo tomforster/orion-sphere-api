@@ -21,21 +21,6 @@ export class ItemService extends Service<Item>
         return this.getRepository().save(entity);
     }
     
-    async findAll(page:number, size:number):Promise<Page<Item>>
-    {
-        const result:Page<Item> = await super.findAll(page, size);
-        result.content.forEach(c => c.serial = this.generateSerial(c));
-        return result;
-    }
-    
-    
-    async findByIds(ids:number[]):Promise<Item[]>
-    {
-        const result = await super.findByIds(ids);
-        result.forEach(i => i.serial = this.generateSerial(i));
-        return result;
-    }
-    
     private generateSerial(item:Item):string
     {
         if(!item) return "";
