@@ -32,8 +32,8 @@ export class ItemService extends Service<Item>
     
     protected applyTransforms(item:Item):Item
     {
-        item.modCost = this.multipliers[item.mods.length]*this.addModModifier*item.itemModel.baseCost;
-        item.maintenanceCost = this.multipliers[item.mods.length]*this.maintainanceModifier*item.itemModel.baseCost;
+        item.modCost = Math.round(this.multipliers[item.mods.length]*this.addModModifier*item.itemModel.baseCost);
+        item.maintenanceCost = Math.round(this.multipliers[item.mods.length]*this.maintainanceModifier*item.itemModel.baseCost);
         return item;
     }
 }
