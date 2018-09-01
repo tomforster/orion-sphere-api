@@ -16,6 +16,8 @@ export class Item extends DomainEntity
     
     @Column()
     serial:string;
+
+    upkeep:number;
     
     constructor(id:number = 0, itemModel:ItemModel)
     {
