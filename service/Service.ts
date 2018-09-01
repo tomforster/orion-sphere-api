@@ -14,7 +14,7 @@ export abstract class Service<T extends DomainEntity>
     
     async findAll(page:number, size:number):Promise<Page<T>>
     {
-        const result = await this.getRepository().find({skip:page*size, take:size+1});
+        const result = (await this.getRepository().find({skip:page*size, take:size+1})).map(r => this.applyTransforms(r));
         const count = await this.getRepository().count();
         let last = false;
         let first = page == 0;
@@ -25,16 +25,17 @@ export abstract class Service<T extends DomainEntity>
         return new Page<T>(result.slice(0,size).map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count, first, last);
     }
     
-    findById(id:number):Promise<T>
+    async findById(id:number):Promise<T>
     {
         if(!Service.validateId(id)) throw new Error("Invalid argument");
-        return this.getRepository().findOne(id);
+        return this.applyTransforms(await this.getRepository().findOne(id));
     }
     
-    findByIds(ids:number[]):Promise<T[]>
+    async findByIds(ids:number[]):Promise<T[]>
     {
         if (ids.map(id => Service.validateId(id)).some(res => !res)) throw new Error("Invalid argument");
-        return this.getRepository().findByIds(ids);
+        const result = await this.getRepository().findByIds(ids);
+        return result.map(r => this.applyTransforms(r));
     }
     
     abstract create(entity:T):Promise<T>;
@@ -50,5 +51,10 @@ export abstract class Service<T extends DomainEntity>
     protected static validateId(id):boolean
     {
         return id && isFinite(id) && id > 0;
+    }
+    
+    protected applyTransforms(entity:T):T
+    {
+        return entity;
     }
 }

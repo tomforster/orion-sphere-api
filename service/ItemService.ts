@@ -6,6 +6,9 @@ import {Page} from "../app";
 export class ItemService extends Service<Item>
 {
     entityClass:any = Item;
+    readonly multipliers = [1, 1.2, 1.6, 2.2, 3.2, 4.8, 7.4, 11.6, 18.4, 29.4, 47.2];
+    readonly maintainanceModifier = 0.1;
+    readonly addModModifier = 0.5;
     
     create(params:Item):Promise<Item>
     {
@@ -26,11 +29,11 @@ export class ItemService extends Service<Item>
         if(!item) return "";
         return item.itemModel.itemType + item.itemModel.id.toString().padStart(4, "0") + "-" + item.id.toString().padStart(4, "0");
     }
-
-    private calculateUpkeep(item:Item):number
+    
+    protected applyTransforms(item:Item):Item
     {
-        const modCost = item.mods.map(mod => mod.cost).reduce((a,b) => a + b, 0);
-
-        return modCost + item.baseCost;
+        item.modCost = this.multipliers[item.mods.length]*this.addModModifier*item.itemModel.baseCost;
+        item.maintenanceCost = this.multipliers[item.mods.length]*this.maintainanceModifier*item.itemModel.baseCost;
+        return item;
     }
 }
