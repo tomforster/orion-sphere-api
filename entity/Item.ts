@@ -10,7 +10,7 @@ export class Item extends DomainEntity
     @JoinColumn()
     itemModel:ItemModel;
     
-    @ManyToMany(type => Mod, mod => mod.items)
+    @ManyToMany(type => Mod, mod => mod.items, {eager:true})
     @JoinTable()
     mods:Mod[];
     
