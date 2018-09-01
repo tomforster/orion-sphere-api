@@ -26,4 +26,11 @@ export class ItemService extends Service<Item>
         if(!item) return "";
         return item.itemModel.itemType + item.itemModel.id.toString().padStart(4, "0") + "-" + item.id.toString().padStart(4, "0");
     }
+
+    private calculateUpkeep(item:Item):number
+    {
+        const modCost = item.mods.map(mod => mod.cost).reduce((a,b) => a + b, 0);
+
+        return modCost + item.baseCost;
+    }
 }
