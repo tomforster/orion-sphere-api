@@ -1,4 +1,4 @@
-import {getManager} from "typeorm";
+import {getManager, Like} from "typeorm";
 import {Repository} from "typeorm/repository/Repository";
 import {Page} from "../app";
 import {DomainEntity} from "../entity/DomainEntity";
@@ -12,17 +12,28 @@ export abstract class Service<T extends DomainEntity>
         return getManager().getRepository(this.entityClass);
     }
     
-    async findAll(page:number, size:number):Promise<Page<T>>
+    protected searchFields():string[]
     {
-        const result = (await this.getRepository().find({skip:page*size, take:size+1})).map(r => this.applyTransforms(r));
+        return [];
+    }
+    
+    private where(searchString:string):any
+    {
+        if(!searchString || !searchString.length || !this.searchFields()) return undefined;
+        const whereClause = {};
+        this.searchFields().forEach(field => {
+            whereClause[field] = Like(`%${searchString}%`);
+        });
+        return whereClause;
+    }
+    
+    async findAll(page:number, size:number, searchString:string):Promise<Page<T>>
+    {
+        const result = (await this.getRepository()
+            .find({skip:page*size, take:size, where:this.where(searchString)}))
+            .map(r => this.applyTransforms(r));
         const count = await this.getRepository().count();
-        let last = false;
-        let first = page == 0;
-        if(result.length > size)
-        {
-            last = false;
-        }
-        return new Page<T>(result.slice(0,size).map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count, first, last);
+        return new Page<T>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
     }
     
     async findById(id:number):Promise<T>

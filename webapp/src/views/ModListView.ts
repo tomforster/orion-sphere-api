@@ -1,16 +1,17 @@
 import {ListView} from "./ListView";
-import {Mod} from "../index";
+import {Mod} from "../../../entity/Mod";
+import {ItemType} from "../../../ItemType";
 
 export class ModListView extends ListView<Mod>
 {
     getColumns():string[]
     {
-        return ["Mod Type", "Description", "Max Stacks"];
+        return ["Description", "Max Stacks", "Restrictions"];
     }
     
-    getRowTemplate():(item:Mod) => (number | string)[]
+    getRowTemplate():(mod:Mod) => (number | string)[]
     {
-        return (item:Mod) => [item.modType, item.description, item.maxStacks];
+        return (mod:Mod) => [mod.description, mod.maxStacks, mod.restrictedTo.map(r => ItemType[<any> r]).join(", ")];
     }
     
     getUrlPath():string

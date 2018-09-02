@@ -4,6 +4,7 @@ import "bulma/css/bulma.css";
 import {ItemListView} from "./views/ItemListView";
 import {ItemModelListView} from "./views/ItemModelListView";
 import {ModListView} from "./views/ModListView";
+import {ItemType} from "../../ItemType";
 
 export interface Page<T> {
     content:T[];
@@ -12,38 +13,6 @@ export interface Page<T> {
     first:boolean;
     last:boolean;
     totalPages:number;
-}
-
-export interface DomainObject
-{
-    id:number;
-    type:string;
-}
-
-export interface Item extends DomainObject
-{
-    itemModel:ItemModel | undefined;
-    serial:string;
-}
-
-export interface ItemModel extends DomainObject
-{
-    itemType:string | undefined;
-    name:string;
-    baseCost:number;
-}
-
-export interface ItemType
-{
-    key:string;
-    name:string;
-}
-
-export interface Mod extends DomainObject
-{
-    modType:string;
-    description:string;
-    maxStacks:number;
 }
 
 (async function init()

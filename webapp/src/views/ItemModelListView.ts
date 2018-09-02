@@ -1,5 +1,6 @@
 import {ListView} from "./ListView";
-import {ItemModel} from "../index";
+import {ItemModel} from "../../../entity/ItemModel";
+import {ItemType} from "../../../ItemType";
 
 export class ItemModelListView extends ListView<ItemModel>
 {
@@ -10,7 +11,7 @@ export class ItemModelListView extends ListView<ItemModel>
     
     getRowTemplate():(item:ItemModel) => (number | string)[]
     {
-        return (item:ItemModel) => [this.getItemType(item.itemType) || "", item.name, item.baseCost];
+        return (item:ItemModel) => [ItemType[<any>item.itemType] || "", item.name, item.baseCost];
     }
     
     getUrlPath():string

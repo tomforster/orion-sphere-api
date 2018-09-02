@@ -1,12 +1,14 @@
-import {Children, ClassComponent, Vnode} from "mithril";
 import * as m from "mithril";
-import {DomainObject, ItemType, Page} from "../index";
+import {Children, ClassComponent, Vnode} from "mithril";
+import {Page} from "../index";
+import {DomainEntity} from "../../../entity/DomainEntity"
+import {ItemType} from "../../../ItemType";
 
-export abstract class ListView<T extends DomainObject> implements ClassComponent
+export abstract class ListView<T extends DomainEntity> implements ClassComponent
 {
     page:Page<T> | undefined;
     loaded:boolean = false;
-    pageable:any = {};
+    currentPage:number;
     selectedItems:any[] = [];
     itemTypePromise:Promise<ItemType[]>;
     itemTypes:ItemType[] | undefined;
@@ -17,24 +19,25 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
         this.itemTypePromise = itemTypePromise;
     }
     
-    async fetch()
+    async fetch(search?:string)
     {
+        let url = this.getUrl();
+        
+        if(search)
+        {
+            url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:search});
+        }
+        else
+        {
+            url += "?" + m.buildQueryString({page: this.currentPage, size: 50});
+        }
+        
         this.itemTypes = await this.itemTypePromise;
         this.page = await m.request<Page<T>>({
             method: "get",
-            url: this.getUrl() + "?page=" + this.pageable.page + "&size=50"
+            url
         });
         this.loaded = true;
-    }
-    
-    protected getItemType(key:string | undefined):string
-    {
-        if(this.itemTypes && key)
-        {
-            const itemType = this.itemTypes.find(itemType => itemType.key === key);
-            if(itemType) return itemType.name;
-        }
-        return "";
     }
     
     selectRow(item:any)
@@ -79,13 +82,32 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
     
     oninit(vnode:Vnode):any
     {
-        this.pageable.page = (vnode.attrs as any).key - 1;
+        this.currentPage = (vnode.attrs as any).key - 1;
         this.fetch();
     }
     
     onupdate(vnode:Vnode):any
     {
     
+    }
+    
+    getPaging(page:Page<T>):Vnode
+    {
+        return m(".level",
+            m(".level-left", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number}]`, {oncreate: m.route.link, disabled: page.first}, "Previous")),
+            m(".level-right", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number+2}]`, {oncreate: m.route.link, disabled: page.last}, "Next")));
+    }
+    
+    onSearchPressed()
+    {
+        if(this.searchField) this.fetch(this.searchField);
+    }
+    
+    searchField:string;
+    
+    setSearchField(searchField:string):void
+    {
+        this.searchField = searchField;
     }
     
     view(vnode:Vnode):Children | void | null
@@ -96,13 +118,10 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
                 m(".level-left", m("h1.subtitle", this.getTitle())),
                 m(".level-right", this.getControls()));
             
-            const filters = m(".box", m(".field", [
-                m('.control', m("input.input[type='text']", {placeholder: 'Type to filter...'}))
+            const filters = m(".box", m(".field.has-addons", [
+                m('.control.is-expanded', m("input.input[type='text']", {placeholder: 'Type to filter...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
+                m('.control', m("a.button.is-info", {onclick: this.onSearchPressed.bind(this)}, "Search"))
             ]));
-            
-            const paging = m(".level",
-                m(".level-left", m(`a.button.level-item[href=/${this.getUrlPath()}/${this.page.number}]`, {oncreate: m.route.link, disabled: this.page.first}, "Previous")),
-                m(".level-right", m(`a.button.level-item[href=/${this.getUrlPath()}/${this.page.number+2}]`, {oncreate: m.route.link, disabled: this.page.last}, "Next")));
             
             const table = m("table.table.is-fullwidth.is-narrow",
                 m("thead", m("tr", [this.selectMode ? m("th") : []].concat(this.getColumns().map(h => m("th", h))))),
@@ -111,7 +130,7 @@ export abstract class ListView<T extends DomainObject> implements ClassComponent
                     class: this.isSelected(r) ? "is-selected" : ""
                 }, (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : []).concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))))));
             
-            return m(".container", titleBar, filters, table, paging);
+            return m(".container", titleBar, filters, table, this.getPaging(this.page));
         }
         
         return m(".container");

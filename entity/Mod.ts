@@ -1,9 +1,9 @@
 import {DomainEntity} from "./DomainEntity";
-import {Column, Entity, ManyToMany, ManyToOne, OneToMany} from "typeorm";
-import {IsEnum, MaxLength, MinLength} from "class-validator";
-import {ModType} from "../ModType";
+import {Column, Entity, ManyToMany, ManyToOne} from "typeorm";
+import {IsArray, MaxLength, MinLength} from "class-validator";
 import {Ability} from "./Ability";
 import {Item} from "./Item";
+import {ItemType} from "../ItemType";
 
 @Entity()
 export class Mod extends DomainEntity
@@ -13,10 +13,6 @@ export class Mod extends DomainEntity
     @Column()
     description:string;
     
-    @IsEnum(ModType)
-    @Column()
-    modType:ModType;
-    
     @ManyToOne(type => Ability, ability => ability.mods)
     ability:Ability;
     
@@ -25,4 +21,8 @@ export class Mod extends DomainEntity
     
     @Column({type: "int", default: "1"})
     maxStacks:number;
+    
+    @IsArray()
+    @Column("simple-array")
+    restrictedTo:ItemType[];
 }

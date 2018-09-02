@@ -50,77 +50,79 @@ insert into "orion_sphere"."ability"(id, description, "chargeCost") values
 // language=PostgreSQL
             () => queryRunner.query(`
 -- Mods
-insert into "orion_sphere"."mod"(id, "modType", description, "abilityId", "maxStacks") values
+insert into "orion_sphere"."mod"(id, description, "abilityId", "maxStacks", "restrictedTo") values
 -- Generic Mods
-(1, 'GEN', 'Increase Charge Capacity', 1, 0),
-(2, 'GEN', 'Integrity Field', 2, 1),
+(1, 'Increase Charge Capacity', 1, 0, ''),
+(2, 'Integrity Field', 2, 1, ''),
 
 -- Cultural Mods
-(3, 'CUL', 'Talisman', 3, 1),
-(4, 'CUL', 'Psi Crystal Battery', 4, 0),
-(5, 'CUL', 'Psi Crystal Capacitor', 5, 1),
-(6, 'CUL', 'Psi Crystal Matrix', 6, 1),
+(3, 'Talisman', 3, 1, ''),
+(4, 'Psi Crystal Battery', 4, 0, ''),
+(5, 'Psi Crystal Capacitor', 5, 1, ''),
+(6, 'Psi Crystal Matrix', 6, 1, ''),
 
 -- Energy Weapons
-(7, 'EW', 'Shock Bolt', 7, 0),
-(8, 'EW', 'Penetrator Bolt', 8, 1),
-(9, 'EW', 'Disruption Bolt', 9, 1),
-(10, 'EW', 'Kill Bolt', 10, 1),
-(11, 'EW', 'Impact Bolt', 11, 1),
+(7, 'Shock Bolt', 7, 0, 'EL,EM,EH'),
+(8, 'Penetrator Bolt', 8, 1, 'EL,EM,EH'),
+(9, 'Disruption Bolt', 9, 1, 'EL,EM,EH'),
+(10, 'Kill Bolt', 10, 1, 'EL,EM,EH'),
+(11, 'Impact Bolt', 11, 1, 'EL,EM,EH'),
 
 -- Heavy Energy Weapons
-(12, 'EWH', 'Heavy Force Bolt', 12, 1),
-(13, 'EWH', 'Heavy Shock Bolt', 13, 0),
-(14, 'EWH', 'Heavy Stun Bolt', 14, 0),
-(15, 'EWH', 'Heavy Shredder Bolt', 15, 1),
-(16, 'EWH', 'Heavy Ruin Bolt', 16, 1),
+(12, 'Heavy Force Bolt', 12, 1, 'EH'),
+(13, 'Heavy Shock Bolt', 13, 0, 'EH'),
+(14, 'Heavy Stun Bolt', 14, 0, 'EH'),
+(15, 'Heavy Shredder Bolt', 15, 1, 'EH'),
+(16, 'Heavy Ruin Bolt', 16, 1, 'EH'),
 
 -- Melee Weapons
-(17, 'MW', 'Penetrator Matrix', 8, 1),
-(18, 'MW', 'Shock Matrix', 7, 0),
+(17, 'Penetrator Matrix', 8, 1, 'MS,MM,ML'),
+(18, 'Shock Matrix', 7, 0, 'MS,MM,ML'),
 
 -- Small Melee
-(19, 'MWS', 'Disruption Matrix', 17, 1),
+(19,  'Disruption Matrix', 17, 1, 'MS'),
 
 -- Medium Melee
-(20, 'MWM', 'Convulsor Matrix', 18, 1),
+(20,  'Convulsor Matrix', 18, 1, 'MM'),
 
 -- Large Melee
-(21, 'MWL', 'Force Matrix', 12, 1),
-(22, 'MWL', 'Impact Matrix', 11, 1),
-(23, 'MWL', 'Stun Matrix', 19, 0),
-(24, 'MWL', 'Shredder Matrix', 15, 1),
-(25, 'MWL', 'Ruination Matrix', 16, 1),
+(21,  'Force Matrix', 12, 1, 'ML'),
+(22,  'Impact Matrix', 11, 1, 'ML'),
+(23,  'Stun Matrix', 19, 0, 'ML'),
+(24,  'Shredder Matrix', 15, 1, 'ML'),
+(25,  'Ruination Matrix', 16, 1, 'ML'),
 
 -- Shields
-(26, 'SH', 'Reflection Matrix', 20, 1),
-(27, 'SH', 'Compensator Matrix', 21, 1),
-(28, 'SH', 'Force Absorption Matrix', 22, 1),
-(29, 'SH', 'Energy Absorption Matrix', 23, 0),
-(30, 'SH', 'Resistance Matrix', 24, 1),
-(31, 'SH', 'Repulsor Matrix', 25, 1),
+(26, 'Reflection Matrix', 20, 1, 'SH'),
+(27, 'Compensator Matrix', 21, 1, 'SH'),
+(28, 'Force Absorption Matrix', 22, 1, 'SH'),
+(29, 'Energy Absorption Matrix', 23, 0, 'SH'),
+(30, 'Resistance Matrix', 24, 1, 'SH'),
+(31, 'Repulsor Matrix', 25, 1, 'SH'),
 
 -- Armour
-(32, 'AR', 'Shock Distributors', 26, 0),
-(33, 'AR', 'Reinforcement Pattern', 27, 0),
-(34, 'ARL', 'Ablative Layers (Light)', 28, 1),
-(35, 'ARM', 'Ablative Layers (Medium)', 28, 2),
-(36, 'ARH', 'Ablative Layers (Heavy)', 28, 3),
-(37, 'AR', 'Integrity Pattern', 29, 1),
-(38, 'AR', 'Stabilisers', 30, 1),
-(39, 'AR', 'Weave Solidifier', 31, 1),
-(40, 'AR', 'Deflection Generator', 32, 1),
+(32, 'Shock Distributors', 26, 0, 'AL,AM,AH'),
+(33, 'Reinforcement Pattern', 27, 0, 'AL,AM,AH'),
+
+(34,  'Ablative Layers (Light)', 28, 1, 'AL'),
+(35,  'Ablative Layers (Medium)', 28, 2, 'AM'),
+(36,  'Ablative Layers (Heavy)', 28, 3, 'AH'),
+
+(37, 'Integrity Pattern', 29, 1, 'AL,AM,AH'),
+(38, 'Stabilisers', 30, 1, 'AL,AM,AH'),
+(39, 'Weave Solidifier', 31, 1, 'AL,AM,AH'),
+(40, 'Deflection Generator', 32, 1, 'AL,AM,AH'),
 
 -- Energy Fields
-(41, 'EF', 'Field Strengthener', 33, 1), --does not stack?
-(42, 'EF', 'Combat Repower', 34, 4), --not sure about max here
+(41, 'Field Strengthener', 33, 1, 'EF'), --does not stack?
+(42, 'Combat Repower', 34, 4, 'EF'), --not sure about max here
 
 -- Science Devices
-(43, 'SD', 'Amplified Gain', 35, 0),
-(44, 'SD', 'Flexible Energy', 36, 1),
-(45, 'SD', 'Etheric Focus', 37, 1),
-(46, 'SD', 'Corporeal Focus', 38, 1),
-(47, 'SD', 'Life Focus', 39, 1);
+(43, 'Amplified Gain', 35, 0, 'DS'),
+(44, 'Flexible Energy', 36, 1, 'DS'),
+(45, 'Etheric Focus', 37, 1, 'DS'),
+(46, 'Corporeal Focus', 38, 1, 'DS'),
+(47, 'Life Focus', 39, 1, 'DS');
         `))
     }
 

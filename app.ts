@@ -1,10 +1,10 @@
 import logger = require("morgan");
 import express = require("express");
-import {Request, Response} from "express";
 import createError = require('http-errors');
+import corser = require("corser"); //for cors
+import {Request, Response} from "express";
 import {connectionPromise} from "./db";
 import {itemService, Routes} from "./routes/routes";
-import corser = require("corser");//for cors
 import "pug";
 import * as path from "path";
 
@@ -15,16 +15,18 @@ export class Page<T>
     size:number;
     first:boolean;
     last:boolean;
+    totalItems:number;
     totalPages:number;
     
-    constructor(content:T[], number:number, size:number, totalPages:number, first:boolean = false, last:boolean = false)
+    constructor(content:T[], number:number, size:number, totalItems:number)
     {
         this.content = content;
         this.number = number;
-        this.totalPages = totalPages;
+        this.totalItems = totalItems;
+        this.totalPages = Math.ceil(totalItems/size);
         this.size = size;
-        this.first = first;
-        this.last = last;
+        this.first = number === 0;
+        this.last = number === this.totalPages - 1;
     }
 }
 
@@ -57,7 +59,8 @@ export const appPromise = connectionPromise.then(async connection =>
                         page = isFinite(page) && page > 0 && page || 0;
                         let size = parseInt(request.query.size);
                         size = isFinite(size) && size > 0 && size || 10;
-                        routePromise = route.action(page, size)
+                        let searchString = request.query.s || "";
+                        routePromise = route.action(page, size, searchString)
                     }
                     else
                     {

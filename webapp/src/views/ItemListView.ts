@@ -1,18 +1,19 @@
 import {ListView} from "./ListView";
-import {Item} from "../index";
+import {Item} from "../../../entity/Item";
 import * as m from "mithril";
 import {Vnode} from "mithril";
+import {ItemType} from "../../../ItemType";
 
 export class ItemListView extends ListView<Item>
 {
     getColumns():string[]
     {
-        return ["Serial", "Model", "Mods", "Type"];
+        return ["Serial", "Model", "Mods", "Type", "Maint. Cost", "+Mod Cost"];
     }
     
     getRowTemplate():(item:Item) => (number | string)[]
     {
-        return (item:Item) => [item.serial, item.itemModel && item.itemModel.name || "", 0, item.itemModel && this.getItemType(item.itemModel.itemType) || ""];
+        return (item:Item) => [item.serial, item.itemModel && item.itemModel.name || "", item.mods.length, item.itemModel && ItemType[<any>item.itemModel.itemType] || "", item.maintenanceCost, item.modCost];
     }
     
     getUrlPath():string
