@@ -2,6 +2,7 @@ import {getManager, Like} from "typeorm";
 import {Repository} from "typeorm/repository/Repository";
 import {Page} from "../app";
 import {DomainEntity} from "../entity/DomainEntity";
+import {FilterOptions} from "./filters/FilterOptions";
 
 export abstract class Service<T extends DomainEntity>
 {
@@ -12,25 +13,10 @@ export abstract class Service<T extends DomainEntity>
         return getManager().getRepository(this.entityClass);
     }
     
-    protected searchFields():string[]
-    {
-        return [];
-    }
-    
-    private where(searchString:string):any
-    {
-        if(!searchString || !searchString.length || !this.searchFields()) return undefined;
-        const whereClause = {};
-        this.searchFields().forEach(field => {
-            whereClause[field] = Like(`%${searchString}%`);
-        });
-        return whereClause;
-    }
-    
-    async findAll(page:number, size:number, searchString:string):Promise<Page<T>>
+    async findAll(page:number, size:number, filterOptions:FilterOptions):Promise<Page<T>>
     {
         const result = (await this.getRepository()
-            .find({skip:page*size, take:size, where:this.where(searchString)}))
+            .find({skip:page*size, take:size}))
             .map(r => this.applyTransforms(r));
         const count = await this.getRepository().count();
         return new Page<T>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);

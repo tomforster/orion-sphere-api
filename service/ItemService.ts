@@ -2,6 +2,7 @@ import {Item} from "../entity/Item";
 import {Service} from "./Service";
 import {validate} from "class-validator";
 import {Page} from "../app";
+import {ItemFilterOptions} from "./filters/ItemFilterOptions";
 
 export class ItemService extends Service<Item>
 {
@@ -9,6 +10,20 @@ export class ItemService extends Service<Item>
     readonly multipliers = [1, 1.2, 1.6, 2.2, 3.2, 4.8, 7.4, 11.6, 18.4, 29.4, 47.2];
     readonly maintainanceModifier = 0.1;
     readonly addModModifier = 0.5;
+    
+    
+    // async findAll(page:number, size:number, filterOptions:ItemFilterOptions):Promise<Page<Item>>
+    // {
+    //     const whereClause = {};
+    //
+    //     const [result, count] = (await this.getRepository()
+    //         .createQueryBuilder("item")
+    //         .leftJoinAndSelect("user.photos", "photo")
+    //         .getManyAndCount());
+    //         // .find({skip:page*size, take:size, where:}))
+    //
+    //     return new Page<Item>(result.map(r => this.applyTransforms(r)).map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
+    // }
     
     create(params:Item):Promise<Item>
     {
