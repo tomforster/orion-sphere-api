@@ -3,8 +3,9 @@
  *         Date: 03/09/2018
  */
 import {ItemModelFilterOptions} from "./ItemModelFilterOptions";
+import {FilterOptions} from "./FilterOptions";
 
-export class ItemFilterOptions
+export interface ItemFilterOptions extends FilterOptions
 {
     itemModel:ItemModelFilterOptions;
     modIds:string[];

@@ -59,8 +59,8 @@ export const appPromise = connectionPromise.then(async connection =>
                         page = isFinite(page) && page > 0 && page || 0;
                         let size = parseInt(request.query.size);
                         size = isFinite(size) && size > 0 && size || 10;
-                        let searchString = request.query.s || "";
-                        routePromise = route.action(page, size, searchString)
+                        let s = request.query.s || {};
+                        routePromise = route.action(page, size, s)
                     }
                     else
                     {
@@ -87,7 +87,7 @@ export const appPromise = connectionPromise.then(async connection =>
             }
             
             routePromise
-                .then(res => {console.log(res); return res})
+                // .then(res => {console.log(res); return res})
                 .then(res => response.send(res))
                 .then(() => next)
                 .catch(err => next(err));

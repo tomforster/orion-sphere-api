@@ -2,37 +2,22 @@ import * as m from "mithril";
 import {Children, ClassComponent, Vnode} from "mithril";
 import {Page} from "../index";
 import {DomainEntity} from "../../../entity/DomainEntity"
-import {ItemType} from "../../../ItemType";
+import {FilterOptions} from "../../../service/filters/FilterOptions";
 
-export abstract class ListView<T extends DomainEntity> implements ClassComponent
+export abstract class ListView<T extends DomainEntity, F extends FilterOptions> implements ClassComponent
 {
     page:Page<T> | undefined;
     loaded:boolean = false;
     currentPage:number;
     selectedItems:any[] = [];
-    itemTypePromise:Promise<ItemType[]>;
-    itemTypes:ItemType[] | undefined;
     selectMode:boolean = false;
     
-    constructor(itemTypePromise:Promise<ItemType[]>)
-    {
-        this.itemTypePromise = itemTypePromise;
-    }
-    
-    async fetch(search?:string)
+    async fetch()
     {
         let url = this.getUrl();
         
-        if(search)
-        {
-            url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:search});
-        }
-        else
-        {
-            url += "?" + m.buildQueryString({page: this.currentPage, size: 50});
-        }
+        url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:this.filterOptions});
         
-        this.itemTypes = await this.itemTypePromise;
         this.page = await m.request<Page<T>>({
             method: "get",
             url
@@ -100,14 +85,19 @@ export abstract class ListView<T extends DomainEntity> implements ClassComponent
     
     onSearchPressed()
     {
-        if(this.searchField) this.fetch(this.searchField);
+        this.fetch();
     }
     
-    searchField:string;
+    abstract filterOptions:F;
     
     setSearchField(searchField:string):void
     {
-        this.searchField = searchField;
+        this.filterOptions.s = searchField;
+    }
+    
+    getFilterControls():Vnode
+    {
+        return m('');
     }
     
     view(vnode:Vnode):Children | void | null
@@ -118,10 +108,13 @@ export abstract class ListView<T extends DomainEntity> implements ClassComponent
                 m(".level-left", m("h1.subtitle", this.getTitle())),
                 m(".level-right", this.getControls()));
             
-            const filters = m(".box", m(".field.has-addons", [
-                m('.control.is-expanded', m("input.input[type='text']", {placeholder: 'Type to filter...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
-                m('.control', m("a.button.is-info", {onclick: this.onSearchPressed.bind(this)}, "Search"))
-            ]));
+            const filters = m(".box", [
+                m(".field.has-addons", [
+                    m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Type to filter...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
+                    m('.control', m("a.button.is-info", {onclick: this.onSearchPressed.bind(this)}, "Search"))
+                ]),
+                this.getFilterControls()
+            ]);
             
             const table = m("table.table.is-fullwidth.is-narrow",
                 m("thead", m("tr", [this.selectMode ? m("th") : []].concat(this.getColumns().map(h => m("th", h))))),

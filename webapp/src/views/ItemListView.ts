@@ -3,9 +3,12 @@ import {Item} from "../../../entity/Item";
 import * as m from "mithril";
 import {Vnode} from "mithril";
 import {ItemType} from "../../../ItemType";
+import {ItemFilterOptions} from "../../../service/filters/ItemFilterOptions";
 
-export class ItemListView extends ListView<Item>
+export class ItemListView extends ListView<Item, ItemFilterOptions>
 {
+    filterOptions:ItemFilterOptions = {s:"", itemModel:{s:"", name:"", itemType:""}, modIds:[]};
+    
     getColumns():string[]
     {
         return ["Serial", "Model", "Mods", "Type", "Maint. Cost", "+Mod Cost"];
@@ -28,6 +31,25 @@ export class ItemListView extends ListView<Item>
     
     getControls():Vnode
     {
-        return m(`a.button.level-item`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`,disabled: !this.selectedItems.length}, "Print Lammies");
+        return m(`a.button.level-item`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies");
+    }
+    
+    getFilterControls():Vnode
+    {
+        return m(".field",
+            m('.control',
+                m(".select",
+                    m(`select`, {onchange: m.withAttr("value", this.setItemTypeField.bind(this))},
+                        [m('option'), ...Object.keys(ItemType).map(typeKey => m('option', {value: typeKey, selected: this.filterOptions.itemModel.itemType === typeKey}, ItemType[<any>typeKey]))]
+                    )
+                )
+            )
+        );
+    }
+    
+    setItemTypeField(itemType:string):void
+    {
+        if(!itemType) itemType = "";
+        this.filterOptions.itemModel.itemType = itemType;
     }
 }

@@ -4,7 +4,6 @@ import "bulma/css/bulma.css";
 import {ItemListView} from "./views/ItemListView";
 import {ItemModelListView} from "./views/ItemModelListView";
 import {ModListView} from "./views/ModListView";
-import {ItemType} from "../../ItemType";
 
 export interface Page<T> {
     content:T[];
@@ -17,13 +16,13 @@ export interface Page<T> {
 
 (async function init()
 {
-    const itemTypePromise = m.request({url:"/item-type", method:"get"})
-        .then(res => res as ItemType[]);
+    // const itemTypePromise = m.request({url:"/item-type", method:"get"})
+    //     .then(res => res as ItemType[]);
     
     m.route(document.getElementById("content") as Element, "/item-model/1", {
-        "/item-model/:key": new ItemModelListView(itemTypePromise),
-        "/item/:key": new ItemListView(itemTypePromise),
-        "/mod/:key": new ModListView(itemTypePromise),
+        "/item-model/:key": new ItemModelListView(),
+        "/item/:key": new ItemListView(),
+        "/mod/:key": new ModListView(),
     });
     
     m.render(document.getElementById("nav") as Element, m(".navbar-brand", [

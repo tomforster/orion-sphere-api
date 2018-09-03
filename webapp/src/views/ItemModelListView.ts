@@ -1,9 +1,12 @@
 import {ListView} from "./ListView";
 import {ItemModel} from "../../../entity/ItemModel";
 import {ItemType} from "../../../ItemType";
+import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
 
-export class ItemModelListView extends ListView<ItemModel>
+export class ItemModelListView extends ListView<ItemModel, ItemModelFilterOptions>
 {
+    filterOptions = {s:"", itemType:"", name:""};
+    
     getColumns():string[]
     {
         return ["Item Type", "Name", "Base Cost"];
