@@ -94,8 +94,8 @@ export abstract class ListView<T extends DomainEntity> implements ClassComponent
     getPaging(page:Page<T>):Vnode
     {
         return m(".level",
-            m(".level-left", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number}]`, {oncreate: m.route.link, disabled: page.first}, "Previous")),
-            m(".level-right", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number+2}]`, {oncreate: m.route.link, disabled: page.last}, "Next")));
+            m(".level-left", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number}]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "Previous")),
+            m(".level-right", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number+2}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Next")));
     }
     
     onSearchPressed()
