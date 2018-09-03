@@ -22,5 +22,6 @@ module.exports = {
     },
     cli: {
         migrationsDir: "migration"
-    }
+    },
+    // logging: true
 };
