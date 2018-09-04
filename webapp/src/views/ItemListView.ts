@@ -34,17 +34,30 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
         return m(`a.button.level-item`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies");
     }
     
-    getFilterControls():Vnode
-    {
-        return m(".field",
-            m('.control',
-                m(".select",
-                    m(`select`, {onchange: m.withAttr("value", this.setItemTypeField.bind(this))},
-                        [m('option'), ...Object.keys(ItemType).map(typeKey => m('option', {value: typeKey, selected: this.filterOptions.itemModel.itemType === typeKey}, ItemType[<any>typeKey]))]
+    getFilterControls():Vnode[]
+    {   const fields = [];
+        fields.push(m(".field", [
+            m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Filter on model or serial...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
+        ]));
+        fields.push(m(".field.is-horizontal", m(".field-body",
+            [
+                m(".field",
+                    m('.control',
+                        m(".select",
+                            m(`select`, {onchange: m.withAttr("value", this.setItemTypeField.bind(this))},
+                                [m('option'), ...Object.keys(ItemType).map(typeKey => m('option', {value: typeKey, selected: this.filterOptions.itemModel.itemType === typeKey}, ItemType[<any>typeKey]))]
+                            )
+                        )
+                    )
+                ),
+                m(".field",
+                    m(".control.has-text-right",
+                        m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search")
                     )
                 )
-            )
-        );
+            ]
+        )));
+        return fields;
     }
     
     setItemTypeField(itemType:string):void

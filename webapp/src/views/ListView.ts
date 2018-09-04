@@ -95,9 +95,12 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
         this.filterOptions.s = searchField;
     }
     
-    getFilterControls():Vnode
+    getFilterControls():Vnode[]
     {
-        return m('');
+        return [m(".field.has-addons", [
+            m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Type to filter...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
+            m('.control', m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search"))
+        ])];
     }
     
     view(vnode:Vnode):Children | void | null
@@ -108,13 +111,8 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
                 m(".level-left", m("h1.subtitle", this.getTitle())),
                 m(".level-right", this.getControls()));
             
-            const filters = m(".box", [
-                m(".field.has-addons", [
-                    m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Type to filter...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
-                    m('.control', m("a.button.is-info", {onclick: this.onSearchPressed.bind(this)}, "Search"))
-                ]),
-                this.getFilterControls()
-            ]);
+            const filters = m(".box", this.getFilterControls()
+            );
             
             const table = m("table.table.is-fullwidth.is-narrow",
                 m("thead", m("tr", [this.selectMode ? m("th") : []].concat(this.getColumns().map(h => m("th", h))))),
