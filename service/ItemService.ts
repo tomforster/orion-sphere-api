@@ -3,6 +3,7 @@ import {Service} from "./Service";
 import {validate} from "class-validator";
 import {Page} from "../app";
 import {ItemFilterOptions} from "./filters/ItemFilterOptions";
+import {Brackets} from "typeorm";
 
 export class ItemService extends Service<Item>
 {
@@ -22,7 +23,11 @@ export class ItemService extends Service<Item>
         
         if(filterOptions.s)
         {
-            query = query.andWhere("LOWER(model.name) like LOWER(:s)", {s:"%"+filterOptions.s+"%"});
+            const s = "%" + filterOptions.s + "%";
+            query = query.andWhere(new Brackets(qb => {
+                qb.where("LOWER(model.name) like LOWER(:s)", {s})
+                    .orWhere("LOWER(item.serial) like LOWER(:s)", {s})
+            }));
         }
         
         if(filterOptions.itemModel && filterOptions.itemModel.itemType)

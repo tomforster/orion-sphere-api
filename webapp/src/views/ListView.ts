@@ -11,6 +11,7 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
     currentPage:number;
     selectedItems:any[] = [];
     selectMode:boolean = false;
+    expandedItem:number | null;
     
     async fetch()
     {
@@ -25,18 +26,24 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
         this.loaded = true;
     }
     
-    selectRow(item:any)
+    onRowClick(item:any)
     {
-        if(!this.selectMode) return;
-        const index = this.selectedItems.findIndex(selectedItem => item.id == selectedItem.id);
-        
-        if(index > -1)
+        if(!this.selectMode)
         {
-            this.selectedItems.splice(index, 1);
+            this.expandedItem = this.expandedItem === item.id ? null : item.id
         }
         else
         {
-            this.selectedItems.push(item);
+            const index = this.selectedItems.findIndex(selectedItem => item.id == selectedItem.id);
+    
+            if (index > -1)
+            {
+                this.selectedItems.splice(index, 1);
+            }
+            else
+            {
+                this.selectedItems.push(item);
+            }
         }
     }
     
@@ -116,10 +123,17 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
             
             const table = m("table.table.is-fullwidth.is-narrow",
                 m("thead", m("tr", [this.selectMode ? m("th") : []].concat(this.getColumns().map(h => m("th", h))))),
-                m("tbody", this.page.content.map((r:any) => m("tr", {
-                    onclick: this.selectRow.bind(this, r),
-                    class: this.isSelected(r) ? "is-selected" : ""
-                }, (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : []).concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))))));
+                m("tbody", this.page.content.map((r:any) => [
+                    m("tr", {
+                        onclick: this.onRowClick.bind(this, r),
+                        class: this.isSelected(r) ? "is-selected" : ""
+                        },
+                        (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : [])
+                            .concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))
+                    ),
+                    // ...r.mods.map((mod:any) => m("tr", {class: this.expandedItem === r.id ? "" : "is-hidden"}, [m("td"),m("td.is-size-7", {colspan:5}, mod.description)]))
+                ]
+        )));
             
             return m(".container", titleBar, filters, table, this.getPaging(this.page));
         }
