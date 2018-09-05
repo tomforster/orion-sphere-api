@@ -19,6 +19,7 @@ export class ItemService extends Service<Item>
             .createQueryBuilder("item")
             .leftJoinAndSelect("item.itemModel", "model")
             .leftJoinAndSelect("item.mods", "mods")
+            .leftJoinAndSelect("mods.ability", "ability")
             .where("1=1");
         
         if(filterOptions.s)

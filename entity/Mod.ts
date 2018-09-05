@@ -13,7 +13,7 @@ export class Mod extends DomainEntity
     @Column()
     description:string;
     
-    @ManyToOne(type => Ability, ability => ability.mods)
+    @ManyToOne(type => Ability, ability => ability.mods, {eager:true})
     ability:Ability;
     
     @ManyToMany(type => Item, item => item.mods)
