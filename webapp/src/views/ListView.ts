@@ -110,6 +110,24 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
         ])];
     }
     
+    expandable = false;
+    
+    getRow(r:T):Vnode
+    {
+        return m("tr", {
+                onclick: this.onRowClick.bind(this, r),
+                class: this.isSelected(r) ? "is-selected" : ""
+            },
+            (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : [])
+                .concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))
+        )
+    }
+    
+    getExpandedRowContent(r:T):Vnode
+    {
+        throw new Error("Override this if setting expandable true");
+    }
+    
     view(vnode:Vnode):Children | void | null
     {
         if(this.page)
@@ -118,22 +136,16 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
                 m(".level-left", m("h1.subtitle", this.getTitle())),
                 m(".level-right", this.getControls()));
             
-            const filters = m(".box", this.getFilterControls()
-            );
+            const filters = m(".box", this.getFilterControls());
+            
+            const bodyContent = this.page.content.map((r:any) => {
+                return this.expandable ?
+                    [this.getRow(r), m("tr", {class: this.expandedItem === r.id ? "" : "is-hidden"}, m(`td[colspan=${this.getColumns().length + (this.selectMode ? 1 : 0)}]`, this.getExpandedRowContent(r)))] : this.getRow(r)
+            });
             
             const table = m("table.table.is-fullwidth.is-narrow",
                 m("thead", m("tr", [this.selectMode ? m("th") : []].concat(this.getColumns().map(h => m("th", h))))),
-                m("tbody", this.page.content.map((r:any) => [
-                    m("tr", {
-                        onclick: this.onRowClick.bind(this, r),
-                        class: this.isSelected(r) ? "is-selected" : ""
-                        },
-                        (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : [])
-                            .concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))
-                    ),
-                    // ...r.mods.map((mod:any) => m("tr", {class: this.expandedItem === r.id ? "" : "is-hidden"}, [m("td"),m("td.is-size-7", {colspan:5}, mod.description)]))
-                ]
-        )));
+                m("tbody", bodyContent));
             
             return m(".container", titleBar, filters, table, this.getPaging(this.page));
         }

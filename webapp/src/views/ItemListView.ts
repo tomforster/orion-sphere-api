@@ -8,6 +8,7 @@ import {ItemFilterOptions} from "../../../service/filters/ItemFilterOptions";
 export class ItemListView extends ListView<Item, ItemFilterOptions>
 {
     filterOptions:ItemFilterOptions = {s:"", itemModel:{s:"", name:"", itemType:""}, modIds:[]};
+    expandable = true;
     
     getColumns():string[]
     {
@@ -64,5 +65,11 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
     {
         if(!itemType) itemType = "";
         this.filterOptions.itemModel.itemType = itemType;
+    }
+    
+    
+    getExpandedRowContent(r:Item):Vnode
+    {
+        return m(".is-size-7", r.mods.map(mod => m("", mod.description)));
     }
 }
