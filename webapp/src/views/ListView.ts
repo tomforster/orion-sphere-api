@@ -17,7 +17,7 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
     {
         let url = this.getUrl();
         
-        url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:this.filterOptions});
+        url += "?" + m.buildQueryString({page: this.currentPage, size: 100, s:this.filterOptions});
         
         this.page = await m.request<Page<T>>({
             method: "get",
@@ -85,9 +85,13 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
     
     getPaging(page:Page<T>):Vnode
     {
-        return m(".level",
-            m(".level-left", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number}]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "Previous")),
-            m(".level-right", m(`a.button.level-item[href=/${this.getUrlPath()}/${page.number+2}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Next")));
+        return m(".columns", [
+            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/0]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "First")),
+            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.number}]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "Previous")),
+            m(".column.has-text-centered", `${page.number+1}/${page.totalPages}`),
+            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.number+2}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Next")),
+            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.totalPages}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.first && e.preventDefault() }}, "Last"))
+        ]);
     }
     
     onSearchPressed()
