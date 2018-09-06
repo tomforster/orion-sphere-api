@@ -74,13 +74,13 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
             m(".column",
                 m(".columns", [
                     m(".column.is-narrow.has-text-weight-bold", "Mods"),
-                    m(".column", m("ul", {style:"list-style:disc"}, r.mods.map(mod => m("li", mod.description))))
+                    m(".column", m("ul.with-bullets", r.mods.map(mod => m("li", mod.description))))
                 ])
             ),
             m(".column",
                 m(".columns", [
                     m(".column.is-narrow.has-text-weight-bold", "Abilities"),
-                    m(".column", m("ul", {style:"list-style:disc"}, r.mods.map(mod => mod.ability ? m("li", mod.ability.description) : m(""))))
+                    m(".column", m("ul.with-bullets", r.mods.map(mod => mod.ability ? m("li", mod.ability.description) : m(""))))
                 ])
             )
         ]);
