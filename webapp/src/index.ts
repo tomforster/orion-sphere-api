@@ -16,25 +16,32 @@ export interface Page<T> {
 
 (async function init()
 {
-    // const itemTypePromise = m.request({url:"/item-type", method:"get"})
-    //     .then(res => res as ItemType[]);
-    
-    m.route(document.getElementById("content") as Element, "/item-model/1", {
-        "/item-model/:key": new ItemModelListView(),
-        "/item/:key": new ItemListView(),
-        "/mod/:key": new ModListView(),
+    m.route(document.getElementById("content") as Element, "/item-models/1", {
+        "/item-models/:key": new ItemModelListView(),
+        "/items/:key": new ItemListView(),
+        "/mods/:key": new ModListView(),
     });
     
-    m.render(document.getElementById("nav") as Element, m(".navbar-brand", [
-        m("a.navbar-item", m("h1.subtitle", "OSLRP Admin")),
-        m("a[href=/item-model/1].navbar-item", {oncreate: m.route.link}, "Models"),
-        m("a[href=/item/1].navbar-item", {oncreate: m.route.link}, "Items"),
-        m("a[href=/mod/1].navbar-item", {oncreate: m.route.link}, "Mods"),
+    m.render(document.getElementById("nav") as Element, [
+        m(".navbar-brand", m("a.navbar-item", m("h1.subtitle", "OSLRP Admin"))),
+        m(".navbar-menu",
+            [
+                m(".navbar-start",
+                    [
+                        m("a[href=/item-models/1].navbar-item.is-tab", {oncreate: m.route.link}, "Models"),
+                        m("a[href=/items/1].navbar-item.is-tab", {oncreate: m.route.link}, "Items"),
+                        m("a[href=/mods/1].navbar-item.is-tab", {oncreate: m.route.link}, "Mods")
+            
+                    ]
+                ),
+                m(".navbar-end", m(".navbar-item", m(".field", m(".control", m("a.button.is-link", "Create Item")))))
+            ]
+        )
+    ]);
         
-        // m("a.navbar-burger", [
-        //     m("span", "Models"),
-        //     m("span", "Items"),
-        //     m("span", "Mods"),
-        // ])
-    ]));
+    // m("a.navbar-burger", [
+    //     m("span", "Models"),
+    //     m("span", "Items"),
+    //     m("span", "Mods"),
+    // ])
 })();

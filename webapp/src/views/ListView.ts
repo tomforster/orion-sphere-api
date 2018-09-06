@@ -67,7 +67,7 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
     
     abstract getTitle():string;
     
-    getControls():Vnode
+    getControls():Vnode|Vnode[]
     {
         return m("");
     }
@@ -86,11 +86,11 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
     getPaging(page:Page<T>):Vnode
     {
         return m(".columns", [
-            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/0]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "First")),
+            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/1]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "First")),
             m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.number}]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "Previous")),
-            m(".column.has-text-centered", `${page.number+1}/${page.totalPages}`),
+            m(".column.is-vcentered.is-flex", {style: "justify-content: center"}, `${page.number+1}/${page.totalPages}`),
             m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.number+2}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Next")),
-            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.totalPages}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.first && e.preventDefault() }}, "Last"))
+            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.totalPages}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Last"))
         ]);
     }
     
@@ -120,9 +120,9 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
     {
         return m("tr", {
                 onclick: this.onRowClick.bind(this, r),
-                class: this.isSelected(r) ? "is-selected" : ""
+                class: this.isSelected(r) ? "is-selected is-clickable" : "is-clickable"
             },
-            (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : [])
+            (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : [this.expandable ? m("td", this.expandedItem === r.id ? "-" : "+") : m("td")])
                 .concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))
         )
     }
@@ -144,11 +144,11 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
             
             const bodyContent = this.page.content.map((r:any) => {
                 return this.expandable ?
-                    [this.getRow(r), m("tr", {class: this.expandedItem === r.id ? "" : "is-hidden"}, m(`td[colspan=${this.getColumns().length + (this.selectMode ? 1 : 0)}]`, this.getExpandedRowContent(r)))] : this.getRow(r)
+                    [this.getRow(r), m("tr", {class: this.expandedItem === r.id ? "" : "is-hidden"}, [m("td"), m(`td[colspan=${this.getColumns().length + (this.selectMode ? 1 : 0)}]`, this.getExpandedRowContent(r))])] : this.getRow(r)
             });
             
             const table = m("table.table.is-fullwidth.is-narrow",
-                m("thead", m("tr", [this.selectMode ? m("th") : []].concat(this.getColumns().map(h => m("th", h))))),
+                m("thead", m("tr", [m("th")].concat(this.getColumns().map(h => m("th", h))))),
                 m("tbody", bodyContent));
             
             return m(".container", titleBar, filters, table, this.getPaging(this.page));

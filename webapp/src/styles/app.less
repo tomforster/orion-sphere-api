@@ -15,7 +15,36 @@
   pointer-events: none;
 }
 
-.with-bullets
+ul.with-bullets
 {
-  list-style:square;
+  li
+  {
+    &:before
+    {
+      background-color: #03d1b2;
+      border-radius: 50%;
+      content: "";
+      display: inline-block;
+      margin-right: 10px;
+      margin-bottom: 2px;
+      height: 6px;
+      width: 6px;
+    }
+  }
+}
+
+.column.is-vcentered.is-flex
+{
+  align-items: center;
+}
+
+.search-button
+{
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.is-clickable
+{
+  cursor: pointer;
 }

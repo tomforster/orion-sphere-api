@@ -19,7 +19,7 @@ export class ItemModelListView extends ListView<ItemModel, ItemModelFilterOption
     
     getUrlPath():string
     {
-        return "item-model";
+        return "item-models";
     }
     
     getTitle():string

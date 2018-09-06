@@ -19,7 +19,7 @@ export class ModListView extends ListView<Mod, ModFilterOptions>
     
     getUrlPath():string
     {
-        return "mod";
+        return "mods";
     }
     
     getTitle():string

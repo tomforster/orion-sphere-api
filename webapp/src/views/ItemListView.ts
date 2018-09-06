@@ -22,7 +22,7 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
     
     getUrlPath():string
     {
-        return "item";
+        return "items";
     }
     
     getTitle():string
@@ -30,31 +30,31 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
         return "Items";
     }
     
-    getControls():Vnode
+    getControls():Vnode|Vnode[]
     {
-        return m(`a.button.level-item`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies");
+        return m(".buttons", [m(`a.button`, {onclick: () => this.selectMode = !this.selectMode}, "Select Items"), m(`a.button.level-item`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies")]);
     }
     
     getFilterControls():Vnode[]
     {   const fields = [];
         fields.push(m(".field", [
+            m('label.label.is-small', "Search"),
             m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Filter on model or serial...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
         ]));
         fields.push(m(".field.is-horizontal", m(".field-body",
             [
-                m(".field",
+                m(".field", [
+                    m("label.label.is-small", "Item Type"),
                     m('.control',
                         m(".select",
                             m(`select`, {onchange: m.withAttr("value", this.setItemTypeField.bind(this))},
                                 [m('option'), ...Object.keys(ItemType).map(typeKey => m('option', {value: typeKey, selected: this.filterOptions.itemModel.itemType === typeKey}, ItemType[<any>typeKey]))]
                             )
                         )
-                    )
+                    )]
                 ),
-                m(".field",
-                    m(".control.has-text-right",
-                        m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search")
-                    )
+                m(".field.is-flex.search-button",
+                    m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search")
                 )
             ]
         )));
@@ -82,7 +82,8 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
                     m(".column.is-narrow.has-text-weight-bold", "Abilities"),
                     m(".column", m("ul.with-bullets", r.mods.map(mod => mod.ability ? m("li", mod.ability.description) : m(""))))
                 ])
-            )
+            ),
+            m(".column.is-narrow.is-vcentered.is-flex", m("a.button.is-primary.is-small", "Edit"))
         ]);
     }
 }

@@ -16,39 +16,39 @@ export const Routes:{
 }[] =
 [
     {
-        path: "/item-model",
+        path: "/item-models",
         method: "post",
         action: itemDefinitionService.create.bind(itemDefinitionService)
     },
     {
-        path: "/item-model",
+        path: "/item-models",
         method: "get",
         isPaged: true,
         action: itemDefinitionService.findAll.bind(itemDefinitionService)
     },
     {
-        path: "/item-model/:id",
+        path: "/item-models/:id",
         method: "patch",
         action: itemDefinitionService.update.bind(itemDefinitionService)
     },
     {
-        path: "/item-model/:id",
+        path: "/item-models/:id",
         method: "get",
         action: itemDefinitionService.findById.bind(itemDefinitionService)
     },
     {
-        path: "/item-model/:id",
+        path: "/item-models/:id",
         method: "delete",
         action: itemDefinitionService.delete.bind(itemDefinitionService)
     },
     {
-        path: "/item",
+        path: "/items",
         method: "get",
         isPaged: true,
         action: itemService.findAll.bind(itemService)
     },
     {
-        path: "/mod",
+        path: "/mods",
         method: "get",
         isPaged: true,
         action: modService.findAll.bind(modService)

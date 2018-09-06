@@ -83,7 +83,6 @@ export const appPromise = connectionPromise.then(async connection =>
                 {
                     throw new Error("Unknown method");
                 }
-                
             }
             
             routePromise
