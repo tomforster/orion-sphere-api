@@ -38,10 +38,10 @@ export class Audit implements IAudit
         
         switch (entityType)
         {
-            case "item": this.itemId = id; break;
-            case "itemModel": this.itemModelId = id; break;
-            case "mod": this.modId = id; break;
-            case "ability": this.abilityId = id; break;
+            case "Item": this.itemId = id; break;
+            case "ItemModel": this.itemModelId = id; break;
+            case "Mod": this.modId = id; break;
+            case "Ability": this.abilityId = id; break;
         }
     }
 }

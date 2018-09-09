@@ -33,9 +33,9 @@ export abstract class Service<T extends DomainEntity>
         return await this.getRepository().findByIds(ids);
     }
     
-    abstract create(entity:T):Promise<T>;
+    abstract async create(entity:T):Promise<T>;
     
-    abstract update(entity:T):Promise<T>;
+    abstract async update(entity:T):Promise<T>;
     
     delete(id):Promise<boolean>
     {

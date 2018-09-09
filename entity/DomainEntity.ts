@@ -24,6 +24,12 @@ export abstract class DomainEntity implements IDomainEntity
     @VersionColumn()
     version:number;
     
+    constructor(id:number = 0, version = 0)
+    {
+        this.id = id;
+        this.version = version;
+    }
+    
     @AfterInsert()
     afterInsert()
     {

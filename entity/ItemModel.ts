@@ -27,12 +27,19 @@ export class ItemModel extends DomainEntity implements IItemModel
     @Column({type:"int", default: "0"})
     baseCharges:number;
     
-    constructor(id:number = 0, itemType:ItemType, name:string, baseCost:number = 0)
+    constructor(params?:IItemModel)
     {
-        super();
-        this.id = id;
-        this.itemType = itemType;
-        this.name = name;
-        this.baseCost = baseCost;
+        if(params)
+        {
+            super(params.id, params.version);
+            this.itemType = params.itemType;
+            this.name = params.name;
+            this.baseCost = params.baseCost;
+            this.baseCharges = params.baseCharges;
+        }
+        else
+        {
+            super();
+        }
     }
 }

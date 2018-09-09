@@ -37,16 +37,16 @@ export class ItemModelService extends Service<ItemModel>
         return new Page<ItemModel>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
     }
     
-    create(params:ItemModel):Promise<ItemModel>
+    async create(params:ItemModel):Promise<ItemModel>
     {
-        const entity = new ItemModel(undefined, params.itemType, params.name);
+        const entity = new ItemModel(Object.assign(params, {id:undefined}));
         if(!validate(entity)) throw new Error("Invalid Argument");
         return this.getRepository().save(entity);
     }
     
-    update(params:ItemModel):Promise<ItemModel>
+    async update(params:ItemModel):Promise<ItemModel>
     {
-        const entity = new ItemModel(undefined, params.itemType, params.name);
+        const entity = new ItemModel(params);
         if(!validate(entity)) throw new Error("Invalid Argument");
         return this.getRepository().save(entity);
     }

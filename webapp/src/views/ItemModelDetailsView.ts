@@ -24,7 +24,7 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
     getForm():Vnode
     {
         return m("form", [
-            m(".field", m("label.label", "Name"), m(".control", m("input.input[type=text]", {value: this.entity.name, readonly:true}))),
+            m(".field", m("label.label", "Name"), m(".control", m("input.input[type=text]", {value: this.entity.name, oninput: m.withAttr("value", (value) => this.entity.name = value)}))),
             m(".field", m("label.label", "Item Type"), m(".control", m("input.input[type=text]", {value: ItemType[<any>this.entity.itemType], readonly:true}))),
             m(".field", m("label.label", "Base Cost"), m(".control", m("input.input[type=number]", {value: this.entity.baseCost, readonly:true}))),
             m(".field", m("label.label", "Base Charges"), m(".control", m("input.input[type=number]", {value: this.entity.baseCharges, readonly:true})))

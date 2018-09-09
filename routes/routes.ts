@@ -31,7 +31,7 @@ export const Routes:{
     },
     {
         path: "/item-models/:id",
-        method: "patch",
+        method: "put",
         action: itemDefinitionService.update.bind(itemDefinitionService)
     },
     {

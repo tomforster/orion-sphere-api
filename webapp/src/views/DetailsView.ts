@@ -24,10 +24,23 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
     {
         if(this.loaded)
         {
-            return m(".container", this.getTitleBar(), this.getForm(), this.getHistoryPanel());
+            return m(".container", this.getTitleBar(), this.getForm(), this.getHistoryPanel(), this.getSaveButtons());
         }
         
         return super.view(vnode);
+    }
+    
+    onSavePressed()
+    {
+        m.request({method: "put", url:this.getUrl() + "/" + this.id, data: this.entity}).then(result =>
+        {
+            location.reload();
+        })
+    }
+    
+    getSaveButtons()
+    {
+        return m(".level", [m(".level-left"), m(".level-right", m(".buttons", m("button.button.is-primary", {onclick:this.onSavePressed.bind(this)}, "Save")))]);
     }
     
     getAuditTypeString(type:AuditType)
