@@ -9,7 +9,6 @@ export class ItemService extends Service<Item>
 {
     entityClass:any = Item;
     
-    
     async findAll(page:number, size:number, filterOptions:ItemFilterOptions):Promise<Page<Item>>
     {
         let query = this.getRepository()

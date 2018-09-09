@@ -15,7 +15,7 @@ export class ModListView extends ListView<IMod, ModFilterOptions>
     
     getRowData(mod:IMod)
     {
-        return [m("td", m(`a[href=/mod/${mod.id}]`, {oncreate: m.route.link}, mod.description)), m("td", mod.maxStacks), m("td", mod.restrictedTo.map(r => ItemType[<any> r]).join(", "))];
+        return [m("td", m(`a[href=/mod/${mod.id}]`, {oncreate: m.route.link}, mod.description)), m("td", mod.maxStacks || "Unlimited"), m("td", mod.restrictedTo.map(r => ItemType[<any> r]).join(", "))];
     }
     
     getUrlPath():string

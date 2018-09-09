@@ -101,7 +101,7 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     {
         let url = this.getUrl();
         
-        url += "?" + m.buildQueryString({page: this.currentPage, size: 100, s:this.filterOptions});
+        url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:this.filterOptions});
         
         this.page = await m.request<Page<T>>({
             method: "get",
