@@ -3,6 +3,8 @@ import {Service} from "./Service";
 import {Brackets} from "typeorm";
 import {Page} from "../Page";
 import {ModFilterOptions} from "./filters/ModFilterOptions";
+import {validate} from "class-validator";
+import {IMod} from "../interfaces/IMod";
 
 export class ModService extends Service<Mod>
 {
@@ -36,8 +38,10 @@ export class ModService extends Service<Mod>
         return null;
     }
     
-    update(entity:Mod):Promise<Mod>
+    async update(params:IMod):Promise<Mod>
     {
-        return null;
+        const entity = new Mod(params);
+        if(!validate(entity)) throw new Error("Invalid Argument");
+        return this.getRepository().save(entity);
     }
 }

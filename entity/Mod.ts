@@ -26,4 +26,19 @@ export class Mod extends DomainEntity implements IMod
     @IsArray()
     @Column("simple-array")
     restrictedTo:ItemType[];
+    
+    constructor(params?:IMod)
+    {
+        if(params)
+        {
+            super(params.id, params.version);
+            this.description = params.description;
+            this.maxStacks = params.maxStacks;
+            this.restrictedTo = params.restrictedTo;
+        }
+        else
+        {
+            super();
+        }
+    }
 }

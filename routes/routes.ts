@@ -67,6 +67,11 @@ export const Routes:{
         action: modService.findById.bind(modService)
     },
     {
+        path: "/mods/:id",
+        method: "put",
+        action: modService.update.bind(modService)
+    },
+    {
         path: "/item-type",
         method: "get",
         isPaged: true, //todo fix this

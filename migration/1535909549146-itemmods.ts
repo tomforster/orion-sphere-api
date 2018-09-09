@@ -21,7 +21,7 @@ export class itemmods1535909549146 implements MigrationInterface {
         itemsWithMods.forEach(itemMods => itemMods.mods.forEach(mod => modsToAdd.push({itemId: itemMods.itemId, mod})));
         
         await queryRunner.query(`insert into "orion_sphere"."item_mods_mod" ("itemId", "modId") values ${modsToAdd.map(m => `(${m.itemId}, ${m.mod.id})`).join(",")};`);
-        await queryRunner.query(`insert into "orion_sphere"."audit" ("auditType", "itemId", "createdOn", description) values ${modsToAdd.map(m => `(1, ${m.itemId},'${ts}', 'Added Mod ${m.mod.description}.')`).join(",")}`);
+        await queryRunner.query(`insert into "orion_sphere"."audit" ("auditType", "itemId", "createdOn", description) values ${modsToAdd.map(m => `(1, ${m.itemId},'${ts}', 'Added Mod: ${m.mod.description}')`).join(",")}`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any>
