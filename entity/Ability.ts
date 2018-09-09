@@ -3,9 +3,10 @@ import {DomainEntity} from "./DomainEntity";
 import {Column, Entity, OneToMany} from "typeorm";
 import {Mod} from "./Mod";
 import {ItemModel} from "./ItemModel";
+import {IAbility} from "../interfaces/IAbility";
 
 @Entity()
-export class Ability extends DomainEntity
+export class Ability extends DomainEntity implements IAbility
 {
     @MinLength(1)
     @MaxLength(255)

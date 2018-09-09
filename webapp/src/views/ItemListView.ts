@@ -1,11 +1,11 @@
 import {ListView} from "./ListView";
-import {Item} from "../../../entity/Item";
 import * as m from "mithril";
 import {Vnode} from "mithril";
 import {ItemType} from "../../../ItemType";
 import {ItemFilterOptions} from "../../../service/filters/ItemFilterOptions";
+import {IItem} from "../../../interfaces/IItem";
 
-export class ItemListView extends ListView<Item, ItemFilterOptions>
+export class ItemListView extends ListView<IItem, ItemFilterOptions>
 {
     filterOptions:ItemFilterOptions = {s:"", itemModel:{s:"", name:"", itemType:""}, modIds:[]};
     expandable = true;
@@ -15,9 +15,9 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
         return ["Serial", "Model", "Mods", "Type", "Maint. Cost", "+Mod Cost"];
     }
     
-    getRowTemplate():(item:Item) => (number | string)[]
+    getRowTemplate():(item:IItem) => (number | string)[]
     {
-        return (item:Item) => [item.serial, item.itemModel && item.itemModel.name || "", item.mods.length, item.itemModel && ItemType[<any>item.itemModel.itemType] || "", item.maintenanceCost, item.modCost];
+        return (item:IItem) => [item.serial, item.itemModel && item.itemModel.name || "", item.mods.length, item.itemModel && ItemType[<any>item.itemModel.itemType] || "", item.maintenanceCost, item.modCost];
     }
     
     getUrlPath():string
@@ -68,7 +68,7 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
     }
     
     
-    getExpandedRowContent(r:Item):Vnode
+    getExpandedRowContent(r:IItem):Vnode
     {
         return m(".columns.is-size-7", [
             m(".column",

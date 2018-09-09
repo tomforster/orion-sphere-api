@@ -1,9 +1,9 @@
 import {ListView} from "./ListView";
-import {ItemModel} from "../../../entity/ItemModel";
 import {ItemType} from "../../../ItemType";
 import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
+import {IItemModel} from "../../../interfaces/IItemModel";
 
-export class ItemModelListView extends ListView<ItemModel, ItemModelFilterOptions>
+export class ItemModelListView extends ListView<IItemModel, ItemModelFilterOptions>
 {
     filterOptions = {s:"", itemType:"", name:""};
     
@@ -12,9 +12,9 @@ export class ItemModelListView extends ListView<ItemModel, ItemModelFilterOption
         return ["Item Type", "Name", "Base Cost"];
     }
     
-    getRowTemplate():(item:ItemModel) => (number | string)[]
+    getRowTemplate():(item:IItemModel) => (number | string)[]
     {
-        return (item:ItemModel) => [ItemType[<any>item.itemType] || "", item.name, item.baseCost];
+        return (item:IItemModel) => [ItemType[<any>item.itemType] || "", item.name, item.baseCost];
     }
     
     getUrlPath():string

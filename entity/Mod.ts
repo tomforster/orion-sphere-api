@@ -4,9 +4,10 @@ import {IsArray, MaxLength, MinLength} from "class-validator";
 import {Ability} from "./Ability";
 import {Item} from "./Item";
 import {ItemType} from "../ItemType";
+import {IMod} from "../interfaces/IMod";
 
 @Entity()
-export class Mod extends DomainEntity
+export class Mod extends DomainEntity implements IMod
 {
     @MinLength(1)
     @MaxLength(255)

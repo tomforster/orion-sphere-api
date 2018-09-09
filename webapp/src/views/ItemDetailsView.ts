@@ -1,9 +1,9 @@
 import {DetailsView} from "./DetailsView";
-import {Item} from "../../../entity/Item";
 import * as m from "mithril";
 import {Vnode} from "mithril";
+import {IItem} from "../../../interfaces/IItem";
 
-export class ItemDetailsView extends DetailsView<Item>
+export class ItemDetailsView extends DetailsView<IItem>
 {
     getUrlPath():string
     {

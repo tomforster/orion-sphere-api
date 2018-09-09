@@ -10,8 +10,9 @@ import {
 } from "typeorm";
 import {Audit} from "./Audit";
 import {AuditType} from "../AuditType";
+import {IDomainEntity} from "../interfaces/IDomainEntity";
 
-export abstract class DomainEntity
+export abstract class DomainEntity implements IDomainEntity
 {
     @IsPositive()
     @PrimaryGeneratedColumn()

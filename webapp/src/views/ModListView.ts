@@ -1,9 +1,9 @@
 import {ListView} from "./ListView";
-import {Mod} from "../../../entity/Mod";
 import {ItemType} from "../../../ItemType";
 import {ModFilterOptions} from "../../../service/filters/ModFilterOptions";
+import {IMod} from "../../../interfaces/IMod";
 
-export class ModListView extends ListView<Mod, ModFilterOptions>
+export class ModListView extends ListView<IMod, ModFilterOptions>
 {
     filterOptions = {s:""};
     
@@ -12,9 +12,9 @@ export class ModListView extends ListView<Mod, ModFilterOptions>
         return ["Description", "Max Stacks", "Restrictions"];
     }
     
-    getRowTemplate():(mod:Mod) => (number | string)[]
+    getRowTemplate():(mod:IMod) => (number | string)[]
     {
-        return (mod:Mod) => [mod.description, mod.maxStacks, mod.restrictedTo.map(r => ItemType[<any> r]).join(", ")];
+        return (mod:IMod) => [mod.description, mod.maxStacks, mod.restrictedTo.map(r => ItemType[<any> r]).join(", ")];
     }
     
     getUrlPath():string

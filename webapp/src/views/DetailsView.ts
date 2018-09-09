@@ -1,15 +1,15 @@
 import * as m from "mithril";
 import {Children, Vnode} from "mithril";
 import {View} from "./View";
-import {DomainEntity} from "../../../entity/DomainEntity";
-import {Audit} from "../../../entity/Audit";
-import {Page} from "../../../app";
+import {Page} from "../../../Page";
 import {AuditType} from "../../../AuditType";
+import {IDomainEntity} from "../../../interfaces/IDomainEntity";
+import {IAudit} from "../../../interfaces/IAudit";
 
-export abstract class DetailsView<T extends DomainEntity> extends View
+export abstract class DetailsView<T extends IDomainEntity> extends View
 {
     entity:T;
-    audits:Page<Audit>;
+    audits:Page<IAudit>;
     id:number;
     
     abstract getForm():Vnode;
@@ -55,7 +55,7 @@ export abstract class DetailsView<T extends DomainEntity> extends View
             method: "get",
             url:this.getUrl() + "/" + this.id
         });
-        this.audits = await m.request<Page<Audit>>({
+        this.audits = await m.request<Page<IAudit>>({
             method: "get",
             url:"/audits" + this.getUrl() + "/" + this.id
         });

@@ -6,15 +6,6 @@ import {ItemModelListView} from "./views/ItemModelListView";
 import {ModListView} from "./views/ModListView";
 import {ItemDetailsView} from "./views/ItemDetailsView";
 
-export interface Page<T> {
-    content:T[];
-    number:number;
-    size:number;
-    first:boolean;
-    last:boolean;
-    totalPages:number;
-}
-
 (async function init()
 {
     m.route(document.getElementById("content") as Element, "/item-models/1", {

@@ -1,9 +1,10 @@
 import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn} from "typeorm";
 import {IsEnum, IsPositive} from "class-validator";
 import {AuditType} from "../AuditType";
+import {IAudit} from "../interfaces/IAudit";
 
 @Entity()
-export class Audit
+export class Audit implements IAudit
 {
     @IsPositive()
     @PrimaryGeneratedColumn()

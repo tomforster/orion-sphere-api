@@ -2,9 +2,10 @@ import {AfterLoad, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne}
 import {ItemModel} from "./ItemModel";
 import {DomainEntity} from "./DomainEntity";
 import {Mod} from "./Mod";
+import {IItem} from "../interfaces/IItem";
 
 @Entity()
-export class Item extends DomainEntity
+export class Item extends DomainEntity implements IItem
 {
     @ManyToOne(type => ItemModel, "itemModel", {eager: true})
     @JoinColumn()

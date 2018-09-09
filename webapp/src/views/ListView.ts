@@ -1,11 +1,11 @@
 import * as m from "mithril";
 import {Children, Vnode} from "mithril";
-import {Page} from "../index";
-import {DomainEntity} from "../../../entity/DomainEntity"
 import {FilterOptions} from "../../../service/filters/FilterOptions";
 import {View} from "./View";
+import {IDomainEntity} from "../../../interfaces/IDomainEntity";
+import {Page} from "../../../Page";
 
-export abstract class ListView<T extends DomainEntity, F extends FilterOptions> extends View
+export abstract class ListView<T extends IDomainEntity, F extends FilterOptions> extends View
 {
     page:Page<T> | undefined;
     currentPage:number;

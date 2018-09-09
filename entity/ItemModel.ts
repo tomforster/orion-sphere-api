@@ -3,9 +3,10 @@ import {Column, Entity, JoinTable, ManyToMany} from "typeorm";
 import {IsEnum, MaxLength, MinLength} from "class-validator";
 import {DomainEntity} from "./DomainEntity";
 import {Ability} from "./Ability";
+import {IItemModel} from "../interfaces/IItemModel";
 
 @Entity()
-export class ItemModel extends DomainEntity
+export class ItemModel extends DomainEntity implements IItemModel
 {
     @IsEnum(ItemType)
     @Column()
