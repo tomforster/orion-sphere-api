@@ -21,7 +21,7 @@ import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
                         m("a[href=/mods/1].navbar-item", {id:"navbar-mods", oncreate: m.route.link}, "Mods")
                     ]
                 ),
-                m(".navbar-end", m(".navbar-item", m(".field", m(".control", m("a.button.is-link", "Create Item")))))
+                // m(".navbar-end", m(".navbar-item", m(".field", m(".control", m("a.button.is-link", "Create Item")))))
             ]
         )
     ]);

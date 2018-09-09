@@ -85,7 +85,7 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     {
         return m("tr", {
                 onclick: this.onRowClick.bind(this, r),
-                class: this.isSelected(r) ? "is-selected is-clickable" : "is-clickable"
+                class: this.isSelected(r) ? "is-selected is-clickable" : (this.expandable ? "is-clickable" : "")
             },
             (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : [this.expandable ? m("td", this.expandedItem === r.id ? "-" : "+") : m("td")])
                 .concat(this.getRowData(r))
