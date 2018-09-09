@@ -8,9 +8,6 @@ import {Brackets} from "typeorm";
 export class ItemService extends Service<Item>
 {
     entityClass:any = Item;
-    readonly multipliers = [1, 1.2, 1.6, 2.2, 3.2, 4.8, 7.4, 11.6, 18.4, 29.4, 47.2];
-    readonly maintenanceModifier = 0.1;
-    readonly addModModifier = 0.5;
     
     
     async findAll(page:number, size:number, filterOptions:ItemFilterOptions):Promise<Page<Item>>
@@ -41,7 +38,7 @@ export class ItemService extends Service<Item>
 
         const [result, count] = await query.getManyAndCount();
 
-        return new Page<Item>(result.map(r => this.applyTransforms(r)).map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
+        return new Page<Item>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
     }
     
     create(params:Item):Promise<Item>
@@ -62,12 +59,5 @@ export class ItemService extends Service<Item>
     {
         if(!item) return "";
         return item.itemModel.itemType + item.itemModel.id.toString().padStart(4, "0") + "-" + item.id.toString().padStart(4, "0");
-    }
-    
-    protected applyTransforms(item:Item):Item
-    {
-        item.modCost = Math.round(this.multipliers[item.mods.length]*this.addModModifier*item.itemModel.baseCost);
-        item.maintenanceCost = Math.round(this.multipliers[item.mods.length]*this.maintenanceModifier*item.itemModel.baseCost);
-        return item;
     }
 }

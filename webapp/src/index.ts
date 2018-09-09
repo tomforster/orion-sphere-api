@@ -4,6 +4,7 @@ import "bulma/css/bulma.css";
 import {ItemListView} from "./views/ItemListView";
 import {ItemModelListView} from "./views/ItemModelListView";
 import {ModListView} from "./views/ModListView";
+import {ItemDetailsView} from "./views/ItemDetailsView";
 
 export interface Page<T> {
     content:T[];
@@ -20,6 +21,7 @@ export interface Page<T> {
         "/item-models/:key": new ItemModelListView(),
         "/items/:key": new ItemListView(),
         "/mods/:key": new ModListView(),
+        "/item/:key": new ItemDetailsView()
     });
     
     m.render(document.getElementById("nav") as Element, [

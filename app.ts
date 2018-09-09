@@ -59,8 +59,15 @@ export const appPromise = connectionPromise.then(async connection =>
                         page = isFinite(page) && page > 0 && page || 0;
                         let size = parseInt(request.query.size);
                         size = isFinite(size) && size > 0 && size || 10;
-                        let s = request.query.s || {};
-                        routePromise = route.action(page, size, s)
+                        if(!route.pagedById)
+                        {
+                            let s = request.query.s || {};
+                            routePromise = route.action(page, size, s)
+                        }
+                        else
+                        {
+                            routePromise = route.action(request.params.id || 0, page, size)
+                        }
                     }
                     else
                     {

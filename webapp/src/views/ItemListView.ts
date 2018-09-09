@@ -32,7 +32,7 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
     
     getControls():Vnode|Vnode[]
     {
-        return m(".buttons", [m(`a.button`, {onclick: () => this.selectMode = !this.selectMode}, "Select Items"), m(`a.button.level-item`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies")]);
+        return m(".buttons", [m(`a.button`, {onclick: () => this.selectMode = !this.selectMode}, "Select Items"), m(`a.button`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies")]);
     }
     
     getFilterControls():Vnode[]
@@ -83,7 +83,7 @@ export class ItemListView extends ListView<Item, ItemFilterOptions>
                     m(".column", m("ul.with-bullets", r.mods.map(mod => mod.ability ? m("li", mod.ability.description) : m(""))))
                 ])
             ),
-            m(".column.is-narrow.is-vcentered.is-flex", m("a.button.is-primary.is-small", "Edit"))
+            m(".column.is-narrow.is-vcentered.is-flex", m(`a.button.is-primary.is-small[href=/item/${r.id}]`, {oncreate: m.route.link}, "View/Edit"))
         ]);
     }
 }

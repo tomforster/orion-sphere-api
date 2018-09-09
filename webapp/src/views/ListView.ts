@@ -1,30 +1,22 @@
 import * as m from "mithril";
-import {Children, ClassComponent, Vnode} from "mithril";
+import {Children, Vnode} from "mithril";
 import {Page} from "../index";
 import {DomainEntity} from "../../../entity/DomainEntity"
 import {FilterOptions} from "../../../service/filters/FilterOptions";
+import {View} from "./View";
 
-export abstract class ListView<T extends DomainEntity, F extends FilterOptions> implements ClassComponent
+export abstract class ListView<T extends DomainEntity, F extends FilterOptions> extends View
 {
     page:Page<T> | undefined;
-    loaded:boolean = false;
     currentPage:number;
     selectedItems:any[] = [];
     selectMode:boolean = false;
     expandedItem:number | null;
+    expandable = false;
     
-    async fetch()
-    {
-        let url = this.getUrl();
-        
-        url += "?" + m.buildQueryString({page: this.currentPage, size: 100, s:this.filterOptions});
-        
-        this.page = await m.request<Page<T>>({
-            method: "get",
-            url
-        });
-        this.loaded = true;
-    }
+    abstract filterOptions:F;
+    abstract getColumns():string[];
+    abstract getRowTemplate():(item:T) => (number | string)[];
     
     onRowClick(item:any)
     {
@@ -54,33 +46,10 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
         return index > -1;
     }
     
-    abstract getColumns():string[];
-    
-    abstract getRowTemplate():(item:T) => (number | string)[];
-    
-    getUrl():string
-    {
-        return "/" + this.getUrlPath();
-    }
-    
-    abstract getUrlPath():string;
-    
-    abstract getTitle():string;
-    
-    getControls():Vnode|Vnode[]
-    {
-        return m("");
-    }
-    
     oninit(vnode:Vnode):any
     {
         this.currentPage = (vnode.attrs as any).key - 1;
-        this.fetch();
-    }
-    
-    onupdate(vnode:Vnode):any
-    {
-    
+        return super.oninit(vnode);
     }
     
     getPaging(page:Page<T>):Vnode
@@ -99,8 +68,6 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
         this.fetch();
     }
     
-    abstract filterOptions:F;
-    
     setSearchField(searchField:string):void
     {
         this.filterOptions.s = searchField;
@@ -113,8 +80,6 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
             m('.control', m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search"))
         ])];
     }
-    
-    expandable = false;
     
     getRow(r:T):Vnode
     {
@@ -132,14 +97,23 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
         throw new Error("Override this if setting expandable true");
     }
     
+    async fetch()
+    {
+        let url = this.getUrl();
+        
+        url += "?" + m.buildQueryString({page: this.currentPage, size: 100, s:this.filterOptions});
+        
+        this.page = await m.request<Page<T>>({
+            method: "get",
+            url
+        });
+        this.loaded = true;
+    }
+    
     view(vnode:Vnode):Children | void | null
     {
         if(this.page)
         {
-            const titleBar = m(".level",
-                m(".level-left", m("h1.subtitle", this.getTitle())),
-                m(".level-right", this.getControls()));
-            
             const filters = m(".box", this.getFilterControls());
             
             const bodyContent = this.page.content.map((r:any) => {
@@ -151,9 +125,9 @@ export abstract class ListView<T extends DomainEntity, F extends FilterOptions> 
                 m("thead", m("tr", [m("th")].concat(this.getColumns().map(h => m("th", h))))),
                 m("tbody", bodyContent));
             
-            return m(".container", titleBar, filters, table, this.getPaging(this.page));
+            return m(".container", this.getTitleBar(), filters, table, this.getPaging(this.page));
         }
-        
-        return m(".container");
+    
+        return super.view(vnode);
     }
 }

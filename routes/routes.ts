@@ -2,16 +2,19 @@ import {ItemModelService} from "../service/ItemModelService";
 import {ItemService} from "../service/ItemService";
 import {ItemTypeService} from "../service/ItemTypeService";
 import {ModService} from "../service/ModService";
+import {AuditService} from "../service/AuditService";
 
 const itemDefinitionService = new ItemModelService();
 export const itemService = new ItemService();
 const itemTypeService = new ItemTypeService();
 const modService = new ModService();
+const auditService = new AuditService();
 
 export const Routes:{
     path:string,
     method:string,
     isPaged?: boolean,
+    pagedById?: boolean;
     action: Function
 }[] =
 [
@@ -48,6 +51,11 @@ export const Routes:{
         action: itemService.findAll.bind(itemService)
     },
     {
+        path: "/items/:id",
+        method: "get",
+        action: itemService.findById.bind(itemService)
+    },
+    {
         path: "/mods",
         method: "get",
         isPaged: true,
@@ -58,5 +66,12 @@ export const Routes:{
         method: "get",
         isPaged: true, //todo fix this
         action: itemTypeService.findAll.bind(itemTypeService)
+    },
+    {
+        path: "/audits/items/:id",
+        method: "get",
+        isPaged: true,
+        pagedById: true,
+        action: auditService.findByEntityId.bind(auditService, "item")
     }
 ];

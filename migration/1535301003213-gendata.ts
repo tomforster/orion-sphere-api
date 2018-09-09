@@ -3,6 +3,8 @@ import {MigrationInterface, QueryRunner} from "typeorm";
 export class gendata1535301003213 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
+        const ts = new Date().toLocaleString().replace(",", "");
+        
         const prefix = ["Active", "Adjustable", "Alpha", "Anti-Tank", "Armageddon", "Atomic", "Attuned", "Augmented", "Battlestar",
             "Cataclysm", "Chaos", "Close-Defence", "Cruiser", "Cyclone", "Discharge", "Eclipse", "Energized", "Enhanced", "Explosive",
             "Fusion", "High-Frequency", "High-Power", "High-Speed", "Honed", "Infused", "Long-Range", "Low-Frequency", "Low-Power",
@@ -35,11 +37,13 @@ export class gendata1535301003213 implements MigrationInterface {
                 })
         }
     
-        const itemDefs = itemDefGen(200);
-        const items = itemGen(itemDefs, 2000);
+        const itemDefs = itemDefGen(100);
+        const items = itemGen(itemDefs, 500);
         
-        await queryRunner.query(`insert into "orion_sphere"."item_model" (id, "itemType", name, "baseCost") values ${itemDefs.map(itemDef => `(${itemDef.id},'${itemDef.type}','${itemDef.name}', ${itemDef.baseCost})`).join(",")}`);
-        return await queryRunner.query(`insert into "orion_sphere"."item" (id, "itemModelId", serial) values ${items.map(item => `(${item.id},${item.def}, '${this.generateSerial(item)}')`).join(",")}`);
+        await queryRunner.query(`insert into "orion_sphere"."item_model" (id, "itemType", name, "baseCost", "createdOn", version) values ${itemDefs.map(itemDef => `(${itemDef.id},'${itemDef.type}','${itemDef.name}', ${itemDef.baseCost}, '${ts}', 0)`).join(",")}`);
+        await queryRunner.query(`insert into "orion_sphere"."audit" ("auditType", "itemModelId", "createdOn") values ${itemDefs.map(itemDef => `(0, ${itemDef.id},'${ts}')`).join(",")}`);
+        await queryRunner.query(`insert into "orion_sphere"."item" (id, "itemModelId", serial, "createdOn", version) values ${items.map(item => `(${item.id},${item.def}, '${this.generateSerial(item)}', '${ts}', 0)`).join(",")}`);
+        await queryRunner.query(`insert into "orion_sphere"."audit" ("auditType", "itemId", "createdOn") values ${itemDefs.map(item => `(0, ${item.id},'${ts}')`).join(",")}`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
