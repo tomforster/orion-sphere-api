@@ -35,6 +35,8 @@ export abstract class View implements ClassComponent
     
     oninit(vnode:Vnode):any
     {
+        Array.from(document.querySelectorAll(".navbar-item")).forEach(element => element.classList.remove("active"));
+        Array.from(document.querySelectorAll(`#navbar-${this.getUrlPath()}`)).forEach(element => element.classList.add("active"));
         this.fetch();
     }
 }
