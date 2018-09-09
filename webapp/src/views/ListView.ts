@@ -16,7 +16,7 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     
     abstract filterOptions:F;
     abstract getColumns():string[];
-    abstract getRowTemplate():(item:T) => (number | string)[];
+    abstract getRowData(entity:T):Vnode[];
     
     onRowClick(item:any)
     {
@@ -88,7 +88,7 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
                 class: this.isSelected(r) ? "is-selected is-clickable" : "is-clickable"
             },
             (this.selectMode ? [m("td", m("input[type='checkbox']", {checked: this.isSelected(r)}))] : [this.expandable ? m("td", this.expandedItem === r.id ? "-" : "+") : m("td")])
-                .concat(this.getRowTemplate()(r).map((t:any) => m("td", t)))
+                .concat(this.getRowData(r))
         )
     }
     

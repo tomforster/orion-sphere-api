@@ -5,6 +5,8 @@ import {ItemListView} from "./views/ItemListView";
 import {ItemModelListView} from "./views/ItemModelListView";
 import {ModListView} from "./views/ModListView";
 import {ItemDetailsView} from "./views/ItemDetailsView";
+import {ModDetailsView} from "./views/ModDetailsView";
+import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
 
 (async function init()
 {
@@ -12,7 +14,9 @@ import {ItemDetailsView} from "./views/ItemDetailsView";
         "/item-models/:key": new ItemModelListView(),
         "/items/:key": new ItemListView(),
         "/mods/:key": new ModListView(),
-        "/item/:key": new ItemDetailsView()
+        "/item/:key": new ItemDetailsView(),
+        "/mod/:key": new ModDetailsView(),
+        "/item-model/:key": new ItemModelDetailsView()
     });
     
     m.render(document.getElementById("nav") as Element, [

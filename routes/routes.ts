@@ -62,6 +62,11 @@ export const Routes:{
         action: modService.findAll.bind(modService)
     },
     {
+        path: "/mods/:id",
+        method: "get",
+        action: modService.findById.bind(modService)
+    },
+    {
         path: "/item-type",
         method: "get",
         isPaged: true, //todo fix this
@@ -73,5 +78,19 @@ export const Routes:{
         isPaged: true,
         pagedById: true,
         action: auditService.findByEntityId.bind(auditService, "item")
+    },
+    {
+        path: "/audits/mods/:id",
+        method: "get",
+        isPaged: true,
+        pagedById: true,
+        action: auditService.findByEntityId.bind(auditService, "mod")
+    },
+    {
+        path: "/audits/item-models/:id",
+        method: "get",
+        isPaged: true,
+        pagedById: true,
+        action: auditService.findByEntityId.bind(auditService, "item-model")
     }
 ];

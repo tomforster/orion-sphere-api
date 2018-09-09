@@ -2,6 +2,7 @@ import {ListView} from "./ListView";
 import {ItemType} from "../../../ItemType";
 import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
 import {IItemModel} from "../../../interfaces/IItemModel";
+import * as m from "mithril";
 
 export class ItemModelListView extends ListView<IItemModel, ItemModelFilterOptions>
 {
@@ -9,12 +10,12 @@ export class ItemModelListView extends ListView<IItemModel, ItemModelFilterOptio
     
     getColumns():string[]
     {
-        return ["Item Type", "Name", "Base Cost"];
+        return ["Name", "Item Type", "Base Cost"];
     }
     
-    getRowTemplate():(item:IItemModel) => (number | string)[]
+    getRowData(itemModel:IItemModel)
     {
-        return (item:IItemModel) => [ItemType[<any>item.itemType] || "", item.name, item.baseCost];
+        return [m("td", m(`a[href=/item-model/${itemModel.id}]`, {oncreate: m.route.link}, itemModel.name)), m("td", ItemType[<any>itemModel.itemType] || ""), m("td", itemModel.baseCost)];
     }
     
     getUrlPath():string

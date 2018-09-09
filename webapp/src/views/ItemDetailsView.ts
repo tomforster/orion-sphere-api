@@ -12,7 +12,7 @@ export class ItemDetailsView extends DetailsView<IItem>
     
     getTitle():string
     {
-        return this.entity && (`${this.entity.itemModel.name} - ${this.entity.serial}`) || "Item";
+        return this.loaded && (`${this.entity.itemModel.name} - ${this.entity.serial}`) || "Loading...";
     }
     
     getControls():Vnode|Vnode[]

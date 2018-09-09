@@ -15,9 +15,9 @@ export class ItemListView extends ListView<IItem, ItemFilterOptions>
         return ["Serial", "Model", "Mods", "Type", "Maint. Cost", "+Mod Cost"];
     }
     
-    getRowTemplate():(item:IItem) => (number | string)[]
+    getRowData(item:IItem)
     {
-        return (item:IItem) => [item.serial, item.itemModel && item.itemModel.name || "", item.mods.length, item.itemModel && ItemType[<any>item.itemModel.itemType] || "", item.maintenanceCost, item.modCost];
+        return [m("td", item.serial), m("td", item.itemModel.name || ""), m("td", item.mods.length), m("td", item.itemModel && ItemType[<any>item.itemModel.itemType] || ""), m("td", item.maintenanceCost), m("td", item.modCost)];
     }
     
     getUrlPath():string
