@@ -1,9 +1,9 @@
 import {Item} from "../entity/Item";
 import {Service} from "./Service";
 import {validate} from "class-validator";
-import {Page} from "../app";
 import {ItemFilterOptions} from "./filters/ItemFilterOptions";
 import {Brackets} from "typeorm";
+import {Page} from "../Page";
 
 export class ItemService extends Service<Item>
 {

@@ -1,7 +1,7 @@
-import {Page} from "../app";
 import {Audit} from "../entity/Audit";
 import {getManager} from "typeorm";
 import {Service} from "./Service";
+import {Page} from "../Page";
 
 export class AuditService
 {

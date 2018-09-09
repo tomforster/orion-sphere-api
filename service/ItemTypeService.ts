@@ -1,5 +1,4 @@
 import {ItemType} from "../ItemType";
-import {Page} from "../app";
 
 export class ItemTypeService
 {

@@ -1,8 +1,8 @@
 import {getManager} from "typeorm";
 import {Repository} from "typeorm/repository/Repository";
-import {Page} from "../app";
 import {DomainEntity} from "../entity/DomainEntity";
 import {FilterOptions} from "./filters/FilterOptions";
+import {Page} from "../Page";
 
 export abstract class Service<T extends DomainEntity>
 {
