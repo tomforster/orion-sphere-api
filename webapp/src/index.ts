@@ -7,6 +7,7 @@ import {ModListView} from "./views/ModListView";
 import {ItemDetailsView} from "./views/ItemDetailsView";
 import {ModDetailsView} from "./views/ModDetailsView";
 import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
+import {TestView} from "./views/TestView";
 
 (async function init()
 {
@@ -32,6 +33,7 @@ import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
         "/mods/:key": new ModListView(),
         "/item/:key": new ItemDetailsView(),
         "/mod/:key": new ModDetailsView(),
-        "/item-model/:key": new ItemModelDetailsView()
+        "/item-model/:key": new ItemModelDetailsView(),
+        "/test": new TestView()
     });
 })();
