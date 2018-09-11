@@ -30,7 +30,8 @@ export class ItemModelListView extends ListView<IItemModel, ItemModelFilterOptio
     }
     
     getFilterControls():Vnode[]
-    {   const fields = [];
+    {
+        const fields = [];
         fields.push(m(".field", [
             m('label.label.is-small', "Search"),
             m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Filter on name...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),

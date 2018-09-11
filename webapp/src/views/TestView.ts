@@ -1,36 +1,31 @@
 import * as m from "mithril";
 import {ClassComponent, Vnode} from "mithril";
 import {IItemModel} from "../../../interfaces/IItemModel";
+import {ItemType} from "../../../ItemType";
+import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
+import {Page} from "../../../Page";
 
 export class TestView implements ClassComponent
 {
-    value:string;
+    filterOptions:ItemModelFilterOptions = {s:"", itemType:"", name:""};
     timeout:any;
-    results:IItemModel[] = [];
+    page:Page<IItemModel>;
     loading:boolean = false;
     selectedItem:IItemModel;
     
     oninit(vnode:Vnode):any
     {
-        this.onValueChange("");
+        this.fetch();
     }
     
-    onValueChange(value:string):any
+    fetch():any
     {
         this.loading = true;
-        this.value = value;
         if(this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
-            if(!this.value)
-            {
-                this.results = [];
-                m.redraw();
-                this.loading = false;
-                return;
-            }
-            m.request({method:"get", url:"/item-models", data:{s:{s:this.value}, page:0, size:5}})
+            m.request({method:"get", url:"/item-models", data:{s:this.filterOptions, page:0, size:15}})
                 .then((r:any) => {
-                    this.results = r.content;
+                    this.page = r;
                     m.redraw();
                     this.loading = false;
                 }).catch(e => this.loading = false)
@@ -60,34 +55,52 @@ export class TestView implements ClassComponent
         this.focused = false;
     }
     
+    itemType:ItemType;
+    
+    onItemTypeChange(itemType:ItemType)
+    {
+       this.filterOptions.itemType = itemType;
+       this.fetch();
+    }
+    
+    onSearchChange(value:string)
+    {
+        this.filterOptions.s = value;
+        this.fetch();
+    }
+    
+    getPaging(page:Page<IItemModel>):Vnode
+    {
+        return m(".columns", [
+            m(".column.is-narrow", m(`button.button`, {disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "First")),
+            m(".column.is-narrow", m(`button.button`, {disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "Previous")),
+            m(".column.is-vcentered.is-flex", {style: "justify-content: center"}, `${page.number+1}/${page.totalPages}`),
+            m(".column.is-narrow", m(`button.button]`, {disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Next")),
+            m(".column.is-narrow", m(`button.button`, {disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Last"))
+        ]);
+    }
+    
     view(vnode:Vnode)
     {
         return m(".container", [
-            m(".field", {style: "margin-bottom: 0.5em"},
-                m(".control", [
-                    m("label.label.is-small", "Search Models"),
-                    !this.selectedItem ?
-                        m("input.input", {
-                            value: this.value,
-                            onfocusout: this.onFocusOut.bind(this),
-                            onfocus: this.onFocus.bind(this),
-                            oninput: m.withAttr("value", this.onValueChange.bind(this))
-                        }) :
-                        m("input.input", {
-                            value: this.selectedItem.name,
-                            readonly: true
-                        })
-                ])
-            ),
-            m("", {class: this.focused ? "" : "is-hidden"},
-                this.value ?
-                    this.loading ?
-                        m("", "Loading...") :
-                        this.results.length ?
-                            this.results.map(r => m(".select-option", {onmousedown:this.onOptionPress.bind(this, r)}, r.name)) :
-                            m("", "No results found.") :
-                    m("", "Type to search..."))
-            ]
-        );
+            m(".field", [
+                m('label.label.is-small', "Search"),
+                m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Filter on name...', oninput: m.withAttr("value", this.onSearchChange.bind(this))})),
+            ]),
+            m(".field.is-horizontal", m(".field-body", [
+                m(".field", [
+                    m("label.label.is-small", "Item Type"),
+                    m('.control',
+                        m(".select",
+                            m(`select`, {onchange: m.withAttr("value", this.onItemTypeChange.bind(this))},
+                                [m('option'), ...Object.keys(ItemType).map(typeKey => m('option', {value: typeKey, selected: this.itemType === typeKey}, ItemType[<any>typeKey]))]
+                            )
+                        )
+                    )]
+                )
+            ])),
+            ...(this.page ? this.page.content.map(r => m("", r.name)) : [m("")]),
+            this.page ? this.getPaging(this.page) : m("")
+        ]);
     }
 }
