@@ -67,12 +67,27 @@ input[readonly]
   background-color: #efefef;
 }
 
-.select-option
+.container.search
 {
-  cursor: pointer;
-
-  &:hover
+  .select-option
   {
-    background-color: lightskyblue;
+    cursor: pointer;
+    padding:.1em .25em;
+
+    &:hover
+    {
+      background-color: #76ceb4;
+    }
+
+    &.selected
+    {
+      background-color: #76ceb4;
+    }
+  }
+
+  .box
+  {
+    padding: .8em;
+    margin-bottom: .75em;
   }
 }
