@@ -91,3 +91,28 @@ input[readonly]
     margin-bottom: .75em;
   }
 }
+
+.results
+{
+  min-height: 4rem;
+}
+
+.lmask {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #969696;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 9999;;
+  opacity: 0.4;
+
+  &:before
+  {
+    content: "Loader goes here";
+    color: white;
+  }
+}

@@ -125,7 +125,10 @@ export class TestView implements ClassComponent
                     )]
                 ))
             ]),
-            m(".box", this.page ? this.page.content.map(r => m(".select-option", {class: this.selectedItemId === r.id ? "selected" : "", onclick: this.onOptionPress.bind(this, r)}, r.name)) : m("")),
+            m(".box", {style:"position: relative"}, [
+                m(".lmask", {class: this.loading ? "" : "is-hidden"}),
+                m(".results", this.page ? this.page.content.map(r => m(".select-option", {class: this.selectedItemId === r.id ? "selected" : "", onclick: this.onOptionPress.bind(this, r)}, r.name)) : m(""))
+            ]),
             this.page ? this.getPaging(this.page) : m(""),
             m(".box", m(".level", [
                 m(".level-left", m(".field", [ m("label.label.is-small", "Selected Item"), m("", this.selectedItem ? this.selectedItem.name : "")])),
