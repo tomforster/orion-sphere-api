@@ -12,6 +12,7 @@ export class TestView implements ClassComponent
     page:Page<IItemModel>;
     loading:boolean = false;
     selectedItemId:number;
+    selectedItem:IItemModel;
     currentPage:number = 0;
     
     oninit(vnode:Vnode):any
@@ -41,6 +42,7 @@ export class TestView implements ClassComponent
     onOptionPress(item:IItemModel)
     {
         this.selectedItemId = item.id;
+        this.selectedItem = item;
     }
     
     itemType:ItemType;
@@ -124,7 +126,16 @@ export class TestView implements ClassComponent
                 ))
             ]),
             m(".box", this.page ? this.page.content.map(r => m(".select-option", {class: this.selectedItemId === r.id ? "selected" : "", onclick: this.onOptionPress.bind(this, r)}, r.name)) : m("")),
-            this.page ? this.getPaging(this.page) : m("")
+            this.page ? this.getPaging(this.page) : m(""),
+            m(".box", m(".level", [
+                m(".level-left", m(".field", [ m("label.label.is-small", "Selected Item"), m("", this.selectedItem ? this.selectedItem.name : "")])),
+                m(".level-right",
+                    m(".buttons", [
+                        m("button.button.is-danger", "Cancel"),
+                        m("button.button.is-primary", "Select")
+                    ])
+                )
+            ]))
         ]);
     }
 }
