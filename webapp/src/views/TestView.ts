@@ -28,6 +28,7 @@ export class TestView implements ClassComponent
             m.request({method:"get", url:"/item-models", data:{s:this.filterOptions, page:this.currentPage, size:15}})
                 .then((r:any) => {
                     this.page = r;
+                    this.currentPage = this.page.number;
                     m.redraw();
                     this.loading = false;
                 }).catch(e => this.loading = false)
