@@ -11,9 +11,31 @@ import {TestView} from "./views/TestView";
 
 (async function init()
 {
+    let menuToggled = false;
+    
+    let menuClick = function()
+    {
+        menuToggled = !menuToggled;
+        const menuButton = document.getElementById("menu-button");
+        const menu = document.getElementById("menu");
+        if(menuButton && menu && menuToggled)
+        {
+            menuButton.classList.add("is-active");
+            menu.classList.add("is-active");
+        }
+        else if(menuButton && menu && !menuToggled)
+        {
+            menuButton.classList.remove("is-active");
+            menu.classList.remove("is-active");
+        }
+    };
+    
     m.render(document.getElementById("nav") as Element, [
-        m(".navbar-brand", m("a.navbar-item", m("h1.subtitle", "OSLRP Admin"))),
-        m(".navbar-menu",
+        m(".navbar-brand", [
+            m("a.navbar-item", m("h1.subtitle", "OSLRP Admin")),
+            m("a.navbar-burger#menu-button", {onclick: menuClick}, [m("span"),m("span"),m("span")])
+        ]),
+        m(".navbar-menu#menu",
             [
                 m(".navbar-start",
                     [
