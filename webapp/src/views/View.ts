@@ -1,5 +1,6 @@
 import * as m from "mithril";
 import {Children, ClassComponent, Vnode} from "mithril";
+import {closeMenu} from "../index";
 
 export abstract class View implements ClassComponent
 {
@@ -35,6 +36,7 @@ export abstract class View implements ClassComponent
     
     oninit(vnode:Vnode):any
     {
+        closeMenu();
         Array.from(document.querySelectorAll(".navbar-item")).forEach(element => element.classList.remove("active"));
         Array.from(document.querySelectorAll(`#navbar-${this.getUrlPath()}`)).forEach(element => element.classList.add("active"));
         this.fetch();

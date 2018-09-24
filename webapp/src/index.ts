@@ -9,47 +9,75 @@ import {ModDetailsView} from "./views/ModDetailsView";
 import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
 import {TestView} from "./views/TestView";
 
+let menuButtonElement:Element;
+let menuElement:Element;
+let menuToggled = false;
+
+export function openMenu()
+{
+    if(menuElement && menuButtonElement)
+    {
+        menuButtonElement.classList.add("is-active");
+        menuElement.classList.add("is-active");
+        menuToggled = true;
+    }
+}
+
+export function closeMenu()
+{
+    if(menuElement && menuButtonElement)
+    {
+        menuButtonElement.classList.remove("is-active");
+        menuElement.classList.remove("is-active");
+        menuToggled = false;
+    }
+}
+
 (async function init()
 {
-    let menuToggled = false;
+    const content = document.getElementById("content") as Element;
+    
+    content.addEventListener("click", () => {
+        closeMenu();
+    });
     
     let menuClick = function()
     {
-        menuToggled = !menuToggled;
-        const menuButton = document.getElementById("menu-button");
-        const menu = document.getElementById("menu");
-        if(menuButton && menu && menuToggled)
+        if(menuToggled)
         {
-            menuButton.classList.add("is-active");
-            menu.classList.add("is-active");
+            closeMenu();
         }
-        else if(menuButton && menu && !menuToggled)
+        else if(!menuToggled)
         {
-            menuButton.classList.remove("is-active");
-            menu.classList.remove("is-active");
+            openMenu();
         }
     };
+    
+    const menuButton = m("a.navbar-burger#menu-button", {onclick: menuClick}, [m("span"),m("span"),m("span")]);
+    const menu = m(".navbar-menu#menu",
+        [
+            m(".navbar-start",
+                [
+                    m("a[href=/item-models/1].navbar-item", {id:"navbar-item-models", oncreate: m.route.link}, "Models"),
+                    m("a[href=/items/1].navbar-item", {id:"navbar-items", oncreate: m.route.link}, "Items"),
+                    m("a[href=/mods/1].navbar-item", {id:"navbar-mods", oncreate: m.route.link}, "Mods")
+                ]
+            )
+        ]
+    );
     
     m.render(document.getElementById("nav") as Element, [
         m(".navbar-brand", [
             m("a.navbar-item", m("h1.subtitle", "OSLRP Admin")),
-            m("a.navbar-burger#menu-button", {onclick: menuClick}, [m("span"),m("span"),m("span")])
+            menuButton
         ]),
-        m(".navbar-menu#menu",
-            [
-                m(".navbar-start",
-                    [
-                        m("a[href=/item-models/1].navbar-item", {id:"navbar-item-models", oncreate: m.route.link}, "Models"),
-                        m("a[href=/items/1].navbar-item", {id:"navbar-items", oncreate: m.route.link}, "Items"),
-                        m("a[href=/mods/1].navbar-item", {id:"navbar-mods", oncreate: m.route.link}, "Mods")
-                    ]
-                ),
-                // m(".navbar-end", m(".navbar-item", m(".field", m(".control", m("a.button.is-link", "Create Item")))))
-            ]
-        )
+        menu
     ]);
     
-    m.route(document.getElementById("content") as Element, "/item-models/1", {
+    menuButtonElement = (<any>menuButton).dom;
+    menuElement = (<any>menu).dom;
+    
+    m.route(content, "/item-models/1", {
         "/item-models/:key": new ItemModelListView(),
         "/items/:key": new ItemListView(),
         "/mods/:key": new ModListView(),
