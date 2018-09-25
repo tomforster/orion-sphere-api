@@ -8,7 +8,7 @@ export class Page<T>
     totalItems:number;
     totalPages:number;
     
-    constructor(content:T[], number:number, size:number, totalItems:number)
+    constructor(content:T[] = [], number:number = 0, size:number = 25, totalItems:number = 0)
     {
         this.content = content;
         this.number = number;

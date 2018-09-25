@@ -5,18 +5,21 @@ import {Page} from "../../../Page";
 import {AuditType} from "../../../AuditType";
 import {IDomainEntity} from "../../../interfaces/IDomainEntity";
 import {IAudit} from "../../../interfaces/IAudit";
+import {SelectPane} from "../components/SelectPane";
 
 export abstract class DetailsView<T extends IDomainEntity> extends View
 {
     entity:T;
     audits:Page<IAudit>;
     id:number;
+    select:SelectPane;
     
     abstract getForm():Vnode;
     
     oninit(vnode:Vnode):any
     {
         this.id = (vnode.attrs as any).key;
+        this.select = new SelectPane();
         return super.oninit(vnode);
     }
     
@@ -24,7 +27,7 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
     {
         if(this.loaded)
         {
-            return m(".container", this.getTitleBar(), this.getForm(), this.getHistoryPanel(), this.getSaveButtons());
+            return m(".container", this.getTitleBar(), this.getForm(), this.getHistoryPanel(), this.getSaveButtons(), m(this.select));
         }
         
         return super.view(vnode);

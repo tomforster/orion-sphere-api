@@ -7,7 +7,7 @@ import {ModListView} from "./views/ModListView";
 import {ItemDetailsView} from "./views/ItemDetailsView";
 import {ModDetailsView} from "./views/ModDetailsView";
 import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
-import {TestView} from "./views/TestView";
+import {SelectPane} from "./components/SelectPane";
 
 let menuButtonElement:Element;
 let menuElement:Element;
@@ -58,9 +58,9 @@ export function closeMenu()
         [
             m(".navbar-start",
                 [
-                    m("a[href=/item-models/1].navbar-item", {id:"navbar-item-models", oncreate: m.route.link}, "Models"),
-                    m("a[href=/items/1].navbar-item", {id:"navbar-items", oncreate: m.route.link}, "Items"),
-                    m("a[href=/mods/1].navbar-item", {id:"navbar-mods", oncreate: m.route.link}, "Mods")
+                    m("a[href=/item-models].navbar-item", {id:"navbar-item-models", oncreate: m.route.link}, "Models"),
+                    m("a[href=/items].navbar-item", {id:"navbar-items", oncreate: m.route.link}, "Items"),
+                    m("a[href=/mods].navbar-item", {id:"navbar-mods", oncreate: m.route.link}, "Mods")
                 ]
             )
         ]
@@ -77,13 +77,13 @@ export function closeMenu()
     menuButtonElement = (<any>menuButton).dom;
     menuElement = (<any>menu).dom;
     
-    m.route(content, "/item-models/1", {
-        "/item-models/:key": new ItemModelListView(),
-        "/items/:key": new ItemListView(),
-        "/mods/:key": new ModListView(),
+    m.route(content, "/item-models", {
+        "/item-models": new ItemModelListView(),
+        "/items": new ItemListView(),
+        "/mods": new ModListView(),
         "/item/:key": new ItemDetailsView(),
         "/mod/:key": new ModDetailsView(),
         "/item-model/:key": new ItemModelDetailsView(),
-        "/test": new TestView()
+        "/test": new SelectPane()
     });
 })();

@@ -4,15 +4,19 @@ import {FilterOptions} from "../../../service/filters/FilterOptions";
 import {View} from "./View";
 import {IDomainEntity} from "../../../interfaces/IDomainEntity";
 import {Page} from "../../../Page";
+import {Paging} from "../components/Paging";
+import {SearchPane} from "../components/SearchPane";
 
 export abstract class ListView<T extends IDomainEntity, F extends FilterOptions> extends View
 {
-    page:Page<T> | undefined;
+    page:Page<T> = new Page<T>();
     currentPage:number;
     selectedItems:any[] = [];
     selectMode:boolean = false;
     expandedItem:number | null;
     expandable = false;
+    paging:Paging;
+    searchPane:SearchPane;
     
     abstract filterOptions:F;
     abstract getColumns():string[];
@@ -48,37 +52,22 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     
     oninit(vnode:Vnode):any
     {
-        this.currentPage = (vnode.attrs as any).key - 1;
+        this.currentPage = 0;
+        this.paging = new Paging(this.page, this.onPageChange.bind(this));
+        this.searchPane = new SearchPane(this.filterOptions, this.onSearchPressed.bind(this));
         return super.oninit(vnode);
     }
     
-    getPaging(page:Page<T>):Vnode
+    onPageChange(targetPage:number)
     {
-        return m(".columns", [
-            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/1]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "First")),
-            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.number}]`, {oncreate: m.route.link, disabled: page.first, onclick: (e:any) => { page.first && e.preventDefault() }}, "Previous")),
-            m(".column.is-vcentered.is-flex", {style: "justify-content: center"}, `${page.number+1}/${page.totalPages}`),
-            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.number+2}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Next")),
-            m(".column.is-narrow", m(`a.button[href=/${this.getUrlPath()}/${page.totalPages}]`, {oncreate: m.route.link, disabled: page.last, onclick: (e:any) => { page.last && e.preventDefault() }}, "Last"))
-        ]);
+        console.log("page change");
+        this.currentPage = targetPage;
+        this.fetch();
     }
     
     onSearchPressed()
     {
         this.fetch();
-    }
-    
-    setSearchField(searchField:string):void
-    {
-        this.filterOptions.s = searchField;
-    }
-    
-    getFilterControls():Vnode[]
-    {
-        return [m(".field.has-addons", [
-            m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Type to filter...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
-            m('.control', m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search"))
-        ])];
     }
     
     getRow(r:T):Vnode
@@ -103,10 +92,12 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
         
         url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:this.filterOptions});
         
-        this.page = await m.request<Page<T>>({
+        const page = await m.request<Page<T>>({
             method: "get",
             url
         });
+        
+        Object.assign(this.page, page);
         this.loaded = true;
     }
     
@@ -114,8 +105,6 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     {
         if(this.page)
         {
-            const filters = m(".box", this.getFilterControls());
-            
             const bodyContent = this.page.content.map((r:any) => {
                 return this.expandable ?
                     [this.getRow(r), m("tr", {class: this.expandedItem === r.id ? "" : "is-hidden"}, [m("td"), m(`td[colspan=${this.getColumns().length + (this.selectMode ? 1 : 0)}]`, this.getExpandedRowContent(r))])] : this.getRow(r)
@@ -125,7 +114,7 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
                 m("thead", m("tr", [m("th")].concat(this.getColumns().map(h => m("th", h))))),
                 m("tbody", bodyContent));
             
-            return m(".container", this.getTitleBar(), filters, table, this.getPaging(this.page));
+            return m(".container", this.getTitleBar(), m(this.searchPane), table, m(this.paging));
         }
     
         return super.view(vnode);

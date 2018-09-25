@@ -4,19 +4,23 @@ import {IItemModel} from "../../../interfaces/IItemModel";
 import {ItemType} from "../../../ItemType";
 import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
 import {Page} from "../../../Page";
+import {Paging} from "./Paging";
 
-export class TestView implements ClassComponent
+export class SelectPane implements ClassComponent
 {
     filterOptions:ItemModelFilterOptions = {s:"", itemType:"", name:""};
     timeout:any;
-    page:Page<IItemModel>;
+    page:Page<IItemModel> = new Page<IItemModel>();
     loading:boolean = false;
     selectedItemId:number;
     selectedItem:IItemModel;
     currentPage:number = 0;
+    paging:Paging;
+    itemType:ItemType;
     
     oninit(vnode:Vnode):any
     {
+        this.paging = new Paging(this.page, this.onPageChange.bind(this));
         this.fetch();
     }
     
@@ -27,7 +31,7 @@ export class TestView implements ClassComponent
         this.timeout = setTimeout(() => {
             m.request({method:"get", url:"/item-models", data:{s:this.filterOptions, page:this.currentPage, size:15}})
                 .then((r:any) => {
-                    this.page = r;
+                    Object.assign(this.page, r);
                     this.currentPage = this.page.number;
                     m.redraw();
                     this.loading = false;
@@ -46,8 +50,6 @@ export class TestView implements ClassComponent
         this.selectedItem = item;
     }
     
-    itemType:ItemType;
-    
     onItemTypeChange(itemType:ItemType)
     {
        this.filterOptions.itemType = itemType;
@@ -60,51 +62,10 @@ export class TestView implements ClassComponent
         this.fetch();
     }
     
-    onNextPress()
+    onPageChange(targetPage:number)
     {
-        if(!this.page.last)
-        {
-            this.currentPage++;
-            this.fetch();
-        }
-    }
-    
-    onFirstPress()
-    {
-        if(!this.page.first)
-        {
-            this.currentPage = 0;
-            this.fetch();
-        }
-    }
-    
-    onLastPress()
-    {
-        if(!this.page.last)
-        {
-            this.currentPage = this.page.totalPages-1;
-            this.fetch();
-        }
-    }
-    
-    onPreviousPress()
-    {
-        if(!this.page.first)
-        {
-            this.currentPage--;
-            this.fetch();
-        }
-    }
-    
-    getPaging(page:Page<IItemModel>):Vnode
-    {
-        return m(".columns", [
-            m(".column.is-narrow", m(`button.button`, {disabled: page.first, onclick: this.onFirstPress.bind(this)}, "First")),
-            m(".column.is-narrow", m(`button.button`, {disabled: page.first, onclick: this.onPreviousPress.bind(this)}, "Previous")),
-            m(".column.is-vcentered.is-flex", {style: "justify-content: center"}, `${page.number+1}/${page.totalPages}`),
-            m(".column.is-narrow", m(`button.button`, {disabled: page.last, onclick: this.onNextPress.bind(this)}, "Next")),
-            m(".column.is-narrow", m(`button.button`, {disabled: page.last, onclick: this.onLastPress.bind(this)}, "Last"))
-        ]);
+        this.currentPage = targetPage;
+        this.fetch();
     }
     
     view(vnode:Vnode)
@@ -130,7 +91,7 @@ export class TestView implements ClassComponent
                 m(".lmask", {class: this.loading ? "" : "is-hidden"}),
                 m(".results", this.page ? this.page.content.map(r => m(".select-option", {class: this.selectedItemId === r.id ? "selected" : "", onclick: this.onOptionPress.bind(this, r)}, r.name)) : m(""))
             ]),
-            this.page ? this.getPaging(this.page) : m(""),
+            m(this.paging),
             m(".box", m(".level", [
                 m(".level-left", m(".field", [ m("label.label.is-small", "Selected Item"), m("", this.selectedItem ? this.selectedItem.name : "")])),
                 m(".level-right",
