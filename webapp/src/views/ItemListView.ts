@@ -4,11 +4,16 @@ import {Vnode} from "mithril";
 import {ItemType} from "../../../ItemType";
 import {ItemFilterOptions} from "../../../service/filters/ItemFilterOptions";
 import {IItem} from "../../../interfaces/IItem";
+import {ItemSearchPane} from "../components/ItemSearchPane";
 
 export class ItemListView extends ListView<IItem, ItemFilterOptions>
 {
-    filterOptions:ItemFilterOptions = {s:"", itemModel:{s:"", name:"", itemType:""}, modIds:[]};
     expandable = true;
+    
+    getSearchPane()
+    {
+        return new ItemSearchPane(this.fetch.bind(this));
+    }
     
     getColumns():string[]
     {
@@ -34,32 +39,6 @@ export class ItemListView extends ListView<IItem, ItemFilterOptions>
     {
         return m(".buttons", [m(`a.button`, {onclick: () => this.selectMode = !this.selectMode}, "Select Items"), m(`a.button`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies")]);
     }
-    
-    // getFilterControls():Vnode[]
-    // {   const fields = [];
-    //     fields.push(m(".field", [
-    //         m('label.label.is-small', "Search"),
-    //         m('.control.is-expanded', m("input.input[type='text']", {value: this.filterOptions.s, placeholder: 'Filter on model or serial...', oninput: m.withAttr("value", this.setSearchField.bind(this))})),
-    //     ]));
-    //     fields.push(m(".field.is-horizontal", m(".field-body",
-    //         [
-    //             m(".field", [
-    //                 m("label.label.is-small", "Item Type"),
-    //                 m('.control',
-    //                     m(".select",
-    //                         m(`select`, {onchange: m.withAttr("value", this.setItemTypeField.bind(this))},
-    //                             [m('option'), ...Object.keys(ItemType).map(typeKey => m('option', {value: typeKey, selected: this.filterOptions.itemModel.itemType === typeKey}, ItemType[<any>typeKey]))]
-    //                         )
-    //                     )
-    //                 )]
-    //             ),
-    //             m(".field.is-flex.search-button",
-    //                 m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search")
-    //             )
-    //         ]
-    //     )));
-    //     return fields;
-    // }
     
     setItemTypeField(itemType:string):void
     {

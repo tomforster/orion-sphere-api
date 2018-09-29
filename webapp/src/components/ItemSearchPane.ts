@@ -1,17 +1,17 @@
 import {SearchPane} from "./SearchPane";
-import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
 import * as m from "mithril";
 import {Children} from "mithril";
 import {ItemType} from "../../../ItemType";
+import {ItemFilterOptions} from "../../../service/filters/ItemFilterOptions";
 
-export class ItemModelSearchPane extends SearchPane
+export class ItemSearchPane extends SearchPane
 {
-    filterOptions:ItemModelFilterOptions = {s:"", name:"", itemType:""};
+    filterOptions:ItemFilterOptions = {s:"", itemModel:{s:"", name:"", itemType:""}, modIds:[]};
     
     setItemTypeField(itemType:string):void
     {
         if(!itemType) itemType = "";
-        this.filterOptions.itemType = itemType;
+        this.filterOptions.itemModel.itemType = itemType;
         this.updateSearchOptions();
     }
     
@@ -37,7 +37,7 @@ export class ItemModelSearchPane extends SearchPane
                                     ...Object.keys(ItemType)
                                         .map(typeKey => m('option', {
                                             value: typeKey,
-                                            selected: this.filterOptions.itemType === typeKey
+                                            selected: this.filterOptions.itemModel.itemType === typeKey
                                         }, ItemType[<any>typeKey]))
                                 ]
                             )

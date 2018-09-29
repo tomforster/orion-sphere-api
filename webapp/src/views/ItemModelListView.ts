@@ -3,10 +3,14 @@ import {ItemType} from "../../../ItemType";
 import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
 import {IItemModel} from "../../../interfaces/IItemModel";
 import * as m from "mithril";
+import {ItemModelSearchPane} from "../components/ItemModelSearchPane";
 
 export class ItemModelListView extends ListView<IItemModel, ItemModelFilterOptions>
 {
-    filterOptions = {s:"", itemType:"", name:""};
+    getSearchPane()
+    {
+        return new ItemModelSearchPane(this.fetch.bind(this));
+    }
     
     getColumns():string[]
     {

@@ -6,8 +6,6 @@ import * as m from "mithril";
 
 export class ModListView extends ListView<IMod, ModFilterOptions>
 {
-    filterOptions = {s:""};
-    
     getColumns():string[]
     {
         return ["Description", "Max Stacks", "Restrictions"];

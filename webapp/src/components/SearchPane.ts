@@ -1,32 +1,41 @@
 import * as m from "mithril";
-import {ClassComponent, Vnode} from "mithril";
+import {Children, ClassComponent} from "mithril";
 import {FilterOptions} from "../../../service/filters/FilterOptions";
 
 export class SearchPane implements ClassComponent
 {
-    protected filterOptions:FilterOptions;
-    protected onSearchPressed:(filterOptions:FilterOptions) => void;
+    protected filterOptions:FilterOptions = {s:""};
+    protected onFilterOptionsChanged:(filterOptions:FilterOptions) => void;
+    protected timeout:any;
     
-    constructor(filterOptions:FilterOptions, onSearchPressed:(filterOptions:FilterOptions) => void)
+    constructor(onFilterOptionsChanged:(filterOptions:FilterOptions) => void)
     {
-        this.filterOptions = filterOptions;
-        this.onSearchPressed = onSearchPressed;
+        this.onFilterOptionsChanged = onFilterOptionsChanged;
     }
     
-    setSearchField(searchField:string):void
+    updateSearchField(searchField:string):void
     {
         this.filterOptions.s = searchField;
+        this.updateSearchOptions();
     }
     
-    view():Vnode[]
+    updateSearchOptions():void
     {
-        return [m(".field.has-addons", [
+        if(this.timeout) clearTimeout(this.timeout);
+        this.timeout = setTimeout(() =>
+        {
+            this.onFilterOptionsChanged(this.filterOptions);
+        }, 500);
+    }
+    
+    view():Children
+    {
+        return m(".field", [
             m('.control.is-expanded', m("input.input[type='text']", {
-                value: this.filterOptions.s,
+                // value: this.filterOptions.s,
                 placeholder: 'Type to filter...',
-                oninput: m.withAttr("value", this.setSearchField.bind(this))
-            })),
-            m('.control', m("a.button.is-primary", {onclick: this.onSearchPressed.bind(this)}, "Search"))
-        ])];
+                oninput: m.withAttr("value", this.updateSearchField.bind(this))
+            }))
+        ]);
     }
 }

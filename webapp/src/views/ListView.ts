@@ -17,8 +17,8 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     expandable = false;
     paging:Paging;
     searchPane:SearchPane;
+    filterOptions:F;
     
-    abstract filterOptions:F;
     abstract getColumns():string[];
     abstract getRowData(entity:T):Vnode[];
     
@@ -50,11 +50,16 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
         return index > -1;
     }
     
+    getSearchPane():SearchPane
+    {
+        return new SearchPane(this.fetch.bind(this));
+    }
+    
     oninit(vnode:Vnode):any
     {
         this.currentPage = 0;
         this.paging = new Paging(this.page, this.onPageChange.bind(this));
-        this.searchPane = new SearchPane(this.filterOptions, this.onSearchPressed.bind(this));
+        this.searchPane = this.getSearchPane();
         return super.oninit(vnode);
     }
     
@@ -62,11 +67,6 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     {
         console.log("page change");
         this.currentPage = targetPage;
-        this.fetch();
-    }
-    
-    onSearchPressed()
-    {
         this.fetch();
     }
     
@@ -86,11 +86,11 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
         throw new Error("Override this if setting expandable true");
     }
     
-    async fetch()
+    async fetch(filterOptions?:FilterOptions)
     {
         let url = this.getUrl();
         
-        url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:this.filterOptions});
+        url += "?" + m.buildQueryString({page: this.currentPage, size: 50, s:filterOptions});
         
         const page = await m.request<Page<T>>({
             method: "get",
