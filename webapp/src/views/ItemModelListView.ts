@@ -1,11 +1,10 @@
 import {ListView} from "./ListView";
 import {ItemType} from "../../../ItemType";
-import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
 import {IItemModel} from "../../../interfaces/IItemModel";
 import * as m from "mithril";
 import {ItemModelSearchPane} from "../components/ItemModelSearchPane";
 
-export class ItemModelListView extends ListView<IItemModel, ItemModelFilterOptions>
+export class ItemModelListView extends ListView<IItemModel>
 {
     getSearchPane()
     {

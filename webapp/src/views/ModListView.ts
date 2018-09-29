@@ -1,10 +1,9 @@
 import {ListView} from "./ListView";
 import {ItemType} from "../../../ItemType";
-import {ModFilterOptions} from "../../../service/filters/ModFilterOptions";
 import {IMod} from "../../../interfaces/IMod";
 import * as m from "mithril";
 
-export class ModListView extends ListView<IMod, ModFilterOptions>
+export class ModListView extends ListView<IMod>
 {
     getColumns():string[]
     {

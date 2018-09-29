@@ -2,11 +2,10 @@ import {ListView} from "./ListView";
 import * as m from "mithril";
 import {Vnode} from "mithril";
 import {ItemType} from "../../../ItemType";
-import {ItemFilterOptions} from "../../../service/filters/ItemFilterOptions";
 import {IItem} from "../../../interfaces/IItem";
 import {ItemSearchPane} from "../components/ItemSearchPane";
 
-export class ItemListView extends ListView<IItem, ItemFilterOptions>
+export class ItemListView extends ListView<IItem>
 {
     expandable = true;
     
@@ -39,13 +38,6 @@ export class ItemListView extends ListView<IItem, ItemFilterOptions>
     {
         return m(".buttons", [m(`a.button`, {onclick: () => this.selectMode = !this.selectMode}, "Select Items"), m(`a.button`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies")]);
     }
-    
-    setItemTypeField(itemType:string):void
-    {
-        if(!itemType) itemType = "";
-        this.filterOptions.itemModel.itemType = itemType;
-    }
-    
     
     getExpandedRowContent(r:IItem):Vnode
     {

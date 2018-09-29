@@ -73,16 +73,21 @@ input[readonly]
   background-color: #efefef;
 }
 
-.container.search
+.search
 {
   .select-option
   {
     cursor: pointer;
     padding:.1em .25em;
 
+    &:not(:last-child)
+    {
+      margin-bottom: 0.1em;
+    }
+
     &:hover
     {
-      background-color: #76ceb4;
+      background-color: #dee3e3;
     }
 
     &.selected

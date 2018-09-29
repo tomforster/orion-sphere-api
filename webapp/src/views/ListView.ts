@@ -7,7 +7,7 @@ import {Page} from "../../../Page";
 import {Paging} from "../components/Paging";
 import {SearchPane} from "../components/SearchPane";
 
-export abstract class ListView<T extends IDomainEntity, F extends FilterOptions> extends View
+export abstract class ListView<T extends IDomainEntity> extends View
 {
     page:Page<T> = new Page<T>();
     currentPage:number;
@@ -17,7 +17,6 @@ export abstract class ListView<T extends IDomainEntity, F extends FilterOptions>
     expandable = false;
     paging:Paging;
     searchPane:SearchPane;
-    filterOptions:F;
     
     abstract getColumns():string[];
     abstract getRowData(entity:T):Vnode[];

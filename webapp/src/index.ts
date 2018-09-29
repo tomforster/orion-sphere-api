@@ -7,7 +7,8 @@ import {ModListView} from "./views/ModListView";
 import {ItemDetailsView} from "./views/ItemDetailsView";
 import {ModDetailsView} from "./views/ModDetailsView";
 import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
-import {SelectPane} from "./components/SelectPane";
+import "@fortawesome/fontawesome-free/css/solid.css";
+import "@fortawesome/fontawesome-free/css/fontawesome.css";
 
 let menuButtonElement:Element;
 let menuElement:Element;
@@ -83,7 +84,6 @@ export function closeMenu()
         "/mods": new ModListView(),
         "/item/:key": new ItemDetailsView(),
         "/mod/:key": new ModDetailsView(),
-        "/item-model/:key": new ItemModelDetailsView(),
-        "/test": new SelectPane()
+        "/item-model/:key": new ItemModelDetailsView()
     });
 })();

@@ -10,6 +10,7 @@
     "generate": "node tsnode-typeorm.js migration:generate -n"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.3.1",
     "bulma": "^0.7.1",
     "class-validator": "^0.8.5",
     "classnames": "^2.2.6",
@@ -37,11 +38,13 @@
     "webpack-cli": "^3.0.8"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.6",
     "@types/http-errors": "^1.6.1",
+    "@types/mithril": "^1.1.12",
     "@types/morgan": "^1.7.35",
     "@types/node": "^10.3.3",
     "@types/pg-connection-string": "^2.0.0",
-    "@types/classnames": "^2.2.6",
-    "@types/mithril": "^1.1.12"
+    "file-loader": "^2.0.0",
+    "url-loader": "^1.1.1"
   }
 }
