@@ -36,7 +36,10 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
     getForm():Vnode
     {
         return m("form", [
-            m(".field", m("label.label", "Name"), m(".control", m("input.input[type=text]", {value: this.entity.name, oninput: m.withAttr("value", (value) => this.entity.name = value)}))),
+            m(".field", m("label.label", "Name"), m(".control", m("input.input[type=text]", {
+                value: this.entity.name,
+                oninput: m.withAttr("value", (value) => this.entity.name = value)
+            }))),
             m(".field", m("label.label", "Item Type"),
                 this.itemTypeSelect ? m(this.itemTypeSelect) : m("")
             ),

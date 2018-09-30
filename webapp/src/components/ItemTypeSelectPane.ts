@@ -69,7 +69,7 @@ export class ItemTypeSelectPane implements ClassComponent
         if(this.isSingleSelect)
         {
             return [
-                m(".control", {onclick: this.open.bind(this)}, m("input.input[type=text]", {value: this.selectedItemType && ItemType[<any> this.selectedItemType], readonly:true})),
+                m(".control", {onclick: this.open.bind(this)}, m(".input", this.selectedItemType && ItemType[<any> this.selectedItemType])),
                 m(".modal.search", {class: this.active ? "is-active" : ""}, [
                     m(".modal-background", {onclick: this.onClosePress.bind(this)}),
                     m(".modal-content", m(".box", [
@@ -83,7 +83,7 @@ export class ItemTypeSelectPane implements ClassComponent
             ]
         }
         return [
-            m(".control", {onclick: this.open.bind(this)}, m("input.input[type=text]", {value: this.selectedItemTypes.map(r => ItemType[<any> r]).join(", "), readonly:true})),
+            m(".control", {onclick: this.open.bind(this)}, m(".input", this.selectedItemTypes.map(r => ItemType[<any> r]).join(", "))),
             m(".modal.search", {class: this.active ? "is-active" : ""}, [
                 m(".modal-background", {onclick: this.onClosePress.bind(this)}),
                 m(".modal-content", m(".box", [

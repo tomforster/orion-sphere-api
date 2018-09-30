@@ -27,7 +27,6 @@ export abstract class ListView<T extends IDomainEntity> extends View
         if(!this.selectMode) this.selectedItems.length = 0;
     }
     
-    
     getControls():Vnode[]
     {
         return [m("a.button.is-success", "Create")];
