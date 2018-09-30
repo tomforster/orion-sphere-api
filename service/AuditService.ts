@@ -15,6 +15,7 @@ export class AuditService
             case "item": where["itemId"] = id; break;
             case "mod": where["modId"] = id; break;
             case "item-model": where["itemModelId"] = id; break;
+            case "ability": where["abilityId"] = id; break;
             default: throw new Error("Invalid argument");
         }
         

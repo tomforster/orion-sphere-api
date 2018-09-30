@@ -9,6 +9,8 @@ import {ModDetailsView} from "./views/ModDetailsView";
 import {ItemModelDetailsView} from "./views/ItemModelDetailsView";
 import "@fortawesome/fontawesome-free/css/solid.css";
 import "@fortawesome/fontawesome-free/css/fontawesome.css";
+import {AbilityDetailsView} from "./views/AbilityDetailsView";
+import {AbilityListView} from "./views/AbilityListView";
 
 let menuButtonElement:Element;
 let menuElement:Element;
@@ -61,7 +63,8 @@ export function closeMenu()
                 [
                     m("a[href=/item-models].navbar-item", {id:"navbar-item-models", oncreate: m.route.link}, "Models"),
                     m("a[href=/items].navbar-item", {id:"navbar-items", oncreate: m.route.link}, "Items"),
-                    m("a[href=/mods].navbar-item", {id:"navbar-mods", oncreate: m.route.link}, "Mods")
+                    m("a[href=/mods].navbar-item", {id:"navbar-mods", oncreate: m.route.link}, "Mods"),
+                    m("a[href=/abilities].navbar-item", {id:"navbar-abilities", oncreate: m.route.link}, "Abilities")
                 ]
             )
         ]
@@ -82,8 +85,10 @@ export function closeMenu()
         "/item-models": new ItemModelListView(),
         "/items": new ItemListView(),
         "/mods": new ModListView(),
+        "/abilities": new AbilityListView(),
         "/item/:key": new ItemDetailsView(),
         "/mod/:key": new ModDetailsView(),
-        "/item-model/:key": new ItemModelDetailsView()
+        "/item-model/:key": new ItemModelDetailsView(),
+        "/ability/:key": new AbilityDetailsView()
     });
 })();

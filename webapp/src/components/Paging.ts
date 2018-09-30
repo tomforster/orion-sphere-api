@@ -43,7 +43,7 @@ export class Paging implements ClassComponent
         return m(".columns", [
             m(".column.is-narrow", m(`button.button`, {disabled: this.page.first, onclick: this.onFirstPress.bind(this)}, "First")),
             m(".column.is-narrow", m(`button.button`, {disabled: this.page.first, onclick: this.onPreviousPress.bind(this)}, "Previous")),
-            m(".column.is-vcentered.is-flex", {style: "justify-content: center"}, `${this.page.number+1}/${this.page.totalPages}`),
+            m(".column.is-vcentered.is-flex", {style: "justify-content: center"}, `${this.page.number+1}/${this.page.totalPages || 1}`),
             m(".column.is-narrow", m(`button.button`, {disabled: this.page.last, onclick: this.onNextPress.bind(this)}, "Next")),
             m(".column.is-narrow", m(`button.button`, {disabled: this.page.last, onclick: this.onLastPress.bind(this)}, "Last"))
         ]);

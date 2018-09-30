@@ -21,4 +21,18 @@ export class Ability extends DomainEntity implements IAbility
     
     @Column({type: "int", default: "0"})
     chargeCost:number;
+    
+    constructor(params?:IAbility)
+    {
+        if(params)
+        {
+            super(params.id, params.version);
+            this.description = params.description;
+            this.chargeCost = params.chargeCost;
+        }
+        else
+        {
+            super();
+        }
+    }
 }

@@ -3,6 +3,8 @@ import {Repository} from "typeorm/repository/Repository";
 import {DomainEntity} from "../entity/DomainEntity";
 import {FilterOptions} from "./filters/FilterOptions";
 import {Page} from "../Page";
+import {validate} from "class-validator";
+import {IDomainEntity} from "../interfaces/IDomainEntity";
 
 export abstract class Service<T extends DomainEntity>
 {
@@ -33,9 +35,19 @@ export abstract class Service<T extends DomainEntity>
         return await this.getRepository().findByIds(ids);
     }
     
-    abstract async create(entity:T):Promise<T>;
+    async create(params:IDomainEntity):Promise<T>
+    {
+        const entity = new this.entityClass(Object.assign(params, {id:undefined}));
+        if(!validate(entity)) throw new Error("Invalid Argument");
+        return this.getRepository().save(entity);
+    }
     
-    abstract async update(entity:T):Promise<T>;
+    async update(params:IDomainEntity):Promise<T>
+    {
+        const entity = new this.entityClass(params);
+        if(!validate(entity)) throw new Error("Invalid Argument");
+        return this.getRepository().save(entity);
+    }
     
     delete(id):Promise<boolean>
     {

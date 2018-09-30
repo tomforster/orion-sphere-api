@@ -1,6 +1,5 @@
 import {ItemModel} from "../entity/ItemModel";
 import {Service} from "./Service";
-import {validate} from "class-validator";
 import {Brackets} from "typeorm";
 import {Page} from "../Page";
 import {ItemModelFilterOptions} from "./filters/ItemModelFilterOptions";
@@ -35,19 +34,5 @@ export class ItemModelService extends Service<ItemModel>
         const [result, count] = await query.getManyAndCount();
         
         return new Page<ItemModel>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
-    }
-    
-    async create(params:ItemModel):Promise<ItemModel>
-    {
-        const entity = new ItemModel(Object.assign(params, {id:undefined}));
-        if(!validate(entity)) throw new Error("Invalid Argument");
-        return this.getRepository().save(entity);
-    }
-    
-    async update(params:ItemModel):Promise<ItemModel>
-    {
-        const entity = new ItemModel(params);
-        if(!validate(entity)) throw new Error("Invalid Argument");
-        return this.getRepository().save(entity);
     }
 }

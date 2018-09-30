@@ -4,9 +4,10 @@ import createError = require('http-errors');
 import corser = require("corser"); //for cors
 import {Request, Response} from "express";
 import {connectionPromise} from "./db";
-import {itemService, Routes} from "./routes/routes";
+import {Routes} from "./routes/Routes";
 import "pug";
 import * as path from "path";
+import {itemService} from "./routes/ItemRoutes";
 
 export const appPromise = connectionPromise.then(async connection =>
 {
@@ -87,16 +88,19 @@ export const appPromise = connectionPromise.then(async connection =>
             .then(() => next)
             .catch(err => next(err));
     });
+    
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
         next(createError(404));
     });
 
-// error handler
+    // error handler
     app.use(function(err, req, res, next) {
         // set locals, only providing error in development
         res.locals.message = err.message;
         res.locals.error = req.app.get('env') === 'development' ? err : {};
+        
+        console.error(err);
         
         // render the error page
         res.status(err.status || 500);
