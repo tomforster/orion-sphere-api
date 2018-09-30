@@ -5,7 +5,7 @@ import {IItemModel} from "./IItemModel";
 export interface IAbility extends IDomainEntity
 {
     description:string;
-    mods:IMod[];
-    itemModels:IItemModel[];
-    chargeCost:number;
+    mods?:IMod[];
+    itemModels?:IItemModel[];
+    chargeCost?:number;
 }

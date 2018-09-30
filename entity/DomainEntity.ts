@@ -14,7 +14,7 @@ import {IDomainEntity} from "../interfaces/IDomainEntity";
 
 export abstract class DomainEntity implements IDomainEntity
 {
-    @IsPositive()
+    @IsPositive({groups: ["update"]})
     @PrimaryGeneratedColumn()
     id:number;
 

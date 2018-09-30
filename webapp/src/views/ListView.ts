@@ -20,6 +20,7 @@ export abstract class ListView<T extends IDomainEntity> extends View
     
     abstract getColumns():string[];
     abstract getRowData(entity:T):Vnode[];
+    abstract getCreateUrl():string;
     
     toggleSelectMode()
     {
@@ -29,7 +30,7 @@ export abstract class ListView<T extends IDomainEntity> extends View
     
     getControls():Vnode[]
     {
-        return [m("a.button.is-success", "Create")];
+        return [m("a.button.is-success", {href: this.getCreateUrl(), oncreate: m.route.link}, "Create")];
     }
     
     onRowClick(item:any)

@@ -5,6 +5,14 @@ import {Vnode} from "mithril";
 
 export class AbilityDetailsView extends DetailsView<IAbility>
 {
+    createEntity():IAbility
+    {
+        return {
+            id: 0,
+            description: ""
+        };
+    }
+    
     getUrlPath():string
     {
         return "ability";
@@ -17,6 +25,7 @@ export class AbilityDetailsView extends DetailsView<IAbility>
     
     getTitle():string
     {
+        if(!this.id) return "Create Ability";
         return this.loaded && `${this.entity.description}` || "Loading...";
     }
     

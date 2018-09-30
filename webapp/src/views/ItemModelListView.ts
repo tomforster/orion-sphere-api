@@ -6,6 +6,11 @@ import {ItemModelSearchPane} from "../components/ItemModelSearchPane";
 
 export class ItemModelListView extends ListView<IItemModel>
 {
+    getCreateUrl():string
+    {
+        return "/item-model/create"
+    }
+    
     getSearchPane()
     {
         return new ItemModelSearchPane(this.fetch.bind(this));

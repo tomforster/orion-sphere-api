@@ -16,7 +16,14 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
     
     oninit(vnode:Vnode):any
     {
-        this.id = (vnode.attrs as any).key;
+        if((vnode.attrs as any).key === "create")
+        {
+            this.id = 0;
+        }
+        else
+        {
+            this.id = (vnode.attrs as any).key;
+        }
         return super.oninit(vnode);
     }
     
@@ -31,10 +38,28 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
     
     onSavePressed()
     {
-        m.request({method: "put", url:this.getUrl() + "/" + this.id, data: this.entity}).then(result =>
+        if(this.id)
         {
-            location.reload();
-        })
+            m.request({
+                method: "put",
+                url: this.getUrl() + "/" + this.id,
+                data: this.entity
+            }).then(result =>
+            {
+                location.reload();
+            })
+        }
+        else
+        {
+            m.request({
+                method: "post",
+                url: this.getUrl(),
+                data: this.entity
+            }).then(result =>
+            {
+                m.route.set(this.getUrl() + "/" + (<any>result).id);
+            })
+        }
     }
     
     getSaveButtons()
@@ -54,15 +79,23 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
     
     getHistoryPanel():Children
     {
-        return m(".field",  m("label.label", "History"), m(".box", this.audits.content.map(audit => m(".columns", [
+        return this.id ? m(".field",  m("label.label", "History"), m(".box", this.audits.content.map(audit => m(".columns", [
             m(".column.is-narrow", new Date(audit.createdOn).toLocaleString()),
             m(".column.is-narrow", this.getAuditTypeString(audit.auditType)),
             m(".column", audit.description)
-        ]))));
+        ])))) : m("");
     }
+    
+    abstract createEntity():T;
     
     async fetch():Promise<any>
     {
+        if(!this.id)
+        {
+            this.entity = this.createEntity();
+            this.loaded = true;
+            return;
+        }
         this.entity = await m.request<T>({
             method: "get",
             url:this.getUrl() + "/" + this.id

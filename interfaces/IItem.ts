@@ -4,9 +4,9 @@ import {IDomainEntity} from "./IDomainEntity";
 
 export interface IItem extends IDomainEntity
 {
-    itemModel:IItemModel;
+    itemModel?:IItemModel;
     mods:IMod[];
-    serial:string;
-    maintenanceCost:number;
-    modCost:number;
+    serial?:string;
+    maintenanceCost?:number;
+    modCost?:number;
 }

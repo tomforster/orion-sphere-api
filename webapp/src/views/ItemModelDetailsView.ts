@@ -18,6 +18,15 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
         }
     }
     
+    createEntity():IItemModel
+    {
+        return {
+            id: 0,
+            name: "",
+            abilities: []
+        };
+    }
+    
     getUrlPath():string
     {
         return "item-model";
@@ -30,6 +39,7 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
     
     getTitle():string
     {
+        if(!this.id) return "Create Model";
         return this.loaded && `${this.entity.name}` || "Loading...";
     }
     

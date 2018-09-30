@@ -4,6 +4,11 @@ import * as m from "mithril";
 
 export class AbilityListView extends ListView<IAbility>
 {
+    getCreateUrl():string
+    {
+        return "/ability/create";
+    }
+    
     getColumns():string[]
     {
         return ["Description", "Charge Cost"];

@@ -1,5 +1,8 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
+const numItemDefs = 100;
+const numItems = 300;
+
 export class gendata1535301003213 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
@@ -37,13 +40,16 @@ export class gendata1535301003213 implements MigrationInterface {
                 })
         }
     
-        const itemDefs = itemDefGen(100);
-        const items = itemGen(itemDefs, 500);
+        const itemDefs = itemDefGen(numItemDefs);
+        const items = itemGen(itemDefs, numItems);
         
         await queryRunner.query(`insert into "orion_sphere"."item_model" (id, "itemType", name, "baseCost", "createdOn", version) values ${itemDefs.map(itemDef => `(${itemDef.id},'${itemDef.type}','${itemDef.name}', ${itemDef.baseCost}, '${ts}', 0)`).join(",")}`);
         await queryRunner.query(`insert into "orion_sphere"."audit" ("auditType", "itemModelId", "createdOn") values ${itemDefs.map(itemDef => `(0, ${itemDef.id},'${ts}')`).join(",")}`);
         await queryRunner.query(`insert into "orion_sphere"."item" (id, "itemModelId", serial, "createdOn", version) values ${items.map(item => `(${item.id},${item.def}, '${this.generateSerial(item)}', '${ts}', 0)`).join(",")}`);
         await queryRunner.query(`insert into "orion_sphere"."audit" ("auditType", "itemId", "createdOn") values ${itemDefs.map(item => `(0, ${item.id},'${ts}')`).join(",")}`);
+    
+        await queryRunner.query(`SELECT setval('item_model_id_seq', ${numItemDefs}, FALSE)`);
+        await queryRunner.query(`SELECT setval('item_id_seq', ${numItems}, FALSE)`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {

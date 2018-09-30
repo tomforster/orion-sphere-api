@@ -23,12 +23,17 @@ export class ItemListView extends ListView<IItem>
     {
         return [
             m("td", item.serial),
-            m("td", item.itemModel.name || ""),
+            m("td", item.itemModel && item.itemModel.name || ""),
             m("td", item.mods.length),
             m("td", item.itemModel && ItemType[<any>item.itemModel.itemType] || ""),
             m("td", item.maintenanceCost),
             m("td", item.modCost)
         ];
+    }
+    
+    getCreateUrl():string
+    {
+        return "/item/create"
     }
     
     getUrlPath():string
@@ -51,7 +56,7 @@ export class ItemListView extends ListView<IItem>
                 onclick: () => this.selectedItems.length && window.open(`/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, "_tab"),
                 disabled: !this.selectedItems.length
             }, "Print Lammies"),
-            m("a.button.is-success", "Create")
+            m("a.button.is-success", {href: this.getCreateUrl(), oncreate: m.route.link}, "Create")
         ];
     }
     

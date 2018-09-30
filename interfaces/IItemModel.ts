@@ -4,9 +4,9 @@ import {IAbility} from "./IAbility";
 
 export interface IItemModel extends IDomainEntity
 {
-    itemType: ItemType;
+    itemType?: ItemType;
     name:string;
-    baseCost:number;
+    baseCost?:number;
     abilities: IAbility[];
-    baseCharges:number;
+    baseCharges?:number;
 }

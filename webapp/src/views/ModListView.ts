@@ -5,6 +5,11 @@ import * as m from "mithril";
 
 export class ModListView extends ListView<IMod>
 {
+    getCreateUrl():string
+    {
+        return "/mod/create";
+    }
+    
     getColumns():string[]
     {
         return ["Description", "Max Stacks", "Restrictions"];

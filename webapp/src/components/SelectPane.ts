@@ -18,11 +18,12 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     searchPane:SearchPane;
     url:string;
     active:boolean = false;
-    buttonText:string;
+    buttonText:string | undefined;
     onItemSelected:(item:T) => void;
     
-    constructor(url:string, buttonText: string, onItemSelected:(item:T) => void)
+    constructor(url:string, onItemSelected:(item:T) => void, selectedItem?:T, buttonText?: string)
     {
+        this.selectedItem = selectedItem;
         this.url = url;
         this.buttonText = buttonText;
         this.onItemSelected = onItemSelected;
@@ -99,14 +100,17 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     open()
     {
         this.active = true;
-        this.selectedItem = undefined;
-        this.selectedItemId = 0;
+        if(this.buttonText)
+        {
+            this.selectedItem = undefined;
+            this.selectedItemId = 0;
+        }
     }
     
     view(vnode:Vnode):Children
     {
         return [
-            m("a.button.is-primary.is-small", {onclick: this.open.bind(this)}, this.buttonText),
+            this.buttonText ? m("a.button.is-primary.is-small", {onclick: this.open.bind(this)}, this.buttonText) : m(".input", {onclick: this.open.bind(this)}, this.selectedItem ? this.getItemText(this.selectedItem) : ""),
             m(".modal.search", {class: this.active ? "is-active" : ""}, [
             m(".modal-background", {onclick: this.onClosePress.bind(this)}),
             m(".modal-content", m(".box", [

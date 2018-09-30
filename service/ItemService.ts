@@ -1,6 +1,6 @@
 import {Item} from "../entity/Item";
 import {Service} from "./Service";
-import {validate} from "class-validator";
+import {validateOrReject} from "class-validator";
 import {ItemFilterOptions} from "./filters/ItemFilterOptions";
 import {Brackets} from "typeorm";
 import {Page} from "../Page";
@@ -40,22 +40,24 @@ export class ItemService extends Service<Item>
         return new Page<Item>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
     }
     
-    create(params:Item):Promise<Item>
+    async create(params:Item):Promise<Item>
     {
         const entity = new Item(params);
-        if(!validate(entity)) throw new Error("Invalid Argument");
+        entity.id = undefined;
+        entity.serial = "";
+        await validateOrReject(entity, {groups: ["create"]});
         return this.getRepository().save(entity);
     }
     
-    update(params:Item):Promise<Item>
+    async update(params:Item):Promise<Item>
     {
         const entity = new Item(params);
-        if(!validate(entity)) throw new Error("Invalid Argument");
+        await validateOrReject(entity, {groups: ["update"]});
         
         const oldEntity = this.getRepository().findOne(entity.id);
         const newEntity = this.getRepository().save(entity);
         
-        //save audit for mods
+        //save audit for mods todo
         Promise.all([oldEntity, newEntity]).then(r => {
             console.log("old", r[0].mods.map(mod => mod.description),
                 "new", r[1].mods.map(mod => mod.description));

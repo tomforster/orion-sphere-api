@@ -6,8 +6,8 @@ import {IItem} from "./IItem";
 export interface IMod extends IDomainEntity
 {
     description:string;
-    ability:IAbility;
-    items:IItem[];
-    maxStacks:number;
+    ability?:IAbility;
+    items?:IItem[];
+    maxStacks?:number;
     restrictedTo:ItemType[];
 }

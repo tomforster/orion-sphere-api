@@ -6,12 +6,12 @@ export class ItemTypeSelectPane implements ClassComponent
 {
     active:boolean = false;
     selectedItemTypes:ItemType[];
-    selectedItemType:ItemType;
+    selectedItemType?:ItemType;
     itemTypes:ItemType[];
     isSingleSelect:boolean = false;
     onSelectedItemChange:(itemType:ItemType) => void;
     
-    constructor(selected:ItemType[] | ItemType, onSelectedItemChange?:(itemType:ItemType) => void)
+    constructor(selected?:ItemType[] | ItemType, onSelectedItemChange?:(itemType:ItemType) => void)
     {
         if(Array.isArray(selected))
         {

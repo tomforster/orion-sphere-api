@@ -8,6 +8,15 @@ export class ModDetailsView extends DetailsView<IMod>
 {
     itemTypeSelect:ItemTypeSelectPane;
     
+    createEntity():IMod
+    {
+        return {
+            id: 0,
+            description: "",
+            restrictedTo: []
+        };
+    }
+    
     async fetch():Promise<any>
     {
         await super.fetch();
@@ -30,6 +39,7 @@ export class ModDetailsView extends DetailsView<IMod>
     
     getTitle():string
     {
+        if(!this.id) return "Create Mod";
         return this.loaded && `${this.entity.description}` || "Loading...";
     }
     

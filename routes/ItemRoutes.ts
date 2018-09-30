@@ -23,6 +23,11 @@ export const ItemRoutes:Route[] = [
         action: itemService.update.bind(itemService)
     },
     {
+        path: "/items",
+        method: "post",
+        action: itemService.create.bind(itemService)
+    },
+    {
         path: "/audits/items/:id",
         method: "get",
         isPaged: true,
