@@ -22,16 +22,16 @@ export abstract class View implements ClassComponent
         return "/" + this.getUrlPath();
     }
     
-    getControls():Vnode|Vnode[]
+    getControls():Vnode[]
     {
-        return m("");
+        return [];
     }
     
     getTitleBar():Vnode
     {
         return m(".level",
             m(".level-left", m("h1.subtitle", this.getTitle())),
-            m(".level-right", this.getControls()));
+            m(".level-right", m(".buttons", this.getControls())));
     }
     
     oninit(vnode:Vnode):any

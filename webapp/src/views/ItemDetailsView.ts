@@ -25,14 +25,14 @@ export class ItemDetailsView extends DetailsView<IItem>
         return this.loaded && (`${this.entity.itemModel.name} - ${this.entity.serial}`) || "Loading...";
     }
     
-    getControls():Vnode|Vnode[]
+    getControls():Vnode[]
     {
         if (this.entity)
         {
-            return m(".buttons", [
+            return [
                 m(`a.button`, {href: `/lammie-html?ids=${this.entity.id}`, disabled: !this.entity}, "Print Lammie"),
                 m(`a.button.is-danger`, {disabled: !this.entity}, "Delete"),
-            ]);
+            ];
         }
         
         return super.getControls();

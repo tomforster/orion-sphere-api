@@ -21,6 +21,18 @@ export abstract class ListView<T extends IDomainEntity> extends View
     abstract getColumns():string[];
     abstract getRowData(entity:T):Vnode[];
     
+    toggleSelectMode()
+    {
+        this.selectMode = !this.selectMode;
+        if(!this.selectMode) this.selectedItems.length = 0;
+    }
+    
+    
+    getControls():Vnode[]
+    {
+        return [m("a.button.is-success", "Create")];
+    }
+    
     onRowClick(item:any)
     {
         if(!this.selectMode)

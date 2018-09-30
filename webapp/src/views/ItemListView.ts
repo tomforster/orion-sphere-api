@@ -21,7 +21,14 @@ export class ItemListView extends ListView<IItem>
     
     getRowData(item:IItem)
     {
-        return [m("td", item.serial), m("td", item.itemModel.name || ""), m("td", item.mods.length), m("td", item.itemModel && ItemType[<any>item.itemModel.itemType] || ""), m("td", item.maintenanceCost), m("td", item.modCost)];
+        return [
+            m("td", item.serial),
+            m("td", item.itemModel.name || ""),
+            m("td", item.mods.length),
+            m("td", item.itemModel && ItemType[<any>item.itemModel.itemType] || ""),
+            m("td", item.maintenanceCost),
+            m("td", item.modCost)
+        ];
     }
     
     getUrlPath():string
@@ -34,9 +41,18 @@ export class ItemListView extends ListView<IItem>
         return "Items";
     }
     
-    getControls():Vnode|Vnode[]
+    getControls():Vnode[]
     {
-        return m(".buttons", [m(`a.button`, {onclick: () => this.selectMode = !this.selectMode}, "Select Items"), m(`a.button`, {href: `/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, disabled: !this.selectedItems.length}, "Print Lammies")]);
+        return [
+            m("a.button", {
+                onclick: this.toggleSelectMode.bind(this)
+            }, "Select Items"),
+            m("a.button.is-info", {
+                onclick: () => this.selectedItems.length && window.open(`/lammie-html?ids=${this.selectedItems.map(i => i.id).join(",")}`, "_tab"),
+                disabled: !this.selectedItems.length
+            }, "Print Lammies"),
+            m("a.button.is-success", "Create")
+        ];
     }
     
     getExpandedRowContent(r:IItem):Vnode
