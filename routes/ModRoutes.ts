@@ -24,6 +24,11 @@ export const ModRoutes:Route[] =
             action: modService.update.bind(modService)
         },
         {
+            path: "/mods",
+            method: "post",
+            action: modService.create.bind(modService)
+        },
+        {
             path: "/audits/mods/:id",
             method: "get",
             isPaged: true,

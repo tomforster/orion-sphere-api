@@ -23,6 +23,11 @@ export const AbilityRoutes:Route[] = [
         action: abilityService.update.bind(abilityService)
     },
     {
+        path: "/abilities",
+        method: "post",
+        action: abilityService.create.bind(abilityService)
+    },
+    {
         path: "/audits/abilities/:id",
         method: "get",
         isPaged: true,
