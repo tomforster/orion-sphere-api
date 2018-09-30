@@ -42,16 +42,26 @@ export class ItemService extends Service<Item>
     
     create(params:Item):Promise<Item>
     {
-        const entity = new Item(undefined, params.itemModel);
+        const entity = new Item(params);
         if(!validate(entity)) throw new Error("Invalid Argument");
         return this.getRepository().save(entity);
     }
     
     update(params:Item):Promise<Item>
     {
-        const entity = new Item(params.id, params.itemModel);
+        const entity = new Item(params);
         if(!validate(entity)) throw new Error("Invalid Argument");
-        return this.getRepository().save(entity);
+        
+        const oldEntity = this.getRepository().findOne(entity.id);
+        const newEntity = this.getRepository().save(entity);
+        
+        //save audit for mods
+        Promise.all([oldEntity, newEntity]).then(r => {
+            console.log("old", r[0].mods.map(mod => mod.description),
+                "new", r[1].mods.map(mod => mod.description));
+        });
+        
+        return newEntity;
     }
     
     private generateSerial(item:Item):string

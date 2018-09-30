@@ -56,6 +56,11 @@ export const Routes:{
         action: itemService.findById.bind(itemService)
     },
     {
+        path: "/items/:id",
+        method: "put",
+        action: itemService.update.bind(itemService)
+    },
+    {
         path: "/mods",
         method: "get",
         isPaged: true,

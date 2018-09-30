@@ -4,6 +4,10 @@ import {DomainEntity} from "./DomainEntity";
 import {Mod} from "./Mod";
 import {IItem} from "../interfaces/IItem";
 
+const multipliers = [1, 1.2, 1.6, 2.2, 3.2, 4.8, 7.4, 11.6, 18.4, 29.4, 47.2];
+const maintenanceModifier = 0.1;
+const addModModifier = 0.5;
+
 @Entity()
 export class Item extends DomainEntity implements IItem
 {
@@ -21,21 +25,25 @@ export class Item extends DomainEntity implements IItem
     maintenanceCost:number;
     modCost:number;
     
-    constructor(id:number = 0, itemModel:ItemModel)
+    constructor(params?:IItem)
     {
-        super();
-        this.id = id;
-        this.itemModel = itemModel;
+        if(params)
+        {
+            super(params.id, params.version);
+            this.itemModel = new ItemModel(params.itemModel);
+            this.mods = params.mods.map(mod => new Mod(mod));
+            this.serial = params.serial;
+        }
+        else
+        {
+            super();
+        }
     }
-    
-    readonly multipliers = [1, 1.2, 1.6, 2.2, 3.2, 4.8, 7.4, 11.6, 18.4, 29.4, 47.2];
-    readonly maintenanceModifier = 0.1;
-    readonly addModModifier = 0.5;
     
     @AfterLoad()
     setCosts()
     {
-        this.modCost = Math.round(this.multipliers[this.mods.length]*this.addModModifier*this.itemModel.baseCost);
-        this.maintenanceCost = Math.round(this.multipliers[this.mods.length]*this.maintenanceModifier*this.itemModel.baseCost);
+        this.modCost = Math.round(multipliers[this.mods.length]*addModModifier*this.itemModel.baseCost);
+        this.maintenanceCost = Math.round(multipliers[this.mods.length]*maintenanceModifier*this.itemModel.baseCost);
     }
 }
