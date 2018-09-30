@@ -22,7 +22,7 @@ export class Item extends DomainEntity implements IItem
     @JoinTable()
     mods:Mod[];
     
-    @Length(10,2, ({groups: ["update"]}))
+    @Length(10,12, ({groups: ["update"]}))
     @Column()
     serial:string;
 

@@ -46,7 +46,9 @@ export class ItemService extends Service<Item>
         entity.id = undefined;
         entity.serial = "";
         await validateOrReject(entity, {groups: ["create"]});
-        return this.getRepository().save(entity);
+        const newEntity = await this.getRepository().save(entity);
+        newEntity.serial = this.generateSerial(newEntity);
+        return this.getRepository().save(newEntity);
     }
     
     async update(params:Item):Promise<Item>

@@ -36,7 +36,7 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
         return super.view(vnode);
     }
     
-    onSavePressed()
+    async onSavePressed()
     {
         if(this.id)
         {
@@ -51,14 +51,12 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
         }
         else
         {
-            m.request({
+            const result = await m.request({
                 method: "post",
                 url: this.getUrl(),
                 data: this.entity
-            }).then(result =>
-            {
-                m.route.set(this.getUrl() + "/" + (<any>result).id);
-            })
+            });
+            m.route.set("/" + this.getUrlPath() + "/" + (<any>result).id);
         }
     }
     
