@@ -52,6 +52,7 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
                 data: {page: this.currentPage, size: 15, s: filterOptions}
             });
             Object.assign(this.page, page);
+            this.currentPage = this.page.number;
             this.loading = false;
         }
         catch(e)

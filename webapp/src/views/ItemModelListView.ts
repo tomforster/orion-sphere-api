@@ -13,7 +13,7 @@ export class ItemModelListView extends ListView<IItemModel>
     
     getSearchPane()
     {
-        return new ItemModelSearchPane(this.fetch.bind(this));
+        return new ItemModelSearchPane(this.onSearchChange.bind(this));
     }
     
     getColumns():string[]

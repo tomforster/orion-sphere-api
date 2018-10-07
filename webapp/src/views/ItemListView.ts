@@ -11,7 +11,7 @@ export class ItemListView extends ListView<IItem>
     
     getSearchPane()
     {
-        return new ItemSearchPane(this.fetch.bind(this));
+        return new ItemSearchPane(this.onSearchChange.bind(this));
     }
     
     getColumns():string[]
