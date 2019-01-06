@@ -16,10 +16,6 @@ module.exports = {
         "migration/**/*.ts"
     ],
     synchronize: true,
-    schema: "orion_sphere",
-    extra: {
-        "ssl": true
-    },
     cli: {
         migrationsDir: "migration"
     },

@@ -7,7 +7,7 @@ export class moddata1535494539239 implements MigrationInterface {
         
         // language=PostgreSQL
         await queryRunner.query(`
-insert into "orion_sphere"."ability"(id, description, "chargeCost", "createdOn", version) values
+insert into "ability"(id, description, "chargeCost", "createdOn", version) values
 (1, '+2 Charge Capacity', 0, '${ts}', 0),
 (2, 'Resist a SUNDER call that hits this weapon, shield or device', 1, '${ts}', 0),
 (3, 'RESIST one EFFECT call or roleplay effect each day', 0, '${ts}', 0),
@@ -51,7 +51,7 @@ insert into "orion_sphere"."ability"(id, description, "chargeCost", "createdOn",
 // language=PostgreSQL
         
         await queryRunner.query(`
-insert into "orion_sphere"."mod"(id, description, "abilityId", "maxStacks", "restrictedTo" , "createdOn", version) values
+insert into "mod"(id, description, "abilityId", "maxStacks", "restrictedTo" , "createdOn", version) values
 -- Generic Mods
 (1, 'Increase Charge Capacity', 1, 0, '', '${ts}', 0),
 (2, 'Integrity Field', 2, 1, '', '${ts}', 0),
@@ -114,11 +114,11 @@ insert into "orion_sphere"."mod"(id, description, "abilityId", "maxStacks", "res
         `);
     
         await queryRunner.query(`
-insert into "orion_sphere"."audit" ("auditType", "abilityId", "createdOn") values
+insert into "audit" ("auditType", "abilityId", "createdOn") values
 ${[...Array(38).keys()].map(key => `(0, ${key+1},'${ts}')`).join(",")}`);
     
         await queryRunner.query(`
-insert into "orion_sphere"."audit" ("auditType", "modId", "createdOn") values
+insert into "audit" ("auditType", "modId", "createdOn") values
 ${[...Array(46).keys()].map(key => `(0, ${key+1},'${ts}')`).join(",")}`);
     
     

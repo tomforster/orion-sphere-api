@@ -6,8 +6,8 @@ export class itemmods1535909549146 implements MigrationInterface {
     {
         const ts = new Date().toLocaleString().replace(",", "");
         
-        const items = await queryRunner.query(`select i.*, im."itemType" as itemType from "orion_sphere"."item" i join "orion_sphere"."item_model" im on im.id = i."itemModelId"`);
-        const mods = await queryRunner.query(`select * from "orion_sphere"."mod"`);
+        const items = await queryRunner.query(`select i.*, im."itemType" as itemType from "item" i join "item_model" im on im.id = i."itemModelId"`);
+        const mods = await queryRunner.query(`select * from "mod"`);
         
         const itemsWithMods = items.map(item => {
             const candidateMods = mods.filter(mod => mod.restrictedTo === "" || mod.restrictedTo.indexOf(item.itemtype) >= 0);
@@ -20,8 +20,8 @@ export class itemmods1535909549146 implements MigrationInterface {
         const modsToAdd:{itemId: number, mod:any}[] = [];
         itemsWithMods.forEach(itemMods => itemMods.mods.forEach(mod => modsToAdd.push({itemId: itemMods.itemId, mod})));
         
-        await queryRunner.query(`insert into "orion_sphere"."item_mods_mod" ("itemId", "modId") values ${modsToAdd.map(m => `(${m.itemId}, ${m.mod.id})`).join(",")};`);
-        await queryRunner.query(`insert into "orion_sphere"."audit" ("auditType", "itemId", "createdOn", description) values ${modsToAdd.map(m => `(1, ${m.itemId},'${ts}', 'Added Mod: ${m.mod.description}')`).join(",")}`);
+        await queryRunner.query(`insert into "item_mods_mod" ("itemId", "modId") values ${modsToAdd.map(m => `(${m.itemId}, ${m.mod.id})`).join(",")};`);
+        await queryRunner.query(`insert into "audit" ("auditType", "itemId", "createdOn", description) values ${modsToAdd.map(m => `(1, ${m.itemId},'${ts}', 'Added Mod: ${m.mod.description}')`).join(",")}`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any>
