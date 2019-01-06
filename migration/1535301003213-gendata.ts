@@ -48,8 +48,8 @@ export class gendata1535301003213 implements MigrationInterface {
         await queryRunner.query(`insert into "item" (id, "itemModelId", serial, "createdOn", version) values ${items.map(item => `(${item.id},${item.def}, '${this.generateSerial(item)}', '${ts}', 0)`).join(",")}`);
         await queryRunner.query(`insert into "audit" ("auditType", "itemId", "createdOn") values ${itemDefs.map(item => `(0, ${item.id},'${ts}')`).join(",")}`);
     
-        await queryRunner.query(`SELECT setval('orion_sphere.item_model_id_seq', ${numItemDefs})`);
-        await queryRunner.query(`SELECT setval('orion_sphere.item_id_seq', ${numItems})`);
+        await queryRunner.query(`SELECT setval('item_model_id_seq', ${numItemDefs})`);
+        await queryRunner.query(`SELECT setval('item_id_seq', ${numItems})`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
