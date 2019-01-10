@@ -164,7 +164,11 @@ body
                     .lammie-back-header
                         .lammie-expires Expires before E6
                         .lammie-id= "ID - " + item.serial
-                    .lammie-mods Mods - None
+                    .lammie-mods Mods:
+                    each mod in item.mods
+                        .lammie-ability= mod.description
+                    if !item.mods
+                        | None
                     .spacer
                     .lammie-qr-container
                         .lammie-qr(id=item.serial)
