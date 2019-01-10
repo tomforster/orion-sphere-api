@@ -21,7 +21,7 @@ export class ItemModel extends DomainEntity implements IItemModel
     @Column()
     baseCost:number;
     
-    @ManyToMany(type => Ability, ability => ability.itemModels)
+    @ManyToMany(type => Ability, ability => ability.itemModels, {eager: true})
     @JoinTable()
     abilities: Ability[];
     

@@ -7,52 +7,65 @@ html
                 box-sizing: border-box;
             }
 
+            @font-face {
+                font-family: square;
+                src: url(Square.ttf);
+            }
+
             body {
                 margin: 0;
-                font-family: monospace;
+                font-family: Arial, sans-serif;
+                font-size: 11pt;
             }
 
             .lammie {
                 display: flex;
-                flex-direction: column;
+                flex-direction: row;
                 width: 300px;
                 height: 180px;
                 border: solid 2px black;
                 margin: 5px;
-                padding: 3px;
                 page-break-inside: avoid;
+            }
+
+            .lammie-main {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                padding: 7px;
+            }
+
+            .lammie-tag {
+                display: flex;
+                font-family: square, Arial, sans-serif;
+                text-orientation: sideways;
+                writing-mode: vertical-rl;
+                text-align: center;
+                border-left: solid 2px black;
+                padding: 6px;
+                align-content: center;
+                justify-content: center;
             }
 
             .lammie-id {
                 white-space: nowrap;
+                font-size: 0.9em;
             }
 
-            .lammie-back .lammie-body {
+            .lammie-back {
                 flex-direction: row;
                 justify-content: flex-end;
             }
 
-            .lammie-body {
-                display: flex;
-                flex: 1 0;
-                overflow: hidden;
+            .lammie-title {
+                font-weight: bold;
+                font-family: square, Arial, sans-serif;
+                font-size: 1.1em;
             }
 
-            .lammie-text {
-                flex: 1 0;
-                overflow: hidden;
-                margin: 3px;
-            }
-
-            .lammie-header {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 5px;
-                border: 2px solid black;
-                margin: 3px;
-                flex: auto 0;
+            .lammie-subtitle {
+                font-style: italic;
+                font-weight: bold;
             }
 
             .lammie-qr {
@@ -63,7 +76,6 @@ html
 
             .lammie-qr-container {
                 display: flex;
-                flex-direction: column;
                 justify-content: flex-end;
             }
 
@@ -80,30 +92,80 @@ html
                 flex-direction: row-reverse;
                 /*flex-wrap: wrap-reverse;*/
             }
+
+            .lammie-abilities {
+                font-size: 1.1em;
+                font-weight: bold;
+            }
+
+            .lammie-ability
+            {
+                font-size:0.9em;
+            }
+
+            .lammie-charges {
+                font-size: 1.1em;
+            }
+
+            .lammie-expires
+            {
+                font-size: 0.9em;
+            }
+
+            .lammie-mods {
+                font-size: 1.1em;
+            }
+
+            .spacer {
+                flex-grow: 1;
+            }
+
+            .lammie-back-header
+            {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .lammie-tag-back {
+                font-size: 0.8em;
+                border-right: 2px solid black;
+                border-left: 0px solid black !important;
+                padding: 5px !important;
+            }
+
+
+
 body
     .lammie-page
         each item in items
             .lammie
-                .lammie-header
+                .lammie-main
                     .lammie-title= item.itemModel.name
-                    .lammie-id= item.serial
-
-                .lammie-body
-                    .lammie-text
-                        div Charges: 3
-                        div Base Cost: 300
+                    .lammie-subtitle= ItemType[item.itemModel.itemType]
+                    .lammie-abilities Abilities:
+                    each ability in item.itemModel.abilities
+                        .lammie-ability= ability.description +" (Cost: "+ability.chargeCost+" Charges)"
+                    .spacer
+                    .lammie-charges
+                        div Max Charges - 3
+                        //div Cost: 300
+                .lammie-tag
+                    | EXOTIC
+                    br
+                    | SUBSTANCE
 
     .lammie-page.lammie-back
         each item in items
             .lammie
-                .lammie-header
-                    .lammie-title= item.itemModel.name
-                    .lammie-id= item.serial
-
-                .lammie-body
-                    .lammie-text
-                        div Mods:
-
+                .lammie-tag.lammie-tag-back
+                    = "Cost: " + item.itemModel.baseCost + " Maint: " + item.maintenanceCost + " Mod: " + item.modCost
+                .lammie-main
+                    .lammie-back-header
+                        .lammie-expires Expires before E6
+                        .lammie-id= "ID - " + item.serial
+                    .lammie-mods Mods - None
+                    .spacer
                     .lammie-qr-container
                         .lammie-qr(id=item.serial)
 
@@ -111,8 +173,6 @@ body
 script(src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js")
 script.
     const elements = [].slice.call(document.getElementsByClassName("lammie-qr"));
-
-    console.log(elements);
 
     elements.forEach(element => new QRCode(element, {
             text: element.id,
