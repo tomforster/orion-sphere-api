@@ -71,12 +71,12 @@ html
             .lammie-qr {
                 width: 70px;
                 height: 70px;
-                margin: 3px;
+                margin: 3px 0px 0px 3px;
             }
 
             .lammie-qr-container {
                 display: flex;
-                justify-content: flex-end;
+                align-items: flex-end;
             }
 
             .lammie-page
@@ -114,6 +114,7 @@ html
 
             .lammie-mods {
                 font-size: 1.1em;
+                flex: 1;
             }
 
             .spacer {
@@ -125,6 +126,13 @@ html
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+            }
+
+            .lammie-back-body
+            {
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
             }
 
             .lammie-tag-back {
@@ -164,14 +172,14 @@ body
                     .lammie-back-header
                         .lammie-expires Expires before E6
                         .lammie-id= "ID - " + item.serial
-                    .lammie-mods Mods:
-                    each mod in item.mods
-                        .lammie-ability= mod.description
-                    if !item.mods
-                        | None
-                    .spacer
-                    .lammie-qr-container
-                        .lammie-qr(id=item.serial)
+                    .lammie-back-body
+                        .lammie-mods Mods:
+                            each mod in item.mods
+                                .lammie-ability= mod.description
+                            if !item.mods
+                                | None
+                        .lammie-qr-container
+                            .lammie-qr(id=item.serial)
 
 
 script(src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js")
