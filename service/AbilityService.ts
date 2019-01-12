@@ -8,8 +8,10 @@ export class AbilityService extends Service<Ability>
 {
     entityClass:any = Ability;
     
-    async findAll(page:number, size:number, filterOptions:FilterOptions):Promise<Page<Ability>>
+    async findAll(filterOptions:FilterOptions):Promise<Page<Ability>>
     {
+        const {page, size} = filterOptions;
+        
         let query = this.getRepository()
             .createQueryBuilder("ability")
             .where("1=1");

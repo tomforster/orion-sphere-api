@@ -9,6 +9,7 @@ import "pug";
 import * as path from "path";
 import {itemService} from "./routes/ItemRoutes";
 import {ItemType} from "./ItemType";
+import {FilterOptions} from "./service/filters/FilterOptions";
 
 export const appPromise = connectionPromise.then(async connection =>
 {
@@ -35,18 +36,28 @@ export const appPromise = connectionPromise.then(async connection =>
                 {
                     if(route.isPaged)
                     {
-                        let page = parseInt(request.query.page);
-                        page = isFinite(page) && page > 0 && page || 0;
-                        let size = parseInt(request.query.size);
-                        size = isFinite(size) && size > 0 && size || 10;
-                        if(!route.pagedById)
+                        const s:unknown = request.query.s;
+                        let filterOptions:FilterOptions;
+                        if(s && typeof s === "object" && s.hasOwnProperty("page") && s.hasOwnProperty("size"))
                         {
-                            let s = request.query.s || {};
-                            routePromise = route.action(page, size, s)
+                            filterOptions = s as FilterOptions;
+                            const page = Number(filterOptions.page);
+                            const size = Number(filterOptions.size);
+                            filterOptions.page = isFinite(page) ? page : 0;
+                            filterOptions.size = isFinite(size) ? size : 10;
                         }
                         else
                         {
-                            routePromise = route.action(request.params.id || 0, page, size)
+                            filterOptions = {page:0, size: 10};
+                        }
+                        
+                        if(!route.pagedById)
+                        {
+                            routePromise = route.action(filterOptions)
+                        }
+                        else
+                        {
+                            routePromise = route.action(request.params.id || 0, filterOptions)
                         }
                     }
                     else

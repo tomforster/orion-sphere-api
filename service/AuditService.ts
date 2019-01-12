@@ -2,11 +2,13 @@ import {Audit} from "../entity/Audit";
 import {getManager} from "typeorm";
 import {Service} from "./Service";
 import {Page} from "../Page";
+import {FilterOptions} from "./filters/FilterOptions";
 
 export class AuditService
 {
-    async findByEntityId(type:string, id:number, page:number, size:number):Promise<Page<Audit>>
+    async findByEntityId(type:string, id:number, filterOptions:FilterOptions):Promise<Page<Audit>>
     {
+        const {page, size} = filterOptions;
         if(!Service.validateId(id)) throw new Error("Invalid argument");
         
         let where = {};

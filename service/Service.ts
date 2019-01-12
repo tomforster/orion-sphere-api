@@ -15,8 +15,9 @@ export abstract class Service<T extends DomainEntity>
         return getManager().getRepository(this.entityClass);
     }
     
-    async findAll(page:number, size:number, filterOptions:FilterOptions):Promise<Page<T>>
+    async findAll(filterOptions:FilterOptions):Promise<Page<T>>
     {
+        const {page, size} = filterOptions;
         const result = (await this.getRepository()
             .find({skip:page*size, take:size}));
         const count = await this.getRepository().count();

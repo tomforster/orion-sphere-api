@@ -8,8 +8,9 @@ export class ItemModelService extends Service<ItemModel>
 {
     entityClass:any = ItemModel;
     
-    async findAll(page:number, size:number, filterOptions:ItemModelFilterOptions):Promise<Page<ItemModel>>
+    async findAll(filterOptions:ItemModelFilterOptions):Promise<Page<ItemModel>>
     {
+        const {page, size} = filterOptions;
         let query = this.getRepository()
             .createQueryBuilder("itemModel")
             .leftJoinAndSelect("itemModel.abilities", "abilities")

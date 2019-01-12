@@ -8,8 +8,10 @@ export class ModService extends Service<Mod>
 {
     entityClass:any = Mod;
     
-    async findAll(page:number, size:number, filterOptions:FilterOptions):Promise<Page<Mod>>
+    async findAll(filterOptions:FilterOptions):Promise<Page<Mod>>
     {
+        const {page, size} = filterOptions;
+        
         let query = this.getRepository()
             .createQueryBuilder("mod")
             .leftJoinAndSelect("mod.ability", "ability")

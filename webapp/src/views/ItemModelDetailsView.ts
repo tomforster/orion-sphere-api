@@ -53,8 +53,14 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
             m(".field", m("label.label", "Item Type"),
                 this.itemTypeSelect ? m(this.itemTypeSelect) : m("")
             ),
-            m(".field", m("label.label", "Base Cost"), m(".control", m("input.input[type=number]", {value: this.entity.baseCost}))),
-            m(".field", m("label.label", "Base Charge Capacity"), m(".control", m("input.input[type=number]", {value: this.entity.baseCharges})))
+            m(".field", m("label.label", "Base Cost"), m(".control", m("input.input[type=number]", {
+                value: this.entity.baseCost,
+                oninput: m.withAttr("value", (value) => this.entity.baseCost = Number(value))
+            }))),
+            m(".field", m("label.label", "Base Charge Capacity"), m(".control", m("input.input[type=number]", {
+                value: this.entity.baseCharges,
+                oninput: m.withAttr("value", (value) => this.entity.baseCharges = Number(value))
+            })))
         ]);
     }
 }
