@@ -1,39 +1,33 @@
 import {ItemModel} from "../entity/ItemModel";
 import {Service} from "./Service";
 import {Brackets} from "typeorm";
-import {Page} from "../Page";
 import {ItemModelFilterOptions} from "./filters/ItemModelFilterOptions";
 
-export class ItemModelService extends Service<ItemModel>
+export class ItemModelService extends Service<ItemModel, ItemModelFilterOptions>
 {
     entityClass:any = ItemModel;
+    allowedSortFields:string[] = ["id", "name", "baseCost", "baseCharges", "createdOn"];
     
-    async findAll(filterOptions:ItemModelFilterOptions):Promise<Page<ItemModel>>
+    getFindQuery = (filterOptions?:ItemModelFilterOptions) =>
     {
-        const {page, size} = filterOptions;
         let query = this.getRepository()
-            .createQueryBuilder("itemModel")
-            .leftJoinAndSelect("itemModel.abilities", "abilities")
+            .createQueryBuilder("item_model")
+            .leftJoinAndSelect("item_model.abilities", "abilities")
             .where("1=1");
-        
-        if(filterOptions.s)
+    
+        if(filterOptions && filterOptions.s)
         {
             const s = "%" + filterOptions.s + "%";
             query = query.andWhere(new Brackets(qb => {
-                qb.where("LOWER(itemModel.name) like LOWER(:s)", {s})
+                qb.where("LOWER(item_model.name) like LOWER(:s)", {s})
             }));
         }
-        
-        if(filterOptions.itemType)
+    
+        if(filterOptions && filterOptions.itemType)
         {
-            query = query.andWhere("itemModel.itemType = :itemType", {itemType:filterOptions.itemType});
+            query = query.andWhere("item_model.itemType = :itemType", {itemType:filterOptions.itemType});
         }
-        
-        query.skip(page*size);
-        query.take(size);
-        
-        const [result, count] = await query.getManyAndCount();
-        
-        return new Page<ItemModel>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
+    
+        return query;
     }
 }

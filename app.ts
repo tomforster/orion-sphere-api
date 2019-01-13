@@ -9,7 +9,7 @@ import "pug";
 import * as path from "path";
 import {itemService} from "./routes/ItemRoutes";
 import {ItemType} from "./ItemType";
-import {FilterOptions} from "./service/filters/FilterOptions";
+import {Pageable} from "./service/filters/Pageable";
 
 export const appPromise = connectionPromise.then(async connection =>
 {
@@ -36,28 +36,29 @@ export const appPromise = connectionPromise.then(async connection =>
                 {
                     if(route.isPaged)
                     {
+                        const p:unknown = request.query.p;
                         const s:unknown = request.query.s;
-                        let filterOptions:FilterOptions;
-                        if(s && typeof s === "object" && s.hasOwnProperty("page") && s.hasOwnProperty("size"))
+                        let pageable:Pageable;
+                        if(p && typeof p === "object" && p.hasOwnProperty("page") && p.hasOwnProperty("size"))
                         {
-                            filterOptions = s as FilterOptions;
-                            const page = Number(filterOptions.page);
-                            const size = Number(filterOptions.size);
-                            filterOptions.page = isFinite(page) ? page : 0;
-                            filterOptions.size = isFinite(size) ? size : 10;
+                            pageable = p as Pageable;
+                            const page = Number(pageable.page);
+                            const size = Number(pageable.size);
+                            pageable.page = isFinite(page) ? page : 0;
+                            pageable.size = isFinite(size) ? size : 10;
                         }
                         else
                         {
-                            filterOptions = {page:0, size: 10};
+                            pageable = {page:0, size: 10, sort:null};
                         }
                         
                         if(!route.pagedById)
                         {
-                            routePromise = route.action(filterOptions)
+                            routePromise = route.action(pageable, s)
                         }
                         else
                         {
-                            routePromise = route.action(request.params.id || 0, filterOptions)
+                            routePromise = route.action(request.params.id || 0, pageable)
                         }
                     }
                     else

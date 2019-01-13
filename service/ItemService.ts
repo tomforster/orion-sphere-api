@@ -3,16 +3,14 @@ import {Service} from "./Service";
 import {validateOrReject} from "class-validator";
 import {ItemFilterOptions} from "./filters/ItemFilterOptions";
 import {Brackets} from "typeorm";
-import {Page} from "../Page";
 
-export class ItemService extends Service<Item>
+export class ItemService extends Service<Item, ItemFilterOptions>
 {
     entityClass:any = Item;
+    allowedSortFields:string[] = ["id", "serial"];
     
-    async findAll(filterOptions:ItemFilterOptions):Promise<Page<Item>>
+    getFindQuery = (filterOptions?:ItemFilterOptions) =>
     {
-        const {page, size} = filterOptions;
-        
         let query = this.getRepository()
             .createQueryBuilder("item")
             .leftJoinAndSelect("item.itemModel", "model")
@@ -20,7 +18,7 @@ export class ItemService extends Service<Item>
             .leftJoinAndSelect("mods.ability", "ability")
             .where("1=1");
         
-        if(filterOptions.s)
+        if(filterOptions && filterOptions.s)
         {
             const s = "%" + filterOptions.s + "%";
             query = query.andWhere(new Brackets(qb => {
@@ -29,18 +27,13 @@ export class ItemService extends Service<Item>
             }));
         }
         
-        if(filterOptions.itemModel && filterOptions.itemModel.itemType)
+        if(filterOptions && filterOptions.itemModel && filterOptions.itemModel.itemType)
         {
             query = query.andWhere("model.itemType = :itemType", {itemType:filterOptions.itemModel.itemType});
         }
         
-        query.skip(page*size);
-        query.take(size);
-
-        const [result, count] = await query.getManyAndCount();
-
-        return new Page<Item>(result.map(i => {(i as any).type = this.entityClass.name; return i}), page, size, count);
-    }
+        return query;
+    };
     
     async create(params:Item):Promise<Item>
     {

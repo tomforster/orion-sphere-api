@@ -1,6 +1,7 @@
 import {ListView} from "./ListView";
 import {IAbility} from "../../../interfaces/IAbility";
 import * as m from "mithril";
+import {ColumnHeader} from "../components/ColumnHeader";
 
 export class AbilityListView extends ListView<IAbility>
 {
@@ -9,9 +10,10 @@ export class AbilityListView extends ListView<IAbility>
         return "/ability/create";
     }
     
-    getColumns():string[]
+    getColumns():ColumnHeader[]
     {
-        return ["Description", "Charge Cost"];
+        return [new ColumnHeader("Description", "description"),
+            new ColumnHeader("Charge Cost", "chargeCost")];
     }
     
     getRowData(ability:IAbility)

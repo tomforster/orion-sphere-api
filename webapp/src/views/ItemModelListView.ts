@@ -3,6 +3,7 @@ import {ItemType} from "../../../ItemType";
 import {IItemModel} from "../../../interfaces/IItemModel";
 import * as m from "mithril";
 import {ItemModelSearchPane} from "../components/ItemModelSearchPane";
+import {ColumnHeader} from "../components/ColumnHeader";
 
 export class ItemModelListView extends ListView<IItemModel>
 {
@@ -16,9 +17,12 @@ export class ItemModelListView extends ListView<IItemModel>
         return new ItemModelSearchPane(this.onSearchChange.bind(this));
     }
     
-    getColumns():string[]
+    getColumns():ColumnHeader[]
     {
-        return ["Name", "Item Type", "Base Cost", "Base Charges"];
+        return [new ColumnHeader("Name", "name"),
+            new ColumnHeader("Item Type"),
+            new ColumnHeader("Base Cost", "baseCost"),
+            new ColumnHeader("Base Charges", "baseCharges")];
     }
     
     getRowData(itemModel:IItemModel)

@@ -4,6 +4,7 @@ import {Vnode} from "mithril";
 import {ItemType} from "../../../ItemType";
 import {IItem} from "../../../interfaces/IItem";
 import {ItemSearchPane} from "../components/ItemSearchPane";
+import {ColumnHeader} from "../components/ColumnHeader";
 
 export class ItemListView extends ListView<IItem>
 {
@@ -14,9 +15,14 @@ export class ItemListView extends ListView<IItem>
         return new ItemSearchPane(this.onSearchChange.bind(this));
     }
     
-    getColumns():string[]
+    getColumns():ColumnHeader[]
     {
-        return ["Serial", "Model", "Mods", "Type", "Maint. Cost", "+Mod Cost"];
+        return [new ColumnHeader("Serial", "serial"),
+            new ColumnHeader("Model"),
+            new ColumnHeader("Mods"),
+            new ColumnHeader("Type"),
+            new ColumnHeader("Maint. Cost"),
+            new ColumnHeader("+Mod Cost")];
     }
     
     getRowData(item:IItem)

@@ -1,7 +1,7 @@
 import * as m from "mithril";
 import {Children, Vnode} from "mithril";
 import {View} from "./View";
-import {Page} from "../../../Page";
+import {Page} from "../../../service/filters/Page";
 import {AuditType} from "../../../AuditType";
 import {IDomainEntity} from "../../../interfaces/IDomainEntity";
 import {IAudit} from "../../../interfaces/IAudit";

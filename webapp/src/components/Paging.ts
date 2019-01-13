@@ -1,6 +1,6 @@
 import * as m from "mithril";
 import {ClassComponent, Vnode} from "mithril";
-import {Page} from "../../../Page";
+import {Page} from "../../../service/filters/Page";
 
 export class Paging implements ClassComponent
 {

@@ -3,14 +3,16 @@ import {Children, Vnode} from "mithril";
 import {FilterOptions} from "../../../service/filters/FilterOptions";
 import {View} from "./View";
 import {IDomainEntity} from "../../../interfaces/IDomainEntity";
-import {Page} from "../../../Page";
+import {Page} from "../../../service/filters/Page";
 import {Paging} from "../components/Paging";
 import {SearchPane} from "../components/SearchPane";
+import {Pageable} from "../../../service/filters/Pageable";
+import {ColumnHeader} from "../components/ColumnHeader";
 
 export abstract class ListView<T extends IDomainEntity> extends View
 {
     page:Page<T> = new Page<T>();
-    currentPage:number;
+    pageable:Pageable;
     selectedItems:any[] = [];
     selectMode:boolean = false;
     expandedItem:number | null;
@@ -19,7 +21,7 @@ export abstract class ListView<T extends IDomainEntity> extends View
     searchPane:SearchPane;
     filterOptions:FilterOptions | undefined;
     
-    abstract getColumns():string[];
+    abstract getColumns():ColumnHeader[];
     abstract getRowData(entity:T):Vnode[];
     abstract getCreateUrl():string;
     
@@ -69,7 +71,8 @@ export abstract class ListView<T extends IDomainEntity> extends View
     
     oninit(vnode:Vnode):any
     {
-        this.currentPage = 0;
+        this.pageable = {page: 0, size: 50, sort: {field:"id", direction: "DESC"}};
+        this.filterOptions = {};
         this.paging = new Paging(this.page, this.onPageChange.bind(this));
         this.searchPane = this.getSearchPane();
         return super.oninit(vnode);
@@ -77,7 +80,7 @@ export abstract class ListView<T extends IDomainEntity> extends View
     
     onPageChange(targetPage:number)
     {
-        this.currentPage = targetPage;
+        this.pageable.page = targetPage;
         this.fetch();
     }
     
@@ -85,6 +88,24 @@ export abstract class ListView<T extends IDomainEntity> extends View
     {
         this.filterOptions = filterOptions;
         this.fetch();
+    }
+    
+    onColumnClick(columnHeader:ColumnHeader)
+    {
+        if(columnHeader.sortField)
+        {
+            //swap dir if its already selected
+            console.log(this.pageable.sort, columnHeader);
+            if (this.pageable.sort && this.pageable.sort.field === columnHeader.sortField)
+            {
+                this.pageable.sort.direction = this.pageable.sort.direction === "ASC" ? "DESC" : "ASC";
+            }
+            else
+            {
+                this.pageable.sort = {field: columnHeader.sortField, direction: "ASC"};
+            }
+            this.fetch();
+        }
     }
     
     getRow(r:T):Vnode
@@ -106,8 +127,7 @@ export abstract class ListView<T extends IDomainEntity> extends View
     async fetch()
     {
         let url = this.getUrl();
-        
-        url += "?" + m.buildQueryString({s:Object.assign({page: this.currentPage, size: 50}, this.filterOptions)});
+        url += "?" + m.buildQueryString({p:this.pageable, s:this.filterOptions});
         
         const page = await m.request<Page<T>>({
             method: "get",
@@ -115,7 +135,7 @@ export abstract class ListView<T extends IDomainEntity> extends View
         });
         
         Object.assign(this.page, page);
-        this.currentPage = this.page.number;
+        this.pageable = {page:this.page.number, size: this.page.size, sort:this.page.sort};
         this.loaded = true;
     }
     
@@ -129,7 +149,9 @@ export abstract class ListView<T extends IDomainEntity> extends View
             });
             
             const table = m("table.table.is-fullwidth.is-narrow",
-                m("thead", m("tr", [m("th")].concat(this.getColumns().map(h => m("th", h))))),
+                m("thead", m("tr", [m("th")].concat(this.getColumns()
+                    .map(columnHeader => m("th", columnHeader.sortField ? {onclick: this.onColumnClick.bind(this, columnHeader)} : {}, [columnHeader.label, columnHeader.sortField === this.pageable.sort.field ? m("span.icon", this.pageable.sort.direction === "ASC" ? m("i.fas.fa-chevron-down") : m("i.fas.fa-chevron-up")) : m("")]))
+                ))),
                 m("tbody", bodyContent));
             
             return m(".container", this.getTitleBar(), m(this.searchPane), table, m(this.paging));

@@ -6,7 +6,4 @@
 export interface FilterOptions
 {
     s?:string;
-    sort?:{field:string, direction:"ASC"|"DESC"}
-    page:number;
-    size:number;
 }

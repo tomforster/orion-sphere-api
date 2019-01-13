@@ -2,6 +2,7 @@ import {ListView} from "./ListView";
 import {ItemType} from "../../../ItemType";
 import {IMod} from "../../../interfaces/IMod";
 import * as m from "mithril";
+import {ColumnHeader} from "../components/ColumnHeader";
 
 export class ModListView extends ListView<IMod>
 {
@@ -10,9 +11,11 @@ export class ModListView extends ListView<IMod>
         return "/mod/create";
     }
     
-    getColumns():string[]
+    getColumns():ColumnHeader[]
     {
-        return ["Description", "Max Stacks", "Restrictions"];
+        return [new ColumnHeader("Description", "description"),
+            new ColumnHeader("Max Stacks", "maxStacks"),
+                new ColumnHeader("Restrictions")];
     }
     
     getRowData(mod:IMod)

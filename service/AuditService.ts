@@ -1,14 +1,14 @@
 import {Audit} from "../entity/Audit";
 import {getManager} from "typeorm";
 import {Service} from "./Service";
-import {Page} from "../Page";
-import {FilterOptions} from "./filters/FilterOptions";
+import {Page} from "./filters/Page";
+import {Pageable} from "./filters/Pageable";
 
 export class AuditService
 {
-    async findByEntityId(type:string, id:number, filterOptions:FilterOptions):Promise<Page<Audit>>
+    async findByEntityId(type:string, id:number, pageable:Pageable):Promise<Page<Audit>>
     {
-        const {page, size} = filterOptions;
+        const {page, size} = pageable;
         if(!Service.validateId(id)) throw new Error("Invalid argument");
         
         let where = {};
@@ -27,6 +27,6 @@ export class AuditService
         const count = result[1];
         const audits = result[0];
         
-        return new Page<Audit>(audits, page, size, count);
+        return new Page<Audit>(audits, page, size, count, {field:"id", direction: "DESC"});
     }
 }

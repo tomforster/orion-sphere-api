@@ -1,10 +1,11 @@
 import * as m from "mithril";
 import {Children, ClassComponent, Vnode} from "mithril";
-import {Page} from "../../../Page";
+import {Page} from "../../../service/filters/Page";
 import {Paging} from "./Paging";
 import {SearchPane} from "./SearchPane";
-import {FilterOptions} from "../../../service/filters/FilterOptions";
 import {IDomainEntity} from "../../../interfaces/IDomainEntity";
+import {Pageable} from "../../../service/filters/Pageable";
+import {FilterOptions} from "../../../service/filters/FilterOptions";
 
 export class SelectPane<T extends IDomainEntity> implements ClassComponent
 {
@@ -13,7 +14,8 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     loading:boolean = false;
     selectedItemId:number;
     selectedItem:T | undefined;
-    currentPage:number = 0;
+    pageable:Pageable;
+    filterOptions:FilterOptions = {s:""};
     paging:Paging;
     searchPane:SearchPane;
     url:string;
@@ -41,7 +43,7 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
         return new SearchPane(this.fetch.bind(this));
     }
     
-    async fetch(filterOptions?:FilterOptions)
+    async fetch()
     {
         this.loading = true;
         try
@@ -49,10 +51,10 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
             const page = await m.request({
                 method: "get",
                 url: this.url,
-                data: {page: this.currentPage, size: 15, s: filterOptions}
+                data: {p: this.pageable, s: this.filterOptions}
             });
             Object.assign(this.page, page);
-            this.currentPage = this.page.number;
+            this.pageable = {page:this.page.number, size: this.page.size, sort:this.page.sort};
             this.loading = false;
         }
         catch(e)
@@ -76,7 +78,7 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     
     onPageChange(targetPage:number)
     {
-        this.currentPage = targetPage;
+        this.pageable.page = targetPage;
         this.fetch();
     }
     
