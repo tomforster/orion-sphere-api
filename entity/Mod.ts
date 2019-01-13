@@ -38,6 +38,7 @@ export class Mod extends DomainEntity implements IMod
             this.description = params.description;
             this.maxStacks = params.maxStacks;
             this.restrictedTo = params.restrictedTo;
+            this.ability = new Ability(params.ability);
         }
         else
         {
