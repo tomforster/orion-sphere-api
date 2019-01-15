@@ -5,6 +5,7 @@ import {IItem} from "../../../interfaces/IItem";
 import {IMod} from "../../../interfaces/IMod";
 import {SelectPane} from "../components/SelectPane";
 import {IItemModel} from "../../../interfaces/IItemModel";
+import {IItemMod} from "../../../interfaces/IItemMod";
 
 export class ItemDetailsView extends DetailsView<IItem>
 {
@@ -13,7 +14,21 @@ export class ItemDetailsView extends DetailsView<IItem>
     
     oninit(vnode:Vnode):any
     {
-        this.modSelect = new SelectPane<IMod>("mods", (mod:IMod) => this.entity.mods.push(mod), undefined, "Add Mod");
+        this.modSelect = new SelectPane<IMod>("mods", (mod:IMod) =>
+        {
+            //if mod is already in the list, increment its count
+            const foundMod = this.entity.itemMods.find(im => im.mod.id == mod.id);
+            if(foundMod)
+            {
+                foundMod.count++;
+            }
+            else
+            {
+                //else push
+                this.entity.itemMods.push({id:0, mod, count:1})
+            }
+        }, undefined, "Add Mod");
+
         return super.oninit(vnode);
     }
     
@@ -21,7 +36,7 @@ export class ItemDetailsView extends DetailsView<IItem>
     {
         return {
             id: 0,
-            mods:[]
+            itemMods:[]
         };
     }
     
@@ -49,12 +64,18 @@ export class ItemDetailsView extends DetailsView<IItem>
         return super.getControls();
     }
     
-    onRemoveButtonPress(mod:IMod)
+    onRemoveButtonPress(itemMod:IItemMod)
     {
-        const index = this.entity.mods.indexOf(mod);
-        if(index > -1)
+        itemMod.count--;
+        
+        if(!itemMod.count)
         {
-            this.entity.mods.splice(index, 1);
+            const index = this.entity.itemMods.indexOf(itemMod);
+    
+            if (index > -1)
+            {
+                this.entity.itemMods.splice(index, 1);
+            }
         }
     }
     
@@ -65,9 +86,9 @@ export class ItemDetailsView extends DetailsView<IItem>
         
         return m("form", [
             m(".field", m("label.label", "Item Model"), m(this.modelSelect)),
-            m(".field", m("label.label", "Mods"), m("ul.with-bullets", this.entity.mods.map(mod => m("li", mod.description, m("a", {onclick: this.onRemoveButtonPress.bind(this, mod)}, " [Remove]"))))),
+            m(".field", m("label.label", "Mods"), m("ul.with-bullets", this.entity.itemMods.map(itemMod => m("li", itemMod.mod.description + (itemMod.count > 1 ? ` (${itemMod.count})` : ""), m("a", {onclick: this.onRemoveButtonPress.bind(this, itemMod)}, " [Remove]"))))),
             m(this.modSelect),
-            m(".field", {style:"margin-top:0.75em"}, m("label.label", "Abilities"), m("ul.with-bullets", this.entity.mods.map(mod => m("li", mod.ability && mod.ability.description)))),
+            m(".field", {style:"margin-top:0.75em"}, m("label.label", "Abilities"), m("ul.with-bullets", this.entity.itemMods.map(itemMod => m("li", itemMod.mod.ability && itemMod.mod.ability.description)))),
             //todo: dynamic update these
             // m(".field", m("label.label", "Maintenance Cost"), m(".control", m("input.input[type=text]", {value: this.entity.maintenanceCost, readonly:true}))),
             // m(".field", m("label.label", "Mod Cost"), m(".control", m("input.input[type=text]", {value: this.entity.modCost, readonly:true}))),

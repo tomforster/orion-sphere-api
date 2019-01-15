@@ -1,10 +1,10 @@
 import {DomainEntity} from "./DomainEntity";
-import {Column, Entity, ManyToMany, ManyToOne} from "typeorm";
+import {Column, Entity, ManyToOne} from "typeorm";
 import {IsArray, IsDefined, Max, MaxLength, Min, MinLength} from "class-validator";
 import {Ability} from "./Ability";
-import {Item} from "./Item";
 import {ItemType} from "../ItemType";
 import {IMod} from "../interfaces/IMod";
+import {ItemMod} from "./ItemMod";
 
 @Entity()
 export class Mod extends DomainEntity implements IMod
@@ -18,8 +18,8 @@ export class Mod extends DomainEntity implements IMod
     @ManyToOne(type => Ability, ability => ability.mods, {eager:true})
     ability:Ability;
     
-    @ManyToMany(type => Item, item => item.mods)
-    items:Item[];
+    @ManyToOne(type => ItemMod, itemMod => itemMod.id)
+    itemMods:ItemMod[];
     
     @Min(0, {always:true})
     @Max(999, {always:true})

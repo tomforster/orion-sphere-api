@@ -30,7 +30,7 @@ export class ItemListView extends ListView<IItem>
         return [
             m("td", item.serial),
             m("td", item.itemModel && item.itemModel.name || ""),
-            m("td", item.mods.length),
+            m("td", item.itemMods.reduce((acc, mod) => acc + mod.count,0)),
             m("td", item.itemModel && ItemType[<any>item.itemModel.itemType] || ""),
             m("td", item.maintenanceCost),
             m("td", item.modCost)
@@ -72,13 +72,13 @@ export class ItemListView extends ListView<IItem>
             m(".column",
                 m(".columns", [
                     m(".column.is-narrow.has-text-weight-bold", "Mods"),
-                    m(".column", m("ul.with-bullets", r.mods.map(mod => m("li", mod.description))))
+                    m(".column", m("ul.with-bullets", r.itemMods.map(itemMod => m("li", itemMod.mod.description))))
                 ])
             ),
             m(".column",
                 m(".columns", [
                     m(".column.is-narrow.has-text-weight-bold", "Abilities"),
-                    m(".column", m("ul.with-bullets", r.mods.map(mod => mod.ability ? m("li", mod.ability.description) : m(""))))
+                    m(".column", m("ul.with-bullets", r.itemMods.map(itemMod => itemMod.mod.ability ? m("li", itemMod.mod.ability.description) : m(""))))
                 ])
             ),
             m(".column.is-narrow.is-vcentered.is-flex", m(`a.button.is-primary.is-small[href=/item/${r.id}]`, {oncreate: m.route.link}, "View/Edit"))

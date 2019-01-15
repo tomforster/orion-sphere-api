@@ -14,8 +14,9 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         let query = this.getRepository()
             .createQueryBuilder("item")
             .leftJoinAndSelect("item.itemModel", "model")
-            .leftJoinAndSelect("item.mods", "mods")
-            .leftJoinAndSelect("mods.ability", "ability")
+            .leftJoinAndSelect("item.itemMods", "itemMods")
+            .leftJoinAndSelect("itemMods.mod", "mod")
+            .leftJoinAndSelect("mod.ability", "ability")
             .where("1=1");
         
         if(filterOptions && filterOptions.s)
@@ -51,15 +52,16 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         const entity = new Item(params);
         await validateOrReject(entity, {groups: ["update"]});
         
-        const oldEntity = this.getRepository().findOne(entity.id);
-        const newEntity = this.getRepository().save(entity);
+        const oldEntity = await this.getRepository().findOne(entity.id);
+        const newEntity = await this.getRepository().save(entity);
+        const newEntity2 = await this.getRepository().findOne(entity.id);
         
         //save audit for mods todo
-        Promise.all([oldEntity, newEntity]).then(r => {
-            console.log("old", r[0].mods.map(mod => mod.description),
-                "new", r[1].mods.map(mod => mod.description));
-        });
+        console.log("old", oldEntity.itemMods.map(im => im.mod.description + " " +im.count));
+        console.log("new", newEntity.itemMods.map(im => im.mod.description + " " +im.count));
+        console.log("new2", newEntity2.itemMods.map(im => im.mod.description + " " +im.count));
         
+        newEntity.itemMods.forEach(itemMod => delete itemMod.item);
         return newEntity;
     }
     
