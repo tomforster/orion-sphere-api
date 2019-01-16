@@ -2,7 +2,9 @@ import {Item} from "../entity/Item";
 import {Service} from "./Service";
 import {validateOrReject} from "class-validator";
 import {ItemFilterOptions} from "./filters/ItemFilterOptions";
-import {Brackets} from "typeorm";
+import {Brackets, getManager} from "typeorm";
+import {Audit} from "../entity/Audit";
+import {AuditType} from "../AuditType";
 
 export class ItemService extends Service<Item, ItemFilterOptions>
 {
@@ -54,12 +56,48 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         
         const oldEntity = await this.getRepository().findOne(entity.id);
         const newEntity = await this.getRepository().save(entity);
-        const newEntity2 = await this.getRepository().findOne(entity.id);
         
-        //save audit for mods todo
-        console.log("old", oldEntity.itemMods.map(im => im.mod.description + " " +im.count));
-        console.log("new", newEntity.itemMods.map(im => im.mod.description + " " +im.count));
-        console.log("new2", newEntity2.itemMods.map(im => im.mod.description + " " +im.count));
+        const audits:Audit[] = [];
+        
+        oldEntity.itemMods
+            .filter(oldItemMod => !newEntity.itemMods.find(newItemMod => newItemMod.id === oldItemMod.id))
+            .forEach(oldItemMod => {
+                for(let i = 0; i < oldItemMod.count; i++)
+                {
+                    audits.push(new Audit(AuditType.update, "Item", entity.id, "Removed Mod: " + oldItemMod.mod.description));
+                }
+            });
+        
+        newEntity.itemMods.forEach(itemMod =>
+        {
+            const oldItemMod = oldEntity.itemMods.find(oldItemMod => oldItemMod.id === itemMod.id);
+            if(!oldItemMod){
+                for(let i = 0; i < itemMod.count; i++)
+                {
+                    audits.push(new Audit(AuditType.update, "Item", entity.id, "Added Mod: " + itemMod.mod.description));
+                }
+            }
+            else if(oldItemMod.count > itemMod.count)
+            {
+                const difference = oldItemMod.count - itemMod.count;
+                for(let i = 0; i < difference; i++)
+                {
+                    audits.push(new Audit(AuditType.update, "Item", entity.id, "Removed Mod: " + oldItemMod.mod.description));
+                }
+            }
+            else if(oldItemMod.count < itemMod.count)
+            {
+                const difference = itemMod.count - oldItemMod.count;
+                for(let i = 0; i < difference; i++)
+                {
+                    audits.push(new Audit(AuditType.update, "Item", entity.id, "Added Mod: " + oldItemMod.mod.description));
+                }
+            }
+        });
+        
+        // console.log("audits", audits.map(a => a.description));
+        
+        getManager().getRepository(Audit).save(audits);
         
         newEntity.itemMods.forEach(itemMod => delete itemMod.item);
         return newEntity;

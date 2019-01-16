@@ -32,7 +32,7 @@ export class Audit implements IAudit
     @Column({nullable: true})
     description:string;
     
-    constructor(auditType:AuditType, entityType:string, id:number)
+    constructor(auditType:AuditType, entityType:string, id:number, description?:string)
     {
         this.auditType = auditType;
         
@@ -43,5 +43,7 @@ export class Audit implements IAudit
             case "Mod": this.modId = id; break;
             case "Ability": this.abilityId = id; break;
         }
+        
+        this.description = description;
     }
 }
