@@ -18,11 +18,11 @@ export class ItemListView extends ListView<IItem>
     getColumns():ColumnHeader[]
     {
         return [new ColumnHeader("Serial", "serial"),
-            new ColumnHeader("Model"),
+            new ColumnHeader("Model", "model.name"),
             new ColumnHeader("Mods"),
             new ColumnHeader("Type"),
-            new ColumnHeader("Maint. Cost"),
-            new ColumnHeader("+Mod Cost")];
+            new ColumnHeader("Maint. Cost", "maintenanceCost"),
+            new ColumnHeader("+Mod Cost", "modCost")];
     }
     
     getRowData(item:IItem)

@@ -2,12 +2,12 @@ import {AfterLoad, Column, Entity, JoinColumn, ManyToOne, OneToMany} from "typeo
 import {ItemModel} from "./ItemModel";
 import {DomainEntity} from "./DomainEntity";
 import {IItem} from "../interfaces/IItem";
-import {IsArray, IsDefined, Length} from "class-validator";
+import {IsArray, IsDefined, IsPositive, Length} from "class-validator";
 import {ItemMod} from "./ItemMod";
 
-const multipliers = [1, 1.2, 1.6, 2.2, 3.2, 4.8, 7.4, 11.6, 18.4, 29.4, 47.2];
-const maintenanceModifier = 0.1;
-const addModModifier = 0.5;
+// const multipliers = [1, 1.2, 1.6, 2.2, 3.2, 4.8, 7.4, 11.6, 18.4, 29.4, 47.2];
+export const maintenanceModifier = 0.1;
+export const addModModifier = 0.5;
 
 @Entity()
 export class Item extends DomainEntity implements IItem
@@ -25,8 +25,13 @@ export class Item extends DomainEntity implements IItem
     @Column()
     serial:string;
 
-    maintenanceCost:number;
+    @IsPositive()
+    @Column({default: 1, type: "real"})
     modCost:number;
+    
+    @IsPositive()
+    @Column({default: 1, type: "real"})
+    maintenanceCost:number;
     
     constructor(params?:IItem)
     {
@@ -36,6 +41,8 @@ export class Item extends DomainEntity implements IItem
             this.itemModel = params.itemModel ? new ItemModel(params.itemModel) : undefined;
             this.itemMods = params.itemMods.map(itemMod => new ItemMod(itemMod, this));
             this.serial = params.serial;
+            
+            this.setCosts();
         }
         else
         {
@@ -46,9 +53,23 @@ export class Item extends DomainEntity implements IItem
     @AfterLoad()
     setCosts()
     {
-        //todo: fix this
         const numMods = this.itemMods.reduce((acc, mod) => acc + mod.count,0);
-        this.modCost = Math.round(multipliers[numMods]*addModModifier*this.itemModel.baseCost);
-        this.maintenanceCost = Math.round(multipliers[numMods]*maintenanceModifier*this.itemModel.baseCost);
+        
+        const costMultiplier = getMultiplier(numMods);
+        this.modCost = Math.round(costMultiplier*addModModifier*this.itemModel.baseCost);
+        this.maintenanceCost = Math.round(costMultiplier*maintenanceModifier*this.itemModel.baseCost);
     }
+}
+
+const multiplierCache = [];
+
+export function getMultiplier(currentNumMods:number)
+{
+    if(multiplierCache[currentNumMods]) return multiplierCache[currentNumMods];
+    
+    if(!currentNumMods) return 1;
+    if(currentNumMods === 1) return 1.2;
+    if(currentNumMods === 2) return 1.6;
+    
+    return multiplierCache[currentNumMods] = Math.round((2*getMultiplier(currentNumMods - 1) - getMultiplier(currentNumMods - 3)) * 100) / 100;
 }

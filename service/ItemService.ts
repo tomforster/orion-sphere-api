@@ -9,7 +9,7 @@ import {AuditType} from "../AuditType";
 export class ItemService extends Service<Item, ItemFilterOptions>
 {
     entityClass:any = Item;
-    allowedSortFields:string[] = ["id", "serial"];
+    allowedSortFields:string[] = ["id", "serial", "maintenanceCost", "modCost", "model.name"];
     
     getFindQuery = (filterOptions?:ItemFilterOptions) =>
     {
@@ -95,9 +95,7 @@ export class ItemService extends Service<Item, ItemFilterOptions>
             }
         });
         
-        // console.log("audits", audits.map(a => a.description));
-        
-        getManager().getRepository(Audit).save(audits);
+        await getManager().getRepository(Audit).save(audits);
         
         newEntity.itemMods.forEach(itemMod => delete itemMod.item);
         return newEntity;
