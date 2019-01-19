@@ -6,9 +6,9 @@ const itemTypeService = new ItemTypeService();
 export const ItemTypeRoutes:Route[] =
     [
         {
-            path: "/item-type",
+            path: "/item-types",
             method: "get",
-            isPaged: true, //todo fix this
+            isPaged: true,
             action: itemTypeService.findAll.bind(itemTypeService)
         }
     ];

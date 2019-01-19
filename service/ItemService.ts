@@ -5,6 +5,7 @@ import {ItemFilterOptions} from "./filters/ItemFilterOptions";
 import {Brackets, getManager} from "typeorm";
 import {Audit} from "../entity/Audit";
 import {AuditType} from "../AuditType";
+import {ItemMod} from "../entity/ItemMod";
 
 export class ItemService extends Service<Item, ItemFilterOptions>
 {
@@ -16,11 +17,12 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         let query = this.getRepository()
             .createQueryBuilder("item")
             .leftJoinAndSelect("item.itemModel", "model")
+            .leftJoinAndSelect("model.itemType", "itemType")
             .leftJoinAndSelect("item.itemMods", "itemMods")
             .leftJoinAndSelect("itemMods.mod", "mod")
             .leftJoinAndSelect("mod.ability", "ability")
             .where("1=1");
-        
+    
         if(filterOptions && filterOptions.s)
         {
             const s = "%" + filterOptions.s + "%";
@@ -30,9 +32,9 @@ export class ItemService extends Service<Item, ItemFilterOptions>
             }));
         }
         
-        if(filterOptions && filterOptions.itemModel && filterOptions.itemModel.itemType)
+        if(filterOptions && filterOptions.itemModel && filterOptions.itemModel.itemTypeId)
         {
-            query = query.andWhere("model.itemType = :itemType", {itemType:filterOptions.itemModel.itemType});
+            query = query.andWhere("itemType.id = :itemType", {itemType:filterOptions.itemModel.itemTypeId});
         }
         
         return query;
@@ -54,8 +56,14 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         const entity = new Item(params);
         await validateOrReject(entity, {groups: ["update"]});
         
+        //todo check that itemmodel matches mods.
+        
         const oldEntity = await this.getRepository().findOne(entity.id);
         const newEntity = await this.getRepository().save(entity);
+        
+        //save mods
+        const itemModRepo = getManager().getRepository(ItemMod);
+        await itemModRepo.save(newEntity.itemMods);
         
         const audits:Audit[] = [];
         

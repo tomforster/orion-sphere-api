@@ -15,7 +15,7 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     selectedItemId:number;
     selectedItem:T | undefined;
     pageable:Pageable;
-    filterOptions:FilterOptions = {s:""};
+    filterOptions:FilterOptions;
     paging:Paging;
     searchPane:SearchPane;
     url:string;
@@ -23,12 +23,14 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     buttonText:string | undefined;
     onItemSelected:(item:T) => void;
     
-    constructor(url:string, onItemSelected:(item:T) => void, selectedItem?:T, buttonText?: string)
+    constructor(url:string, filterOptions:FilterOptions = {s:""}, onItemSelected:(item:T) => void, selectedItem?:T, buttonText?: string)
     {
         this.selectedItem = selectedItem;
         this.url = url;
         this.buttonText = buttonText;
         this.onItemSelected = onItemSelected;
+        this.filterOptions = filterOptions;
+        if(!filterOptions.s) filterOptions.s = "";
     }
     
     oninit(vnode:Vnode):any
@@ -45,6 +47,7 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     
     async fetch()
     {
+        console.log(this.filterOptions);
         this.loading = true;
         try
         {

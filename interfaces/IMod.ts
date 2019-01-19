@@ -1,6 +1,6 @@
 import {IDomainEntity} from "./IDomainEntity";
 import {IAbility} from "./IAbility";
-import {ItemType} from "../ItemType";
+import {IItemType} from "./IItemType";
 
 export interface IMod extends IDomainEntity
 {
@@ -8,5 +8,5 @@ export interface IMod extends IDomainEntity
     ability?:IAbility;
     // itemMods?:IItemMod[];
     maxStacks?:number;
-    restrictedTo:ItemType[];
+    restrictedTo:IItemType[];
 }

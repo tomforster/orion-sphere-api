@@ -8,8 +8,8 @@ import {Routes} from "./routes/Routes";
 import "pug";
 import * as path from "path";
 import {itemService} from "./routes/ItemRoutes";
-import {ItemType} from "./ItemType";
 import {Pageable} from "./service/filters/Pageable";
+import {ItemType} from "./entity/ItemType";
 
 export const appPromise = connectionPromise.then(async connection =>
 {

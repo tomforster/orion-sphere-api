@@ -2,11 +2,12 @@ import {DetailsView} from "./DetailsView";
 import * as m from "mithril";
 import {Vnode} from "mithril";
 import {IMod} from "../../../interfaces/IMod";
-import {ItemTypeSelectPane} from "../components/ItemTypeSelectPane";
+import {SelectPane} from "../components/SelectPane";
+import {IItemType} from "../../../interfaces/IItemType";
 
 export class ModDetailsView extends DetailsView<IMod>
 {
-    itemTypeSelect:ItemTypeSelectPane;
+    itemTypeSelect:SelectPane<IItemType>;
     
     createEntity():IMod
     {
@@ -22,7 +23,13 @@ export class ModDetailsView extends DetailsView<IMod>
         await super.fetch();
         if(!this.itemTypeSelect)
         {
-            this.itemTypeSelect = new ItemTypeSelectPane(this.entity.restrictedTo);
+            this.itemTypeSelect = new SelectPane("item-types",undefined, (itemType:IItemType) =>
+            {
+                if(this.entity.restrictedTo.find(rt => rt.id === itemType.id))
+                {
+                    this.entity.restrictedTo.push(itemType)
+                }
+            }, undefined, "Add Item Type");
             m.redraw();
         }
     }

@@ -7,29 +7,32 @@ export class itemmods1535909549146 implements MigrationInterface {
     {
         const ts = new Date().toLocaleString().replace(",", "");
         
-        const items = await queryRunner.query(`select i.*, im."itemType" as itemtype, im."baseCost" as basecost from "item" i join "item_model" im on im.id = i."itemModelId"`);
+        const items = await queryRunner.query(`select i.*, im."itemTypeId" as itemtype, im."baseCost" as basecost from "item" i join "item_model" im on im.id = i."itemModelId"`);
         const mods = await queryRunner.query(`select * from "mod"`);
+        const itemRestrictions = await queryRunner.query(`select r.* from mod_restricted_to_item_type r;`);
+        const unrestrictedMods = await queryRunner.query(`select m.id from mod m left join mod_restricted_to_item_type mr on m.id = mr."modId" where mr."modId" is null;`);
         
-        const itemsWithMods = items.map(item => {
-            const candidateMods = mods.filter(mod => mod.restrictedTo === "" || mod.restrictedTo.indexOf(item.itemtype) >= 0);
-            const selectedMods = candidateMods.filter(() => Math.random() > 0.85);
-            return {
-                mods:selectedMods, itemId:item.id, baseCost: item.basecost
-            };
-        }).filter(i => i.mods);
+        const modsToAdd:{itemId: number, modId:number, modName:string}[] = [];
 
-        const modsToAdd:{itemId: number, mod:any}[] = [];
-        itemsWithMods.forEach(itemMods => itemMods.mods.forEach(mod => modsToAdd.push({itemId: itemMods.itemId, mod})));
+        items.forEach(item => {
+            itemRestrictions
+                .filter(r => r.itemTypeId === item.itemtype)//get restrictions for item
+                .map(r => r.modId)
+                .concat(unrestrictedMods.map(m => m.id))
+                .filter(() => Math.random() > 0.85).forEach(selectedModId => {
+                    modsToAdd.push({itemId: item.id, modId:selectedModId, modName:mods.find(m => m.id === selectedModId)!.description})
+                })
+        });
+        
+        await queryRunner.query(`insert into "item_mod" ("itemId", "modId", "count", "createdOn", version) values ${modsToAdd.map(m => `(${m.itemId}, ${m.modId}, 1, '${ts}', 0)`).join(",")};`);
+        await queryRunner.query(`insert into "audit" ("auditType", "itemId", "createdOn", description) values ${modsToAdd.map(m => `(1, ${m.itemId},'${ts}', 'Added Mod: ${m.modName}')`).join(",")}`);
 
-        await queryRunner.query(`insert into "item_mod" ("itemId", "modId", "count", "createdOn", version) values ${modsToAdd.map(m => `(${m.itemId}, ${m.mod.id}, 1, '${ts}', 0)`).join(",")};`);
-        await queryRunner.query(`insert into "audit" ("auditType", "itemId", "createdOn", description) values ${modsToAdd.map(m => `(1, ${m.itemId},'${ts}', 'Added Mod: ${m.mod.description}')`).join(",")}`);
-
-        await Promise.all(itemsWithMods.map(async itemWithMods =>
+        await Promise.all(items.map(async item =>
         {
-            const itemId = itemWithMods.itemId;
-            const numMods = itemWithMods.mods.length;
-            await queryRunner.query(`update item set "modCost" = ${getMultiplier(numMods)*addModModifier*itemWithMods.baseCost} where id = ${itemId}`);
-            return queryRunner.query(`update item set "maintenanceCost" = ${getMultiplier(numMods)*maintenanceModifier*itemWithMods.baseCost} where id = ${itemId}`);
+            const itemId = item.id;
+            const numMods = modsToAdd.filter(m => m.itemId === itemId).length;
+            await queryRunner.query(`update item set "modCost" = ${getMultiplier(numMods)*addModModifier*item.basecost} where id = ${itemId}`);
+            return queryRunner.query(`update item set "maintenanceCost" = ${getMultiplier(numMods)*maintenanceModifier*item.basecost} where id = ${itemId}`);
         }));
     }
 

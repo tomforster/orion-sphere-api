@@ -12,6 +12,7 @@ export class ItemModelService extends Service<ItemModel, ItemModelFilterOptions>
     {
         let query = this.getRepository()
             .createQueryBuilder("item_model")
+            .leftJoinAndSelect("item_model.itemType", "itemType")
             .leftJoinAndSelect("item_model.abilities", "abilities")
             .where("1=1");
     
@@ -23,9 +24,9 @@ export class ItemModelService extends Service<ItemModel, ItemModelFilterOptions>
             }));
         }
     
-        if(filterOptions && filterOptions.itemType)
+        if(filterOptions && filterOptions.itemTypeId)
         {
-            query = query.andWhere("item_model.itemType = :itemType", {itemType:filterOptions.itemType});
+            query = query.andWhere("itemType.id = :itemType", {itemType:filterOptions.itemTypeId});
         }
     
         return query;

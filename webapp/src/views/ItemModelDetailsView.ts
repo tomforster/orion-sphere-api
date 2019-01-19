@@ -2,18 +2,19 @@ import {DetailsView} from "./DetailsView";
 import * as m from "mithril";
 import {Vnode} from "mithril";
 import {IItemModel} from "../../../interfaces/IItemModel";
-import {ItemTypeSelectPane} from "../components/ItemTypeSelectPane";
+import {SelectPane} from "../components/SelectPane";
+import {IItemType} from "../../../interfaces/IItemType";
 
 export class ItemModelDetailsView extends DetailsView<IItemModel>
 {
-    itemTypeSelect:ItemTypeSelectPane;
+    itemTypeSelect:SelectPane<IItemType>;
     
     async fetch():Promise<any>
     {
         await super.fetch();
         if(!this.itemTypeSelect)
         {
-            this.itemTypeSelect = new ItemTypeSelectPane(this.entity.itemType, (itemType) => this.entity.itemType = itemType);
+            this.itemTypeSelect = new SelectPane("item-types", undefined, (itemType) => this.entity.itemType = itemType);
             m.redraw();
         }
     }

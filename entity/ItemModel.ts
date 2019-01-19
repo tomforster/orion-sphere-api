@@ -1,16 +1,14 @@
-import {ItemType} from "../ItemType";
-import {Column, Entity, JoinTable, ManyToMany} from "typeorm";
-import {IsDefined, IsEnum, IsNumber, Length} from "class-validator";
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne} from "typeorm";
+import {IsNumber, Length} from "class-validator";
 import {DomainEntity} from "./DomainEntity";
 import {Ability} from "./Ability";
 import {IItemModel} from "../interfaces/IItemModel";
+import {ItemType} from "./ItemType";
 
 @Entity()
 export class ItemModel extends DomainEntity implements IItemModel
 {
-    @IsDefined({always:true})
-    @IsEnum(ItemType)
-    @Column()
+    @ManyToOne(type => ItemType, {eager: true})
     itemType:ItemType;
     
     @Length(1,255, {always:true})
@@ -34,7 +32,7 @@ export class ItemModel extends DomainEntity implements IItemModel
         if(params)
         {
             super(params.id, params.version);
-            this.itemType = params.itemType;
+            this.itemType = new ItemType(params.itemType);
             this.name = params.name;
             this.baseCost = params.baseCost;
             this.baseCharges = params.baseCharges;

@@ -51,67 +51,109 @@ insert into "ability"(id, description, "chargeCost", "createdOn", version) value
 // language=PostgreSQL
         
         await queryRunner.query(`
-insert into "mod"(id, description, "abilityId", "maxStacks", "restrictedTo" , "createdOn", version) values
+insert into "mod"(id, description, "abilityId", "maxStacks", "createdOn", version) values
 -- Generic Mods
-(1, 'Increase Charge Capacity', 1, 0, '', '${ts}', 0),
-(2, 'Integrity Field', 2, 1, '', '${ts}', 0),
+(1, 'Increase Charge Capacity', 1, 0, '${ts}', 0),
+(2, 'Integrity Field', 2, 1, '${ts}', 0),
 -- Cultural Mods
-(3, 'Talisman', 3, 1, '', '${ts}', 0),
-(4, 'Psi Crystal Battery', 4, 0, '', '${ts}', 0),
-(5, 'Psi Crystal Capacitor', 5, 1, '', '${ts}', 0),
-(6, 'Psi Crystal Matrix', 6, 1, '', '${ts}', 0),
+(3, 'Talisman', 3, 1, '${ts}', 0),
+(4, 'Psi Crystal Battery', 4, 0, '${ts}', 0),
+(5, 'Psi Crystal Capacitor', 5, 1, '${ts}', 0),
+(6, 'Psi Crystal Matrix', 6, 1, '${ts}', 0),
 -- Energy Weapons
-(7, 'Shock Bolt', 7, 0, 'EL,EM,EH', '${ts}', 0),
-(8, 'Penetrator Bolt', 8, 1, 'EL,EM,EH', '${ts}', 0),
-(9, 'Disruption Bolt', 9, 1, 'EL,EM,EH', '${ts}', 0),
-(10, 'Kill Bolt', 10, 1, 'EL,EM,EH', '${ts}', 0),
-(11, 'Impact Bolt', 11, 1, 'EL,EM,EH', '${ts}', 0),
+(7, 'Shock Bolt', 7, 0, '${ts}', 0),
+(8, 'Penetrator Bolt', 8, 1, '${ts}', 0),
+(9, 'Disruption Bolt', 9, 1, '${ts}', 0),
+(10, 'Kill Bolt', 10, 1, '${ts}', 0),
+(11, 'Impact Bolt', 11, 1, '${ts}', 0),
 -- Heavy Energy Weapons
-(12, 'Heavy Force Bolt', 12, 1, 'EH', '${ts}', 0),
-(13, 'Heavy Shock Bolt', 13, 0, 'EH', '${ts}', 0),
-(14, 'Heavy Stun Bolt', 14, 0, 'EH', '${ts}', 0),
-(15, 'Heavy Shredder Bolt', 15, 1, 'EH', '${ts}', 0),
-(16, 'Heavy Ruin Bolt', 16, 1, 'EH', '${ts}', 0),
+(12, 'Heavy Force Bolt', 12, 1, '${ts}', 0),
+(13, 'Heavy Shock Bolt', 13, 0, '${ts}', 0),
+(14, 'Heavy Stun Bolt', 14, 0, '${ts}', 0),
+(15, 'Heavy Shredder Bolt', 15, 1, '${ts}', 0),
+(16, 'Heavy Ruin Bolt', 16, 1, '${ts}', 0),
 -- Melee Weapons
-(17, 'Penetrator Matrix', 8, 1, 'MS,MM,ML', '${ts}', 0),
-(18, 'Shock Matrix', 7, 0, 'MS,MM,ML', '${ts}', 0),
+(17, 'Penetrator Matrix', 8, 1, '${ts}', 0),
+(18, 'Shock Matrix', 7, 0, '${ts}', 0),
 -- Small Melee
-(19,  'Disruption Matrix', 17, 1, 'MS', '${ts}', 0),
+(19,  'Disruption Matrix', 17, 1, '${ts}', 0),
 -- Medium Melee
-(20,  'Convulsor Matrix', 18, 1, 'MM', '${ts}', 0),
+(20,  'Convulsor Matrix', 18, 1, '${ts}', 0),
 -- Large Melee
-(21,  'Force Matrix', 12, 1, 'ML', '${ts}', 0),
-(22,  'Impact Matrix', 11, 1, 'ML', '${ts}', 0),
-(23,  'Stun Matrix', 19, 0, 'ML', '${ts}', 0),
-(24,  'Shredder Matrix', 15, 1, 'ML', '${ts}', 0),
-(25,  'Ruination Matrix', 16, 1, 'ML', '${ts}', 0),
+(21,  'Force Matrix', 12, 1, '${ts}', 0),
+(22,  'Impact Matrix', 11, 1, '${ts}', 0),
+(23,  'Stun Matrix', 19, 0, '${ts}', 0),
+(24,  'Shredder Matrix', 15, 1, '${ts}', 0),
+(25,  'Ruination Matrix', 16, 1, '${ts}', 0),
 -- Shields
-(26, 'Reflection Matrix', 20, 1, 'SH', '${ts}', 0),
-(27, 'Compensator Matrix', 21, 1, 'SH', '${ts}', 0),
-(28, 'Force Absorption Matrix', 22, 1, 'SH', '${ts}', 0),
-(29, 'Energy Absorption Matrix', 23, 0, 'SH', '${ts}', 0),
-(30, 'Resistance Matrix', 24, 1, 'SH', '${ts}', 0),
-(31, 'Repulsor Matrix', 25, 1, 'SH', '${ts}', 0),
+(26, 'Reflection Matrix', 20, 1, '${ts}', 0),
+(27, 'Compensator Matrix', 21, 1, '${ts}', 0),
+(28, 'Force Absorption Matrix', 22, 1, '${ts}', 0),
+(29, 'Energy Absorption Matrix', 23, 0, '${ts}', 0),
+(30, 'Resistance Matrix', 24, 1, '${ts}', 0),
+(31, 'Repulsor Matrix', 25, 1, '${ts}', 0),
 -- Armour
-(32, 'Shock Distributors', 26, 0, 'AL,AM,AH', '${ts}', 0),
-(33, 'Reinforcement Pattern', 27, 0, 'AL,AM,AH', '${ts}', 0),
-(34,  'Ablative Layers (Light)', 28, 1, 'AL', '${ts}', 0),
-(35,  'Ablative Layers (Medium)', 28, 2, 'AM', '${ts}', 0),
-(36,  'Ablative Layers (Heavy)', 28, 3, 'AH', '${ts}', 0),
-(37, 'Integrity Pattern', 29, 1, 'AL,AM,AH', '${ts}', 0),
-(38, 'Stabilisers', 30, 1, 'AL,AM,AH', '${ts}', 0),
-(39, 'Weave Solidifier', 31, 1, 'AL,AM,AH', '${ts}', 0),
-(40, 'Deflection Generator', 32, 1, 'AL,AM,AH', '${ts}', 0),
+(32, 'Shock Distributors', 26, 0, '${ts}', 0),
+(33, 'Reinforcement Pattern', 27, 0, '${ts}', 0),
+(34,  'Ablative Layers (Light)', 28, 1, '${ts}', 0),
+(35,  'Ablative Layers (Medium)', 28, 2, '${ts}', 0),
+(36,  'Ablative Layers (Heavy)', 28, 3, '${ts}', 0),
+(37, 'Integrity Pattern', 29, 1, '${ts}', 0),
+(38, 'Stabilisers', 30, 1, '${ts}', 0),
+(39, 'Weave Solidifier', 31, 1, '${ts}', 0),
+(40, 'Deflection Generator', 32, 1, '${ts}', 0),
 -- Energy Fields
-(41, 'Field Strengthener', 33, 1, 'EF', '${ts}', 0), --does not stack?
-(42, 'Combat Repower', 34, 4, 'EF', '${ts}', 0), --not sure about max here
+(41, 'Field Strengthener', 33, 1, '${ts}', 0), --does not stack?
+(42, 'Combat Repower', 34, 4, '${ts}', 0), --not sure about max here
 -- Science Devices
-(43, 'Amplified Gain', 35, 0, 'DS', '${ts}', 0),
-(44, 'Flexible Energy', 36, 1, 'DS', '${ts}', 0),
-(45, 'Etheric Focus', 37, 1, 'DS', '${ts}', 0),
-(46, 'Corporeal Focus', 38, 1, 'DS', '${ts}', 0),
-(47, 'Life Focus', 39, 1, 'DS', '${ts}', 0);
-        `);
+(43, 'Amplified Gain', 35, 0, '${ts}', 0),
+(44, 'Flexible Energy', 36, 1, '${ts}', 0),
+(45, 'Etheric Focus', 37, 1, '${ts}', 0),
+(46, 'Corporeal Focus', 38, 1, '${ts}', 0),
+(47, 'Life Focus', 39, 1, '${ts}', 0);`);
+    
+    await queryRunner.query(`insert into mod_restricted_to_item_type ("modId", "itemTypeId") values
+(7, 1),(7, 2),(7, 3),
+(8, 1),(8, 2),(8, 3),
+(9, 1),(9, 2),(9, 3),
+(10, 1),(10, 2),(10, 3),
+(11, 1),(11, 2),(11, 3),
+(12, 3),
+(13, 3),
+(14, 3),
+(15, 3),
+(16, 3),
+(17, 4),(17, 5),(17, 6),
+(18, 4),(18, 5),(18, 6),
+(19, 4),
+(20, 5),
+(21, 6),
+(22, 6),
+(23, 6),
+(24, 6),
+(25, 6),
+(26, 8),
+(27, 8),
+(28, 8),
+(29, 8),
+(30, 8),
+(31, 8),
+(32, 9),(32, 10),(32, 11),
+(33, 9),(33, 10),(33, 11),
+(34, 9),
+(35, 10),
+(36, 11),
+(37, 9),(37, 10),(37, 11),
+(38, 9),(38, 10),(38, 11),
+(39, 9),(39, 10),(39, 11),
+(40, 9),(40, 10),(40, 11),
+(41, 12), --does not stack?
+(42, 12), --not sure about max here
+(43, 13),
+(44, 13),
+(45, 13),
+(46, 13),
+(47, 13);`);
     
         await queryRunner.query(`
 insert into "audit" ("auditType", "abilityId", "createdOn") values

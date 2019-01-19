@@ -1,4 +1,4 @@
-import {Max, MaxLength, Min, MinLength} from "class-validator";
+import {IsPositive, Max, MaxLength, MinLength} from "class-validator";
 import {DomainEntity} from "./DomainEntity";
 import {Column, Entity, OneToMany} from "typeorm";
 import {Mod} from "./Mod";
@@ -19,7 +19,7 @@ export class Ability extends DomainEntity implements IAbility
     @OneToMany(type => ItemModel, itemModel => itemModel.abilities)
     itemModels:ItemModel[];
     
-    @Min(0, {always:true})
+    @IsPositive({always:true})
     @Max(999, {always:true})
     @Column({type: "int", default: "0"})
     chargeCost:number;

@@ -1,17 +1,26 @@
 import {SearchPane} from "./SearchPane";
 import * as m from "mithril";
 import {Children} from "mithril";
-import {ItemType} from "../../../ItemType";
 import {ItemFilterOptions} from "../../../service/filters/ItemFilterOptions";
+import {FilterOptions} from "../../../service/filters/FilterOptions";
+import {IItemType} from "../../../interfaces/IItemType";
 
 export class ItemSearchPane extends SearchPane
 {
-    filterOptions:ItemFilterOptions = {s:"", itemModel:{s:"", name:"", itemType:""}, modIds:[]};
+    filterOptions:ItemFilterOptions = {s:"", itemModel:{s:"", name:""}, modIds:[]};
+    itemTypes: IItemType[];
     
-    setItemTypeField(itemType:string):void
+    constructor(onFilterOptionsChanged:(filterOptions:FilterOptions) => void)
     {
-        if(!itemType) itemType = "";
-        this.filterOptions.itemModel.itemType = itemType;
+        super(onFilterOptionsChanged);
+        //todo: load itemtypes
+        this.itemTypes = [];
+    }
+    
+    setItemTypeField(itemType?:IItemType):void
+    {
+        if(!itemType) itemType = undefined;
+        this.filterOptions.itemModel.itemTypeId = itemType && itemType.id || undefined;
         this.updateSearchOptions();
     }
     
@@ -34,11 +43,11 @@ export class ItemSearchPane extends SearchPane
                             m(`select`, {onchange: m.withAttr("value", this.setItemTypeField.bind(this))},
                                 [
                                     m('option'),
-                                    ...Object.keys(ItemType)
-                                        .map(typeKey => m('option', {
-                                            value: typeKey,
-                                            selected: this.filterOptions.itemModel.itemType === typeKey
-                                        }, ItemType[<any>typeKey]))
+                                        this.itemTypes
+                                            .map(itemType => m('option', {
+                                                value: itemType.name,
+                                                selected: this.filterOptions.itemModel.itemTypeId === itemType.id
+                                            }, itemType.name))
                                 ]
                             )
                         )

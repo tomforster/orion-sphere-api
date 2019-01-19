@@ -7,5 +7,5 @@ import {FilterOptions} from "./FilterOptions";
 export interface ItemModelFilterOptions extends FilterOptions
 {
     name:string;
-    itemType:string;
+    itemTypeId?:number;
 }

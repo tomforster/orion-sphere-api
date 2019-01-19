@@ -1,7 +1,6 @@
 import {ListView} from "./ListView";
 import * as m from "mithril";
 import {Vnode} from "mithril";
-import {ItemType} from "../../../ItemType";
 import {IItem} from "../../../interfaces/IItem";
 import {ItemSearchPane} from "../components/ItemSearchPane";
 import {ColumnHeader} from "../components/ColumnHeader";
@@ -31,7 +30,7 @@ export class ItemListView extends ListView<IItem>
             m("td", item.serial),
             m("td", item.itemModel && item.itemModel.name || ""),
             m("td", item.itemMods.reduce((acc, mod) => acc + mod.count,0)),
-            m("td", item.itemModel && ItemType[<any>item.itemModel.itemType] || ""),
+            m("td", item.itemModel && item.itemModel.itemType && item.itemModel.itemType.name || ""),
             m("td", item.maintenanceCost),
             m("td", item.modCost)
         ];

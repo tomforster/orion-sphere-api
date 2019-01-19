@@ -1,17 +1,17 @@
 import * as m from "mithril";
 import {Children, ClassComponent, Vnode} from "mithril";
-import {ItemType} from "../../../ItemType";
+import {IItemType} from "../../../interfaces/IItemType";
 
-export class ItemTypeSelectPane implements ClassComponent
+class ItemTypeSelectPane implements ClassComponent
 {
     active:boolean = false;
-    selectedItemTypes:ItemType[];
-    selectedItemType?:ItemType;
-    itemTypes:ItemType[];
+    selectedItemTypes:IItemType[];
+    selectedItemType?:IItemType;
+    itemTypes:IItemType[];
     isSingleSelect:boolean = false;
-    onSelectedItemChange:(itemType:ItemType) => void;
+    onSelectedItemChange:(itemType:IItemType) => void;
     
-    constructor(selected?:ItemType[] | ItemType, onSelectedItemChange?:(itemType:ItemType) => void)
+    constructor(selected?:IItemType[] | IItemType, onSelectedItemChange?:(itemType:IItemType) => void)
     {
         if(Array.isArray(selected))
         {
@@ -24,10 +24,10 @@ export class ItemTypeSelectPane implements ClassComponent
             this.onSelectedItemChange = onSelectedItemChange;
             this.selectedItemType = selected;
         }
-        this.itemTypes = <ItemType[]>Object.keys(ItemType);
+        this.itemTypes = [];
     }
     
-    onOptionPress(itemType:ItemType)
+    onOptionPress(itemType:IItemType)
     {
         if(this.isSingleSelect)
         {
@@ -58,7 +58,7 @@ export class ItemTypeSelectPane implements ClassComponent
         this.active = true;
     }
     
-    isSelected(itemType:ItemType)
+    isSelected(itemType:IItemType)
     {
         if(this.isSingleSelect) return this.selectedItemType === itemType;
         return !!this.selectedItemTypes.find(selectedItemType => selectedItemType === itemType);
@@ -69,21 +69,21 @@ export class ItemTypeSelectPane implements ClassComponent
         if(this.isSingleSelect)
         {
             return [
-                m(".control", {onclick: this.open.bind(this)}, m(".input", this.selectedItemType && ItemType[<any> this.selectedItemType])),
+                m(".control", {onclick: this.open.bind(this)}, m(".input", this.selectedItemType && this.selectedItemType.name)),
                 m(".modal.search", {class: this.active ? "is-active" : ""}, [
                     m(".modal-background", {onclick: this.onClosePress.bind(this)}),
                     m(".modal-content", m(".box", [
                         m(".results", this.itemTypes.map(r => m(".select-option", {
                             class: this.isSelected(r) ? "selected" : "",
                             onclick: this.onOptionPress.bind(this, r)
-                        }, ItemType[<any>r])))
+                        }, r.name)))
                     ])),
                     m("button.modal-close.is-large", {onclick: this.onClosePress.bind(this)})
                 ])
             ]
         }
         return [
-            m(".control", {onclick: this.open.bind(this)}, m(".input", this.selectedItemTypes.map(r => ItemType[<any> r]).join(", "))),
+            m(".control", {onclick: this.open.bind(this)}, m(".input", this.selectedItemTypes.map(r => r.name).join(", "))),
             m(".modal.search", {class: this.active ? "is-active" : ""}, [
                 m(".modal-background", {onclick: this.onClosePress.bind(this)}),
                 m(".modal-content", m(".box", [
@@ -91,7 +91,7 @@ export class ItemTypeSelectPane implements ClassComponent
                             class: this.isSelected(r) ? "selected" : "",
                             onclick: this.onOptionPress.bind(this, r)
                         }, m(".columns", [
-                            m(".column", ItemType[<any>r]),
+                            m(".column", r.name),
                             m(".column.is-narrow", m(".icon", this.isSelected(r) ? m("span.fas.fa-check-square") : m("span.fas.fa-square")))
                         ])
                     )))

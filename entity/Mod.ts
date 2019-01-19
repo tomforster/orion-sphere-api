@@ -1,10 +1,10 @@
 import {DomainEntity} from "./DomainEntity";
-import {Column, Entity, ManyToOne} from "typeorm";
-import {IsArray, IsDefined, Max, MaxLength, Min, MinLength} from "class-validator";
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne} from "typeorm";
+import {IsDefined, Max, MaxLength, Min, MinLength} from "class-validator";
 import {Ability} from "./Ability";
-import {ItemType} from "../ItemType";
 import {IMod} from "../interfaces/IMod";
 import {ItemMod} from "./ItemMod";
+import {ItemType} from "./ItemType";
 
 @Entity()
 export class Mod extends DomainEntity implements IMod
@@ -26,8 +26,8 @@ export class Mod extends DomainEntity implements IMod
     @Column({type: "int", default: "1"})
     maxStacks:number;
     
-    @IsArray({always:true})
-    @Column("simple-array")
+    @ManyToMany(type => ItemType, {eager: true})
+    @JoinTable()
     restrictedTo:ItemType[];
     
     constructor(params?:IMod)
@@ -37,7 +37,7 @@ export class Mod extends DomainEntity implements IMod
             super(params.id, params.version);
             this.description = params.description;
             this.maxStacks = params.maxStacks;
-            this.restrictedTo = params.restrictedTo;
+            this.restrictedTo = params.restrictedTo.map(rest => new ItemType(rest));
             this.ability = new Ability(params.ability);
         }
         else

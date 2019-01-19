@@ -1,11 +1,12 @@
 import {DetailsView} from "./DetailsView";
 import * as m from "mithril";
-import {Vnode} from "mithril";
+import {Children, Vnode} from "mithril";
 import {IItem} from "../../../interfaces/IItem";
 import {IMod} from "../../../interfaces/IMod";
 import {SelectPane} from "../components/SelectPane";
 import {IItemModel} from "../../../interfaces/IItemModel";
 import {IItemMod} from "../../../interfaces/IItemMod";
+import {ModFilterOptions} from "../../../service/filters/ModFilterOptions";
 
 export class ItemDetailsView extends DetailsView<IItem>
 {
@@ -14,22 +15,31 @@ export class ItemDetailsView extends DetailsView<IItem>
     
     oninit(vnode:Vnode):any
     {
-        this.modSelect = new SelectPane<IMod>("mods", (mod:IMod) =>
-        {
-            //if mod is already in the list, increment its count
-            const foundMod = this.entity.itemMods.find(im => im.mod.id == mod.id);
-            if(foundMod)
-            {
-                foundMod.count++;
-            }
-            else
-            {
-                //else push
-                this.entity.itemMods.push({id:0, mod, count:1})
-            }
-        }, undefined, "Add Mod");
-
         return super.oninit(vnode);
+    }
+    
+    
+    view(vnode:Vnode):Children | void | null
+    {
+        console.log("view");
+        if(this.entity && this.entity.itemModel && this.entity.itemModel.itemType && !this.modSelect)
+        {
+            this.modSelect = new SelectPane<IMod>("mods", <ModFilterOptions>{itemTypeId: this.entity.itemModel.itemType.id}, (mod:IMod) =>
+            {
+                //if mod is already in the list, increment its count
+                const foundMod = this.entity.itemMods.find(im => im.mod.id == mod.id);
+                if (foundMod)
+                {
+                    foundMod.count++;
+                }
+                else
+                {
+                    //else push
+                    this.entity.itemMods.push({id: 0, mod, count: 1})
+                }
+            }, undefined, "Add Mod");
+        }
+        return super.view(vnode);
     }
     
     createEntity():IItem
@@ -82,12 +92,12 @@ export class ItemDetailsView extends DetailsView<IItem>
     getForm():Vnode
     {
         if(!this.modelSelect)
-            this.modelSelect = new SelectPane<IItemModel>("item-models", (model:IItemModel) => this.entity.itemModel = model, this.entity.itemModel);
+            this.modelSelect = new SelectPane<IItemModel>("item-models", undefined, (model:IItemModel) => this.entity.itemModel = model, this.entity.itemModel);
         
         return m("form", [
             m(".field", m("label.label", "Item Model"), m(this.modelSelect)),
             m(".field", m("label.label", "Mods"), m("ul.with-bullets", this.entity.itemMods.map(itemMod => m("li", itemMod.mod.description + (itemMod.count > 1 ? ` (${itemMod.count})` : ""), m("a", {onclick: this.onRemoveButtonPress.bind(this, itemMod)}, " [Remove]"))))),
-            m(this.modSelect),
+            this.modSelect ? m(this.modSelect) : m(""),
             m(".field", {style:"margin-top:0.75em"}, m("label.label", "Abilities"), m("ul.with-bullets", this.entity.itemMods.map(itemMod => m("li", itemMod.mod.ability && itemMod.mod.ability.description)))),
             //todo: dynamic update these
             // m(".field", m("label.label", "Maintenance Cost"), m(".control", m("input.input[type=text]", {value: this.entity.maintenanceCost, readonly:true}))),

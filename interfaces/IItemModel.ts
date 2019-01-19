@@ -1,10 +1,10 @@
 import {IDomainEntity} from "./IDomainEntity";
-import {ItemType} from "../ItemType";
 import {IAbility} from "./IAbility";
+import {IItemType} from "./IItemType";
 
 export interface IItemModel extends IDomainEntity
 {
-    itemType?: ItemType;
+    itemType?: IItemType;
     name:string;
     baseCost?:number;
     abilities: IAbility[];

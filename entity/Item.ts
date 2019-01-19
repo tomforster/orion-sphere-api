@@ -18,7 +18,7 @@ export class Item extends DomainEntity implements IItem
     itemModel:ItemModel;
     
     @IsArray({always: true})
-    @OneToMany(type => ItemMod, itemMod => itemMod.item, {eager:true, cascade:true})
+    @OneToMany(type => ItemMod, itemMod => itemMod.item, {eager:true})
     itemMods:ItemMod[];
     
     @Length(10,12, ({groups: ["update"]}))
