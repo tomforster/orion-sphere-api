@@ -44,19 +44,21 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
                 method: "put",
                 url: this.getUrl() + "/" + this.id,
                 data: this.entity
-            }).then(result =>
+            }).then(() =>
             {
                 location.reload();
-            })
+            }).catch(console.error);
         }
         else
         {
-            const result = await m.request({
+            m.request({
                 method: "post",
                 url: this.getUrl(),
                 data: this.entity
-            });
-            m.route.set("/" + this.getUrlPath() + "/" + (<any>result).id);
+            }).then(result =>
+            {
+                m.route.set("/" + this.getUrlPath() + "/" + (<any>result).id);
+            }).catch(console.error);
         }
     }
     

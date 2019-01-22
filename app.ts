@@ -27,19 +27,20 @@ export const appPromise = connectionPromise.then(async connection =>
     // register all application routes
     Routes.forEach(route => {
         const method = route.method;
-        app[method](route.path, (request: Request, response: Response, next: Function) => {
+        app[method](route.path, (request: Request, response: Response, next: Function) =>
+        {
             let routePromise;
-            
-            switch(method)
+    
+            switch (method)
             {
                 case "get":
                 {
-                    if(route.isPaged)
+                    if (route.isPaged)
                     {
                         const p:unknown = request.query.p;
                         const s:unknown = request.query.s;
                         let pageable:Pageable;
-                        if(p && typeof p === "object" && p.hasOwnProperty("page") && p.hasOwnProperty("size"))
+                        if (p && typeof p === "object" && p.hasOwnProperty("page") && p.hasOwnProperty("size"))
                         {
                             pageable = p as Pageable;
                             const page = Number(pageable.page);
@@ -49,10 +50,10 @@ export const appPromise = connectionPromise.then(async connection =>
                         }
                         else
                         {
-                            pageable = {page:0, size: 10, sort:null};
+                            pageable = {page: 0, size: 10, sort: null};
                         }
-                        
-                        if(!route.pagedById)
+                
+                        if (!route.pagedById)
                         {
                             routePromise = route.action(pageable, s)
                         }
@@ -83,12 +84,11 @@ export const appPromise = connectionPromise.then(async connection =>
                     throw new Error("Unknown method");
                 }
             }
-            
+    
             routePromise
-                // .then(res => {console.log(res); return res})
                 .then(res => response.send(res))
                 .then(() => next)
-                .catch(err => next(err));
+                .catch(error => next(createError(400, {error})))
         });
     });
     
@@ -99,7 +99,7 @@ export const appPromise = connectionPromise.then(async connection =>
         itemService.findByIds(ids)
             .then(items => res.render("lammie-template", {items, ItemType}))
             .then(() => next)
-            .catch(err => next(err));
+            .catch(err => next(createError(400, err)));
     });
     
     // catch 404 and forward to error handler

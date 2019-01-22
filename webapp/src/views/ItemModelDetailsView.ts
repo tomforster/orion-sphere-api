@@ -14,7 +14,8 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
         await super.fetch();
         if(!this.itemTypeSelect)
         {
-            this.itemTypeSelect = new SelectPane("item-types", undefined, (itemType) => this.entity.itemType = itemType);
+            this.itemTypeSelect = new SelectPane("item-types", undefined, (itemType) => this.entity.itemType = itemType, this.entity.itemType);
+            this.itemTypeSelect.disabled = !!this.entity.id;
             m.redraw();
         }
     }

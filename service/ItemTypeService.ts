@@ -1,9 +1,8 @@
 import {ItemType} from "../entity/ItemType";
+import {Service} from "./Service";
+import {FilterOptions} from "./filters/FilterOptions";
 
-export class ItemTypeService
+export class ItemTypeService extends Service<ItemType, FilterOptions>
 {
-    findAll():Promise<{key:string, name:string}[]>
-    {
-        return Promise.resolve(Object.keys(ItemType).map(key => {return {key, name:ItemType[key]}}));
-    }
+    entityClass = ItemType;
 }

@@ -21,7 +21,6 @@ export class ItemDetailsView extends DetailsView<IItem>
     
     view(vnode:Vnode):Children | void | null
     {
-        console.log("view");
         if(this.entity && this.entity.itemModel && this.entity.itemModel.itemType && !this.modSelect)
         {
             this.modSelect = new SelectPane<IMod>("mods", <ModFilterOptions>{itemTypeId: this.entity.itemModel.itemType.id}, (mod:IMod) =>

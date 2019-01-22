@@ -22,6 +22,7 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     active:boolean = false;
     buttonText:string | undefined;
     onItemSelected:(item:T) => void;
+    disabled:boolean = false;
     
     constructor(url:string, filterOptions:FilterOptions = {s:""}, onItemSelected:(item:T) => void, selectedItem?:T, buttonText?: string)
     {
@@ -47,7 +48,6 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     
     async fetch()
     {
-        console.log(this.filterOptions);
         this.loading = true;
         try
         {
@@ -105,6 +105,7 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     
     open()
     {
+        if(this.disabled) return;
         this.active = true;
         if(this.buttonText)
         {
