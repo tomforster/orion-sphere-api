@@ -25,7 +25,7 @@ export class gendata1535301003213 implements MigrationInterface {
                     const selectedPrefix = Math.floor(Math.random() * prefix.length);
                     const selectedItemType = Math.floor(Math.random() * it.length);
                     const selectedBaseCost = Math.floor(Math.random()*299)+1;
-                    return {id: i+1, type: selectedItemType, name: prefix[selectedPrefix] + " " + it[selectedItemType], baseCost: selectedBaseCost};
+                    return {id: i+1, type: selectedItemType+1, name: prefix[selectedPrefix] + " " + it[selectedItemType], baseCost: selectedBaseCost};
                 })
         }
         
@@ -41,7 +41,7 @@ export class gendata1535301003213 implements MigrationInterface {
         const itemDefs = itemDefGen(numItemDefs);
         const items = itemGen(itemDefs, numItems);
         
-        await queryRunner.query(`insert into "item_type" (id, name, "createdOn", version) values ${it.map((itemType, i) => `('${i}', '${itemType}', '${ts}', 0)`).join(",")}`);
+        await queryRunner.query(`insert into "item_type" (id, name, "createdOn", version) values ${it.map((itemType, i) => `('${i+1}', '${itemType}', '${ts}', 0)`).join(",")}`);
         await queryRunner.query(`insert into "item_model" (id, "itemTypeId", name, "baseCost", "createdOn", version) values ${itemDefs.map(itemDef => `(${itemDef.id}, ${itemDef.type}, '${itemDef.name}', ${itemDef.baseCost}, '${ts}', 0)`).join(",")}`);
         await queryRunner.query(`insert into "audit" ("auditType", "itemModelId", "createdOn") values ${itemDefs.map(itemDef => `(0, ${itemDef.id},'${ts}')`).join(",")}`);
         await queryRunner.query(`insert into "item" (id, "itemModelId", serial, "createdOn", version) values ${items.map(item => `(${item.id},${item.def}, '${this.generateSerial(item)}', '${ts}', 0)`).join(",")}`);

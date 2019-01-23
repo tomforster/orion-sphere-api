@@ -69,14 +69,14 @@ export abstract class Service<T extends DomainEntity, F extends FilterOptions>
     async create(params:IDomainEntity):Promise<T>
     {
         const entity = new this.entityClass(Object.assign(params, {id:undefined}));
-        await validateOrReject(entity, {groups: ["create"]});
+        await validateOrReject(entity, {groups: ["create"], validationError:{target:false}});
         return this.getRepository().save(entity);
     }
     
     async update(params:IDomainEntity):Promise<T>
     {
         const entity = new this.entityClass(params);
-        await validateOrReject(entity, {groups: ["update"]});
+        await validateOrReject(entity, {groups: ["update"], validationError:{target:false}});
         return this.getRepository().save(entity);
     }
     

@@ -1,6 +1,5 @@
 import {DetailsView} from "./DetailsView";
-import * as m from "mithril";
-import {Vnode} from "mithril";
+import m, {Vnode} from "mithril";
 import {IItemModel} from "../../../interfaces/IItemModel";
 import {SelectPane} from "../components/SelectPane";
 import {IItemType} from "../../../interfaces/IItemType";
@@ -50,18 +49,18 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
         return m("form", [
             m(".field", m("label.label", "Name"), m(".control", m("input.input[type=text]", {
                 value: this.entity.name,
-                oninput: m.withAttr("value", (value) => this.entity.name = value)
+                oninput: (e:any) => this.entity.name = e.target.value
             }))),
             m(".field", m("label.label", "Item Type"),
                 this.itemTypeSelect ? m(this.itemTypeSelect) : m("")
             ),
             m(".field", m("label.label", "Base Cost"), m(".control", m("input.input[type=number]", {
                 value: this.entity.baseCost,
-                oninput: m.withAttr("value", (value) => this.entity.baseCost = Number(value))
+                oninput: (e:any) => this.entity.baseCost = Number(e.target.value)
             }))),
             m(".field", m("label.label", "Base Charge Capacity"), m(".control", m("input.input[type=number]", {
                 value: this.entity.baseCharges,
-                oninput: m.withAttr("value", (value) => this.entity.baseCharges = Number(value))
+                oninput: (e:any) => this.entity.baseCharges = Number(e.target.value)
             })))
         ]);
     }

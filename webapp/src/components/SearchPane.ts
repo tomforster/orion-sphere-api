@@ -1,5 +1,4 @@
-import * as m from "mithril";
-import {Children, ClassComponent} from "mithril";
+import m, {Children, ClassComponent} from "mithril";
 import {FilterOptions} from "../../../service/filters/FilterOptions";
 
 export class SearchPane implements ClassComponent
@@ -13,10 +12,13 @@ export class SearchPane implements ClassComponent
         this.onFilterOptionsChanged = onFilterOptionsChanged;
     }
     
-    updateSearchField(searchField:string):void
+    updateSearchField(e:Event):void
     {
-        this.filterOptions.s = searchField;
-        this.updateSearchOptions();
+        if(e.target && e.target instanceof HTMLInputElement)
+        {
+            this.filterOptions.s = e.target.value;
+            this.updateSearchOptions();
+        }
     }
     
     updateSearchOptions():void
@@ -34,7 +36,7 @@ export class SearchPane implements ClassComponent
             m('.control.is-expanded', m("input.input[type='text']", {
                 // value: this.filterOptions.s,
                 placeholder: 'Type to filter...',
-                oninput: m.withAttr("value", this.updateSearchField.bind(this))
+                oninput: this.updateSearchField.bind(this)
             }))
         ]);
     }

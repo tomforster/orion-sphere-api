@@ -1,6 +1,5 @@
 import {DetailsView} from "./DetailsView";
-import * as m from "mithril";
-import {Children, Vnode} from "mithril";
+import m, {Children, Vnode} from "mithril";
 import {IItem} from "../../../interfaces/IItem";
 import {IMod} from "../../../interfaces/IMod";
 import {SelectPane} from "../components/SelectPane";

@@ -1,5 +1,4 @@
-import * as m from "mithril";
-import {Children, Vnode} from "mithril";
+import m, {Children, Vnode} from "mithril";
 import {View} from "./View";
 import {Page} from "../../../service/filters/Page";
 import {AuditType} from "../../../AuditType";
@@ -38,28 +37,41 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
     
     async onSavePressed()
     {
+        let promise;
         if(this.id)
         {
-            m.request({
+            promise = m.request({
                 method: "put",
                 url: this.getUrl() + "/" + this.id,
                 data: this.entity
             }).then(() =>
             {
                 location.reload();
-            }).catch(console.error);
+            })
         }
         else
         {
-            m.request({
+            promise = m.request({
                 method: "post",
                 url: this.getUrl(),
                 data: this.entity
             }).then(result =>
             {
                 m.route.set("/" + this.getUrlPath() + "/" + (<any>result).id);
-            }).catch(console.error);
+            })
         }
+        
+        promise.catch(err => {
+            if(err.message === "Bad Request")
+            {
+                const validation:{property:string, constraints:{[s:string]:string}}[] = err.error;
+                console.log(validation);
+            }
+            else
+            {
+                console.error(err);
+            }
+        })
     }
     
     getSaveButtons()

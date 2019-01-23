@@ -1,5 +1,4 @@
-import * as m from "mithril";
-import {Children, Vnode} from "mithril";
+import m, {Children, Vnode} from "mithril";
 import {FilterOptions} from "../../../service/filters/FilterOptions";
 import {View} from "./View";
 import {IDomainEntity} from "../../../interfaces/IDomainEntity";

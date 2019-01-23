@@ -1,4 +1,3 @@
-import * as m from "mithril";
 import "./styles/app.less"
 import "bulma/css/bulma.css";
 import {ItemListView} from "./views/ItemListView";
@@ -11,6 +10,7 @@ import "@fortawesome/fontawesome-free/css/solid.css";
 import "@fortawesome/fontawesome-free/css/fontawesome.css";
 import {AbilityDetailsView} from "./views/AbilityDetailsView";
 import {AbilityListView} from "./views/AbilityListView";
+import m from "mithril";
 
 let menuButtonElement:Element;
 let menuElement:Element;

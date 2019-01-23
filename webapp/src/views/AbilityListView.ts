@@ -1,6 +1,6 @@
 import {ListView} from "./ListView";
 import {IAbility} from "../../../interfaces/IAbility";
-import * as m from "mithril";
+import m from "mithril";
 import {ColumnHeader} from "../components/ColumnHeader";
 
 export class AbilityListView extends ListView<IAbility>

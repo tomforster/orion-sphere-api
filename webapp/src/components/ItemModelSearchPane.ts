@@ -1,7 +1,6 @@
 import {SearchPane} from "./SearchPane";
 import {ItemModelFilterOptions} from "../../../service/filters/ItemModelFilterOptions";
-import * as m from "mithril";
-import {Children} from "mithril";
+import m, {Children} from "mithril";
 import {IItemType} from "../../../interfaces/IItemType";
 
 export class ItemModelSearchPane extends SearchPane
@@ -22,7 +21,7 @@ export class ItemModelSearchPane extends SearchPane
                     m('label.label.is-small', "Search"),
                     m('.control.is-expanded', m("input.input[type='text']", {
                         placeholder: 'Filter on name...',
-                        oninput: m.withAttr("value", this.updateSearchField.bind(this))})),
+                        oninput: this.updateSearchField.bind(this)})),
                 ])
             ),
             m(".column",

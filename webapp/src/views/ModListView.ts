@@ -1,6 +1,6 @@
 import {ListView} from "./ListView";
 import {IMod} from "../../../interfaces/IMod";
-import * as m from "mithril";
+import m from "mithril";
 import {ColumnHeader} from "../components/ColumnHeader";
 
 export class ModListView extends ListView<IMod>

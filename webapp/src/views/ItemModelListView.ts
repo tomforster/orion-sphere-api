@@ -1,6 +1,6 @@
 import {ListView} from "./ListView";
 import {IItemModel} from "../../../interfaces/IItemModel";
-import * as m from "mithril";
+import m from "mithril";
 import {ItemModelSearchPane} from "../components/ItemModelSearchPane";
 import {ColumnHeader} from "../components/ColumnHeader";
 

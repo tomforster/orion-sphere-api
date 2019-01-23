@@ -1,6 +1,5 @@
 import {ListView} from "./ListView";
-import * as m from "mithril";
-import {Vnode} from "mithril";
+import m, {Vnode} from "mithril";
 import {IItem} from "../../../interfaces/IItem";
 import {ItemSearchPane} from "../components/ItemSearchPane";
 import {ColumnHeader} from "../components/ColumnHeader";

@@ -1,5 +1,4 @@
-import * as m from "mithril";
-import {Children, ClassComponent, Vnode} from "mithril";
+import m, {Children, ClassComponent, Vnode} from "mithril";
 import {Page} from "../../../service/filters/Page";
 import {Paging} from "./Paging";
 import {SearchPane} from "./SearchPane";
