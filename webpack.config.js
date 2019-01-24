@@ -11,7 +11,7 @@ module.exports = {
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
-        extensions: [".ts", ".tsx", ".js"]
+        extensions: [".ts", ".tsx", ".js", ".sass", ".scss"]
     },
     module: {
         rules: [
@@ -34,6 +34,14 @@ module.exports = {
                 }, {
                     loader: 'css-loader' // translates CSS into CommonJS
                 }]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
             },
             { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' }
         ]

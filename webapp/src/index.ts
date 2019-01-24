@@ -1,5 +1,5 @@
 import "./styles/app.less"
-import "bulma/css/bulma.css";
+import "./styles/theme";
 import {ItemListView} from "./views/ItemListView";
 import {ItemModelListView} from "./views/ItemModelListView";
 import {ModListView} from "./views/ModListView";
