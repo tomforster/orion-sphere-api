@@ -40,8 +40,10 @@ export function closeMenu()
 {
     const content = document.getElementById("content") as Element;
     
-    content.addEventListener("click", () => {
+    content.addEventListener("click", (e) => {
         closeMenu();
+        e.preventDefault();
+        e.stopPropagation();
     });
     
     let menuClick = function()
