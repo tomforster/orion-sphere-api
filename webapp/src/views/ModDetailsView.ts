@@ -3,10 +3,12 @@ import m, {Vnode} from "mithril";
 import {IMod} from "../../../interfaces/IMod";
 import {SelectPane} from "../components/SelectPane";
 import {IItemType} from "../../../interfaces/IItemType";
+import {IAbility} from "../../../interfaces/IAbility";
 
 export class ModDetailsView extends DetailsView<IMod>
 {
     itemTypeSelect:SelectPane<IItemType>;
+    abilitySelect:SelectPane<IAbility>;
     
     createEntity():IMod
     {
@@ -22,13 +24,23 @@ export class ModDetailsView extends DetailsView<IMod>
         await super.fetch();
         if(!this.itemTypeSelect)
         {
-            this.itemTypeSelect = new SelectPane("item-types",undefined, (itemType:IItemType) =>
+            this.itemTypeSelect = new SelectPane<IItemType>("item-types", undefined, ((itemType:IItemType) =>
             {
-                if(this.entity.restrictedTo.find(rt => rt.id === itemType.id))
+                if(!this.entity.restrictedTo.find(rt => rt.id === itemType.id))
                 {
                     this.entity.restrictedTo.push(itemType)
                 }
-            }, undefined, "Add Item Type");
+                else
+                {
+                    this.entity.restrictedTo.splice(this.entity.restrictedTo.findIndex(rt => rt.id === itemType.id), 1);
+                }
+            }), undefined, "Add Item Type");
+    
+            this.abilitySelect = new SelectPane<IAbility>("abilities", undefined, ((ability:IAbility) =>
+            {
+                this.entity.ability = ability;
+            }));
+            
             m.redraw();
         }
     }
@@ -58,8 +70,8 @@ export class ModDetailsView extends DetailsView<IMod>
     {
         return m("form", [
             m(".field", m("label.label", "Description"), m(".control", m("input.input[type=text]", {value: this.entity.description, oninput: (e:any) => this.entity.description = e.target.value}))),
-            m(".field", m("label.label", "Ability"), m(".control", m("input.input[type=text]", {value: this.entity.ability && this.entity.ability.description || "N/A", readonly:true}))),
-            m(".field", m("label.label", "Max Stacks (0 = Unlimited)"), m(".control", m("input.input[type=number]", {value: this.entity.maxStacks, oninput: (e:any) => this.entity.maxStacks = e.target.value}))),
+            m(".field", m("label.label", "Ability"), this.abilitySelect ? m(this.abilitySelect) : m("")),
+            m(".field", m("label.label", "Max Stacks (0 = Unlimited)"), m(".control", m("input.input[type=number]", {min: 0, value: this.entity.maxStacks, oninput: (e:any) => this.entity.maxStacks = Number.parseInt(e.target.value)}))),
             m(".field", m("label.label", "Restricted To"), m("ul.with-bullets", this.entity.restrictedTo.map(r => m("li", [r.name, m("a", {onclick: this.onRemoveButtonPress.bind(this, r)}, " [Remove]")])))),
             this.itemTypeSelect ? m(this.itemTypeSelect) : m("")
         ]);

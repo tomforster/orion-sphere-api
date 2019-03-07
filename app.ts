@@ -13,6 +13,8 @@ import {ItemType} from "./entity/ItemType";
 
 export const appPromise = connectionPromise.then(async connection =>
 {
+    console.log("Connected to DB");
+    
     const app = express();
     
     app.use(logger('dev'));
@@ -38,7 +40,6 @@ export const appPromise = connectionPromise.then(async connection =>
                     if (route.isPaged)
                     {
                         const p:unknown = request.query.p;
-                        const s:unknown = request.query.s;
                         let pageable:Pageable;
                         if (p && typeof p === "object" && p.hasOwnProperty("page") && p.hasOwnProperty("size"))
                         {
@@ -52,6 +53,8 @@ export const appPromise = connectionPromise.then(async connection =>
                         {
                             pageable = {page: 0, size: 10, sort: null};
                         }
+    
+                        const s:unknown = request.query.s;
                 
                         if (!route.pagedById)
                         {

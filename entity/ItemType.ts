@@ -5,15 +5,19 @@ import {Column, Entity} from "typeorm";
 @Entity()
 export class ItemType extends DomainEntity implements IItemType
 {
-    @Column()
+    @Column({unique:true})
     name:string;
+    
+    @Column({unique:true})
+    code:string;
     
     constructor(params?:IItemType)
     {
         if(params)
         {
             super(params.id, params.version);
-            this.name = params.name
+            this.name = params.name;
+            this.code = params.code;
         }
         else
         {

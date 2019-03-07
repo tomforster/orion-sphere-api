@@ -6,6 +6,7 @@ import {Pageable} from "./filters/Pageable";
 
 export class AuditService
 {
+    
     async findByEntityId(type:string, id:number, pageable:Pageable):Promise<Page<Audit>>
     {
         const {page, size} = pageable;

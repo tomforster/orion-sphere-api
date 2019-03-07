@@ -13,7 +13,7 @@ export class ItemSearchPane extends SearchPane
     constructor(onFilterOptionsChanged:(filterOptions:FilterOptions) => void)
     {
         super(onFilterOptionsChanged);
-        m.request<Page<IItemType>>("/item-types").then(res => {
+        m.request<Page<IItemType>>("/item-types", {data: {p: {page:0, size: 100}}}).then(res => {
             this.itemTypes = res.content;
             m.redraw();
         });
@@ -25,10 +25,9 @@ export class ItemSearchPane extends SearchPane
         if (event.target && event.target instanceof HTMLSelectElement)
         {
             const itemTypeOption:HTMLOptionElement = Array.from(event.target.selectedOptions)[0];
-            console.log(itemTypeOption);
             const itemType = this.itemTypes.find(itemType => itemType.name == itemTypeOption.textContent);
-            console.log(itemType);
             this.filterOptions.itemModel.itemTypeId = itemType && itemType.id || undefined;
+            console.log(this.filterOptions);
             this.updateSearchOptions();
         }
     }

@@ -6,7 +6,6 @@ export interface IMod extends IDomainEntity
 {
     description:string;
     ability?:IAbility;
-    // itemMods?:IItemMod[];
     maxStacks?:number;
     restrictedTo:IItemType[];
 }

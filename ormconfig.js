@@ -15,6 +15,9 @@ module.exports = {
     migrations: [
         "migration/**/*.ts"
     ],
+    subscribers: [
+        "service/*.ts"
+    ],
     synchronize: true,
     cli: {
         migrationsDir: "migration"

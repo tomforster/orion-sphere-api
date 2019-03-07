@@ -1,4 +1,4 @@
-import {AfterLoad, Column, Entity, JoinColumn, ManyToOne, OneToMany} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from "typeorm";
 import {ItemModel} from "./ItemModel";
 import {DomainEntity} from "./DomainEntity";
 import {IItem} from "../interfaces/IItem";
@@ -50,7 +50,6 @@ export class Item extends DomainEntity implements IItem
         }
     }
     
-    @AfterLoad()
     setCosts()
     {
         const numMods = this.itemMods.reduce((acc, mod) => acc + mod.count,0);

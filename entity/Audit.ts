@@ -32,7 +32,13 @@ export class Audit implements IAudit
     @Column({nullable: true})
     description:string;
     
-    constructor(auditType:AuditType, entityType:string, id:number, description?:string)
+    @Column({nullable: true})
+    oldValue:string;
+    
+    @Column({nullable: true})
+    newValue:string;
+    
+    constructor(auditType:AuditType, entityType:string, id:number, description?:string, oldValue?:string, newValue?:string)
     {
         this.auditType = auditType;
         
@@ -45,5 +51,7 @@ export class Audit implements IAudit
         }
         
         this.description = description;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
     }
 }

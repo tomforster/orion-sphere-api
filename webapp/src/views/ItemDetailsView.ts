@@ -93,7 +93,7 @@ export class ItemDetailsView extends DetailsView<IItem>
             this.modelSelect = new SelectPane<IItemModel>("item-models", undefined, (model:IItemModel) => this.entity.itemModel = model, this.entity.itemModel);
         
         return m("form", [
-            m(".field", m("label.label", "Item Model"), m(this.modelSelect)),
+            m(".field", m("label.label", "Item Model"), !this.id ? m(this.modelSelect) : this.entity.itemModel!.name),
             m(".field", m("label.label", "Mods"), m("ul.with-bullets", this.entity.itemMods.map(itemMod => m("li", itemMod.mod.description + (itemMod.count > 1 ? ` (${itemMod.count})` : ""), m("a", {onclick: this.onRemoveButtonPress.bind(this, itemMod)}, " [Remove]"))))),
             this.modSelect ? m(this.modSelect) : m(""),
             m(".field", {style:"margin-top:0.75em"}, m("label.label", "Abilities"), m("ul.with-bullets", this.entity.itemMods.map(itemMod => m("li", itemMod.mod.ability && itemMod.mod.ability.description)))),

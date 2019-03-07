@@ -1,4 +1,4 @@
-import {getManager, SelectQueryBuilder} from "typeorm";
+import {EntitySubscriberInterface, getManager, InsertEvent, SelectQueryBuilder, UpdateEvent} from "typeorm";
 import {Repository} from "typeorm/repository/Repository";
 import {DomainEntity} from "../entity/DomainEntity";
 import {FilterOptions} from "./filters/FilterOptions";
@@ -8,10 +8,30 @@ import {IDomainEntity} from "../interfaces/IDomainEntity";
 import {Pageable} from "./filters/Pageable";
 import {SortField} from "./filters/SortField";
 
-export abstract class Service<T extends DomainEntity, F extends FilterOptions>
+export abstract class Service<T extends DomainEntity, F extends FilterOptions> implements EntitySubscriberInterface
 {
     abstract entityClass:any;
     allowedSortFields = ["id"];
+    
+    listenTo()
+    {
+        return this.entityClass;
+    }
+    
+    /**
+     * Called before entity insertion.
+     */
+    async beforeInsert(event:InsertEvent<any>)
+    {
+        console.log(`BEFORE ENTITY INSERTED: `, event.entity);
+    }
+    
+    async beforeUpdate(event:UpdateEvent<any>)
+    {
+        const entity = event.entity;
+        console.log(`Updated ${entity.id}`);
+        console.log(event.updatedColumns.map(col => `Set field ${col.propertyName} to ${entity[col.propertyName]}`));
+    }
     
     protected getRepository():Repository<T>
     {
