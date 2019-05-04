@@ -5,6 +5,7 @@ import {Brackets, EventSubscriber, getManager, InsertEvent, UpdateEvent} from "t
 import {ItemMod} from "../entity/ItemMod";
 import {Audit} from "../entity/Audit";
 import {AuditType} from "../AuditType";
+import {IItem} from "../interfaces/IItem";
 
 @EventSubscriber()
 export class ItemService extends Service<Item, ItemFilterOptions>
@@ -40,12 +41,11 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         return query;
     };
     
-    async create(params:Item):Promise<Item>
+    async create(params:IItem):Promise<Item>
     {
-        const entity = new Item(params);
-        entity.id = undefined;
-        entity.serial = "";
-        let newEntity = await super.create(entity);
+        params.id = undefined;
+        params.serial = "";
+        let newEntity = await super.create(params);
         newEntity.serial = this.generateSerial(newEntity);
         newEntity = await this.getRepository().save(newEntity);
         await getManager().getRepository(ItemMod).save(newEntity.itemMods);
@@ -53,14 +53,18 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         return newEntity;
     }
     
-    async update(params:Item):Promise<Item>
+    async update(params:IItem):Promise<Item>
     {
+        const item = await this.getRepository().findOne(params.id);
+        const entity = new Item(params);
+        entity.legacySerial = item.legacySerial;
+        
         const newEntity = await super.update(params);
         newEntity.itemMods.forEach(itemMod => delete itemMod.item);
         return newEntity;
     }
     
-    private generateSerial(item:Item):string
+    private generateSerial(item:IItem):string
     {
         if(!item) return "";
         return item.itemModel.itemType.code + item.itemModel.id.toString().padStart(4, "0") + "-" + item.id.toString().padStart(4, "0");

@@ -33,6 +33,9 @@ export class Item extends DomainEntity implements IItem
     @Column({default: 1, type: "real"})
     maintenanceCost:number;
     
+    @Column()
+    legacySerial:string;
+    
     constructor(params?:IItem)
     {
         if(params)

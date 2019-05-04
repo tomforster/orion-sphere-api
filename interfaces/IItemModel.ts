@@ -9,4 +9,5 @@ export interface IItemModel extends IDomainEntity
     baseCost?:number;
     abilities: IAbility[];
     baseCharges?:number;
+    hasExoticSlot:boolean;
 }

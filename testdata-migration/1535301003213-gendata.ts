@@ -28,9 +28,13 @@ export class gendata1535301003213 implements MigrationInterface {
             {id: 10, name:"Medium Armour", code:"AM"},
             {id: 11, name:"Heavy Armour", code:"AH"},
             {id: 12, name:"Energy Field", code:"EF"},
-            {id: 13, name:"Science Device", code:"DS"},
-            {id: 14, name:"Medical Device", code:"DM"},
-            {id: 15, name:"General Device", code:"DG"}];
+            {id: 13, name:"Science Device - Analyser", code:"SA"},
+            {id: 14, name:"Science Device - Detector", code:"SD"},
+            {id: 15, name:"Science Device - Scanner", code:"SS"},
+            {id: 16, name:"Science Device - Extractor", code:"SE"},
+            {id: 17, name:"Medical Device", code:"DM"},
+            {id: 18, name:"Device", code:"DG"},
+            {id: 19, name:"Psionic Device", code:"DP"}];
             
         function itemDefGen(numItemDefs:number)
         {

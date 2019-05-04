@@ -28,6 +28,9 @@ export class ItemModel extends DomainEntity implements IItemModel
     @Column({type:"int", default: 0})
     baseCharges:number;
     
+    @Column()
+    hasExoticSlot:boolean;
+    
     constructor(params?:IItemModel)
     {
         if(params)
@@ -37,6 +40,7 @@ export class ItemModel extends DomainEntity implements IItemModel
             this.name = params.name;
             this.baseCost = params.baseCost;
             this.baseCharges = params.baseCharges;
+            this.hasExoticSlot = params.hasExoticSlot;
         }
         else
         {

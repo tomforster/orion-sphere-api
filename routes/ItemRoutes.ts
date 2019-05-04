@@ -1,8 +1,10 @@
 import {ItemService} from "../service/ItemService";
 import {AuditService} from "../service/AuditService";
 import {Route} from "./Route";
+import {ImportService} from "../service/ImportService";
 
 export const itemService = new ItemService();
+export const importService = new ImportService();
 const auditService = new AuditService();
 
 export const ItemRoutes:Route[] = [
@@ -26,6 +28,11 @@ export const ItemRoutes:Route[] = [
         path: "/items",
         method: "post",
         action: itemService.create.bind(itemService)
+    },
+    {
+        path: "/item-import",
+        method: "post",
+        action: importService.import.bind(importService)
     },
     {
         path: "/audits/items/:id",
