@@ -123,6 +123,22 @@ export abstract class ListView<T extends IDomainEntity> extends View
         throw new Error("Override this if setting expandable true");
     }
     
+    onSelectAllClick(e:Event)
+    {
+        if(this.selectMode && this.page)
+        {
+            this.page.content.forEach(item =>{
+                const index = this.selectedItems.findIndex(selectedItem => item.id == selectedItem.id);
+    
+                if (index < 0)
+                {
+                    this.selectedItems.push(item);
+                }
+            });
+            e.stopPropagation();
+        }
+    }
+    
     async fetch()
     {
         let url = this.getUrl();
@@ -148,7 +164,7 @@ export abstract class ListView<T extends IDomainEntity> extends View
             });
             
             const table = m("table.table.is-fullwidth.is-narrow",
-                m("thead", m("tr", [m("th")].concat(this.getColumns()
+                m("thead", m("tr", [m("th", {onclick: this.onSelectAllClick.bind(this)})].concat(this.getColumns()
                     .map(columnHeader => m("th", columnHeader.sortField ? {onclick: this.onColumnClick.bind(this, columnHeader)} : {}, [columnHeader.label, columnHeader.sortField === this.pageable.sort.field ? m("span.icon", this.pageable.sort.direction === "ASC" ? m("i.fas.fa-chevron-down") : m("i.fas.fa-chevron-up")) : m("")]))
                 ))),
                 m("tbody", bodyContent));

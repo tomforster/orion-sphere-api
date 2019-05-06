@@ -103,7 +103,7 @@ export const appPromise = connectionPromise.then(async connection =>
         function calcExtraCharges(item:Item)
         {
             const plusChargeMod = item.itemMods.find(itemMod => itemMod.mod.id === 1);
-            return plusChargeMod.count || 0;
+            return plusChargeMod && plusChargeMod.count || 0;
         }
         
         itemService.findByIds(ids)
