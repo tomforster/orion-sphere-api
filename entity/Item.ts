@@ -26,14 +26,14 @@ export class Item extends DomainEntity implements IItem
     serial:string;
 
     @IsPositive()
-    @Column({default: 1, type: "real"})
+    @Column({default: 0, type: "real"})
     modCost:number;
     
     @IsPositive()
-    @Column({default: 1, type: "real"})
+    @Column({default: 0, type: "real"})
     maintenanceCost:number;
     
-    @Column()
+    @Column({nullable: true})
     legacySerial:string;
     
     constructor(params?:IItem)
@@ -55,6 +55,13 @@ export class Item extends DomainEntity implements IItem
     
     setCosts()
     {
+        if(this.itemModel.maintOnly)
+        {
+            this.maintenanceCost = this.itemModel.baseCost;
+            this.modCost = 0;
+            
+            return;
+        }
         const numMods = this.itemMods.reduce((acc, mod) => acc + mod.count,0);
         
         const costMultiplier = getMultiplier(numMods);

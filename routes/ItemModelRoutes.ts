@@ -2,7 +2,7 @@ import {ItemModelService} from "../service/ItemModelService";
 import {AuditService} from "../service/AuditService";
 import {Route} from "./Route";
 
-const itemModelService = new ItemModelService();
+export const itemModelService = new ItemModelService();
 const auditService = new AuditService();
 
 export const ItemModelRoutes:Route[] =

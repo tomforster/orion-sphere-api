@@ -19,10 +19,10 @@ export class Ability extends DomainEntity implements IAbility
     @OneToMany(type => ItemModel, itemModel => itemModel.abilities)
     itemModels:ItemModel[];
     
-    @IsPositive({always:true})
-    @Max(999, {always:true})
-    @Column({type: "int", default: "0"})
-    chargeCost:number;
+    // @IsPositive({always:true})
+    // @Max(999, {always:true})
+    // @Column({type: "int", default: "0"})
+    // chargeCost:number;
     
     constructor(params?:IAbility)
     {
@@ -30,7 +30,7 @@ export class Ability extends DomainEntity implements IAbility
         {
             super(params.id, params.version);
             this.description = params.description;
-            this.chargeCost = params.chargeCost;
+            // this.chargeCost = params.chargeCost;
         }
         else
         {

@@ -23,7 +23,7 @@ export abstract class Service<T extends DomainEntity, F extends FilterOptions> i
      */
     async beforeInsert(event:InsertEvent<any>)
     {
-        console.log(`BEFORE ENTITY INSERTED: `, event.entity);
+        console.debug(`BEFORE ENTITY INSERTED: `, event.entity);
     }
     
     async beforeUpdate(event:UpdateEvent<any>)

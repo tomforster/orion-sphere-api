@@ -9,4 +9,5 @@ export interface IImportItem
     abilityDescriptions:string[];
     modelId:number;
     itemId:number;
+    maintOnly:boolean;
 }

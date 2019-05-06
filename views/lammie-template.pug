@@ -174,8 +174,8 @@ body
                         .lammie-id= "ID - " + item.serial
                     .lammie-back-body
                         .lammie-mods Mods:
-                            each mod in item.mods
-                                .lammie-ability= mod.description
+                            each mod in item.itemMods
+                                .lammie-ability= mod.mod.description
                             if !item.mods
                                 | None
                         .lammie-qr-container

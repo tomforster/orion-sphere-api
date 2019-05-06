@@ -31,60 +31,84 @@ const itemTypes = [
     {id: 19, name:"Psionic Device", code:"DP"}
 ];
 
-const files = fs.readdirSync("./resources");
-files.filter(file => file.charAt(0) !== "~").forEach(file => readFile("./resources/"+file, (r) => {
-    r.forEach((item:IImportItem) => {
-        axios.post("http://127.0.0.1:3000/item-import", item);
-    });
-}));
+const file = "OSLRP - Armour Lammies.odt";
 
-function readFile(filePath:string, cb:(items:IImportItem[]) => void)
-{
-    yauzl.open( filePath, function( err, zipfile )
+// const files = fs.readdirSync("./resources");
+// files.filter(file => file.charAt(0) !== "~").forEach(file =>
+// {
+    readFile("./resources/"+file).then(async items =>
     {
-        if ( err ) {
-            return;
+        for(let i = 0; i < items.length; i++)
+        {
+            const item = items[i];
+            console.log("posting item: ", item);
+            await axios.post("http://127.0.0.1:3000/item-import", item);
+            console.log("posted.");
         }
-        
-        zipfile.on( 'entry', function( entry ) {
-            if ( entry.fileName === 'content.xml' ) {
-                getTextFromZipFile(zipfile, entry, (error, text) => {
-                    const dom = new JSDOM(text);
-                    const items:IImportItem[] = Array.from(dom.window.document.querySelectorAll("table\\:table-row"))
-                        .map((row:any) =>
-                        {
-                            const children = Array.from(row.childNodes);
-                            const frontLeft = processFrontLeft(children[0] as HTMLUnknownElement),
-                                frontRight = processFrontRight(children[1] as HTMLUnknownElement),
-                                backLeft = processBackLeft(children[2] as HTMLUnknownElement),
-                                backRight = processBackRight(children[3] as HTMLUnknownElement);
-    
-                            const serial = backRight.serial;
-                            const modelId = parseInt(serial.substring(2,6));
-                            const itemId = parseInt(serial.substring(7));
-                            
-                            return {
-                                itemTypeName: frontLeft.itemType.name,
-                                name: frontLeft.name,
-                                abilityDescriptions: frontLeft.abilities,
-                                maxCharges: frontLeft.maxCharges,
-                                baseCost: backLeft.cost,
-                                serial: backRight.serial,
-                                modDescriptions: backRight.modDescriptions,
-                                modelId,
-                                itemId,
-                                exoticSlot:frontRight.text === "Exotic Substance"
-                            };
-                        });
-                    cb(items);
-                })
-            }
-        });
     });
+// });
+
+async function readFile(filePath:string):Promise<IImportItem[]>
+{
+    console.log("Reading file:", filePath);
+    return new Promise((resolve, reject) =>
+    {
+        yauzl.open( filePath, function( err, zipfile )
+        {
+            if (err)
+            {
+                reject(err);
+                return;
+            }
+    
+            zipfile.on('entry', async (entry) =>
+            {
+                if (entry.fileName === 'content.xml')
+                {
+                    try
+                    {
+                        const text = await getTextFromZipFile(zipfile, entry);
+                        const dom = new JSDOM(text);
+                        const items:IImportItem[] = Array.from(dom.window.document.querySelectorAll("table\\:table-row"))
+                            .map((row:any) =>
+                            {
+                                const children = Array.from(row.childNodes);
+                                const frontLeft = processFrontLeft(children[0] as HTMLUnknownElement),
+                                    frontRight = processFrontRight(children[1] as HTMLUnknownElement),
+                                    backLeft = processBackLeft(children[2] as HTMLUnknownElement),
+                                    backRight = processBackRight(children[3] as HTMLUnknownElement);
+                
+                                const serial = backRight.serial;
+                                const modelId = parseInt(serial.substring(2, 6));
+                                const itemId = parseInt(serial.substring(7));
+                
+                                return {
+                                    itemTypeName: frontLeft.itemType.name,
+                                    name: frontLeft.name,
+                                    abilityDescriptions: frontLeft.abilities,
+                                    maxCharges: frontLeft.maxCharges || 0,
+                                    baseCost: backLeft.cost || backLeft.maintenanceCost,
+                                    serial: backRight.serial,
+                                    modDescriptions: backRight.modDescriptions,
+                                    modelId,
+                                    itemId,
+                                    exoticSlot: frontRight.text === "Exotic Substance",
+                                    maintOnly: !backLeft.cost
+                                };
+                            });
+                        resolve(items);
+                    } catch (e)
+                    {
+                        reject(e);
+                    }
+                }
+            });
+        });
+    })
 }
 
 const abilityReqRegex = new RegExp(/^Abilities\s?(\((.*)\))*:\|(.*)$/);
-const maxChargesRegex = new RegExp(/(.*)\|(Max\sCharges\s-\s(\d+))?$/);
+const maxChargesRegex = new RegExp(/^((.*)\|)?(Max\sCharges\s-\s(\d+))?$/);
 const backLeftRegex = new RegExp(/^(Cost:\s?(\d+)\.?\s?)?Maint:\s?(\d+)(\s?Mod:\s?(\d+))?$/);
 const backRightRegex = new RegExp(/^Expires\sbefore\sE(\d+)\sID\s([-–])\s?([\w][\w][\d][\d][\d][\d]-\d+)\|?(.*)$/);
 
@@ -106,19 +130,33 @@ function processFrontLeft(node:HTMLUnknownElement)
     let maxCharges:number;
     if(!maxChargesMatches)
     {
+        if(node.innerHTML.indexOf("Max") > -1) console.log(rest);
         maxCharges = null;
     }
     else
     {
-        maxCharges = parseInt(maxChargesMatches[3]);
+        maxCharges = parseInt(maxChargesMatches[4]);
         if(!isFinite(maxCharges)) maxCharges = null;
-        rest = maxChargesMatches[1];
+        rest = maxChargesMatches[2];
     }
     
     let abilities = [];
-    if(rest !== 'None')
+    if(rest && rest !== 'None')
     {
-        abilities = rest.split("|");
+        abilities = rest
+            .split("|")
+            .map(ability =>
+            {
+                return ability
+                    .trim()
+                    .replace("1 Charge", "1 charge")
+                    .replace("1 charges", "1 charge")
+                    .replace("2 Charges", "2 charges")
+                    .replace("4 Charges", "4 charges")
+                    .replace("1 charge RESIST", "1 charge to call RESIST")
+                    .replace("RESIST(REND)", "RESIST to REND")
+                    .replace("RESIST(STRIKEDOWN)", "RESIST to STRIKEDOWN");
+            });
     }
     
     return {maxCharges, abilities, itemType, name, abilityReq};
@@ -138,8 +176,8 @@ function processBackLeft(node:HTMLUnknownElement)
     const rest = elements.map(element => element.textContent).join(" ");
     const backLeftRegexMatches = backLeftRegex.exec(rest);
     const cost = parseInt(backLeftRegexMatches[2]);
-    const maintenanceCost = backLeftRegexMatches[3];
-    const modCost = backLeftRegexMatches[5];
+    const maintenanceCost = parseInt(backLeftRegexMatches[3]);
+    const modCost = parseInt(backLeftRegexMatches[5]);
     return {cost, maintenanceCost, modCost};
 }
 
@@ -178,76 +216,34 @@ function processBackRight(node:HTMLUnknownElement)
     return {expiry, serial, modDescriptions:modDescriptions};
 }
 
-function getTextFromZipFile( zipfile, entry, cb ) {
-    zipfile.openReadStream( entry, function( err, readStream ) {
-        var text = ''
-            , error = ''
-        ;
+async function getTextFromZipFile( zipfile, entry): Promise<string>
+{
+    return new Promise((resolve, reject) =>
+    {
+        zipfile.openReadStream( entry, ( err, readStream ) =>
+        {
+            let text = '',
+                error = '';
         
-        if ( err ) {
-            cb( err, null );
-            return;
-        }
-        
-        readStream.on( 'data', function( chunk ) {
-            text += chunk;
-        });
-        readStream.on( 'end', function() {
-            if ( error.length > 0 ) {
-                cb( error, null );
-            } else {
-                cb( null, text );
+            if ( err ) {
+                reject(err);
+                return;
             }
-        });
-        readStream.on( 'error', function( _err ) {
-            error += _err;
+        
+            readStream.on( 'data', chunk => text += chunk);
+            
+            readStream.on( 'end', () =>
+            {
+                if ( error.length > 0 ) {
+                    reject(error);
+                } else {
+                    resolve(text);
+                }
+            });
+            
+            readStream.on( 'error', function( _err ) {
+                error += _err;
+            });
         });
     });
 }
-// {
-//     textract.fromFileWithPath(path, {preserveLineBreaks: true, tesseract:{lang:"odt"}}, function( error, text ) {
-//
-//         console.log("reading", path);
-//         if(error)
-//         {
-//             console.log("ERROR", path, error);
-//             return;
-//         }
-//
-//         console.log(text);
-//         console.log(text.split("\n"));
-//
-//         // const items = text.split(/Advanced Armaments|Analyser|Spectrometer|Diagnosis Module|Scanner|Energy Interface|Field Transducer|Extractor|Detector|Psionic Device/)
-//         //     .map(r => r.trim())
-//         //     .filter(item => !!item)
-//         //     .map(rawItem => {
-//         //         let item = {};
-//         //         itemTypes.forEach(itemType => {
-//         //             let index;
-//         //             console.log(rawItem);
-//         //             // if((index = rawItem.indexOf("Light Energy Weapon")) > -1)
-//         //             // {
-//         //             //     const rest = rawItem.slice(index + itemType.length);
-//         //             //     const matcher = rest.match(/Abilities: (.*) Max Charges...([0-9]*) (.*Cost: ([0-9]+))*.*Expires before (end )*(..) ID ..(......-...)(.Mods...(.*))*/);
-//         //             //     if(!matcher) console.log(rawItem);
-//         //             //     item = {
-//         //             //         name: rawItem.slice(0,index-1),
-//         //             //         type: itemType,
-//         //             //         abilities:matcher[1],
-//         //             //         maxCharges:matcher[2],
-//         //             //         cost:matcher[4],
-//         //             //         expiresBefore:matcher[6],
-//         //             //         id:matcher[7],
-//         //             //         modsAndNotes:matcher[9],
-//         //             //     };
-//         //             // }
-//         //         });
-//         //         return item;
-//         //     })
-//         //     .filter(i => !!i.name);
-//
-//         // items.forEach(item => {
-//         //     console.log([item.id, item.name, item.type, item.abilities, item.maxCharges, item.cost, item.expiresBefore, item.modsAndNotes].join("\t"));
-//         // })
-//     });
-// }
