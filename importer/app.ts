@@ -31,22 +31,33 @@ const itemTypes = [
     {id: 19, name:"Psionic Device", code:"DP"}
 ];
 
-const file = "OSLRP - Armour Lammies.odt";
+// const file = "OSLRP - Armour Lammies.odt";
+// const file = "OSLRP - Devices.odt";
+// const file = "OSLRP - Energy Fields Lammies.odt";
+// const file = "OSLRP - Energy Weapon Lammies.odt";
+// const file = "OSLRP - Melee Weapon Lammies.odt";
+// const file = "OSLRP - Science Device Lammies.odt";
+// const file = "OSLRP - Shield Lammies.odt";
 
-// const files = fs.readdirSync("./resources");
-// files.filter(file => file.charAt(0) !== "~").forEach(file =>
-// {
-    readFile("./resources/"+file).then(async items =>
+const files = fs.readdirSync("./resources");
+
+init();
+
+async function init()
+{
+    for (const file of files.filter(file => file.charAt(0) !== "~"))
     {
-        for(let i = 0; i < items.length; i++)
+        await readFile("./resources/"+file).then(async items =>
         {
-            const item = items[i];
-            console.log("posting item: ", item);
-            await axios.post("http://127.0.0.1:3000/item-import", item);
-            console.log("posted.");
-        }
-    });
-// });
+            for(let i = 0; i < items.length; i++)
+            {
+                const item = items[i];
+                console.log("posting item: ", item);
+                await axios.post("http://127.0.0.1:3000/item-import", item);
+            }
+        });
+    }
+}
 
 async function readFile(filePath:string):Promise<IImportItem[]>
 {

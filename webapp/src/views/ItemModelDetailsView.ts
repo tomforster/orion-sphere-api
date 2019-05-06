@@ -24,7 +24,9 @@ export class ItemModelDetailsView extends DetailsView<IItemModel>
         return {
             id: 0,
             name: "",
-            abilities: []
+            abilities: [],
+            maintOnly: false,
+            hasExoticSlot: true
         };
     }
     

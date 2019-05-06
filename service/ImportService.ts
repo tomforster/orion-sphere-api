@@ -4,7 +4,6 @@ import {ItemType} from "../entity/ItemType";
 import {Mod} from "../entity/Mod";
 import {Ability} from "../entity/Ability";
 import {ItemModel} from "../entity/ItemModel";
-import {ItemMod} from "../entity/ItemMod";
 import {itemService} from "../routes/ItemRoutes";
 import {itemModelService} from "../routes/ItemModelRoutes";
 import {Item} from "../entity/Item";
@@ -12,13 +11,10 @@ import {IItemMod} from "../interfaces/IItemMod";
 
 export class ImportService
 {
-    constructor()
-    {
-    }
-    
     async import(params:IImportItem):Promise<void>
     {
-        console.info("item received", params);
+        console.debug("item received", params);
+        if(params.serial && await getRepository(Item).findOne({legacySerial: params.serial})) throw new Error("Item already found");
         const modelRepo = getRepository(ItemModel);
         const itemType = await getRepository(ItemType).findOne({name:params.itemTypeName});
         let model = await modelRepo.findOne({name:params.name, itemType});
@@ -54,14 +50,25 @@ export class ImportService
         const fixedAbilityDescriptions = [];
         params.abilityDescriptions.forEach(abilityDescription =>
         {
-            const matcher = abilityDescription.match(/\+([0-9]) Armour Hits/);
-            if(!matcher) fixedAbilityDescriptions.push(abilityDescription);
-            else
+            const armourHitMatcher = abilityDescription.match(/\+([0-9]) Armour Hits/);
+            const fieldMatcher = abilityDescription.match(/([0-9]) Global Field Hits. 1 charge to re-power when not in combat/);
+            if(armourHitMatcher)
             {
-                for(let i = 0; i < parseInt(matcher[1]); i++)
+                for(let i = 0; i < parseInt(armourHitMatcher[1]); i++)
                 {
                     fixedAbilityDescriptions.push("+1 Armour Hit");
                 }
+            }
+            else if(fieldMatcher)
+            {
+                for(let i = 0; i < parseInt(fieldMatcher[2]) - 1; i++)
+                {
+                    fixedAbilityDescriptions.push("Energy Field gains 1 Field Hit");
+                }
+            }
+            else
+            {
+                fixedAbilityDescriptions.push(abilityDescription);
             }
         });
         
@@ -74,7 +81,7 @@ export class ImportService
         {
             if (!abilities[i])
             {
-                console.log("Unknown ability");
+                console.error("Unknown ability");
             }
         }
     
@@ -96,11 +103,16 @@ export class ImportService
             }
             else
             {
-                console.error("ability not found for mod", mod, params);
+                if(mod.id !== 1) console.error("ability not found for mod", mod, params);
+            }
+            
+            if(mod.id === 1)
+            {
+                params.maxCharges -= 2;
             }
         });
         
-        if(abilities.length) console.info("abilities not from mods found: ", abilities, params);
+        if(abilities.length) console.debug("abilities not from mods found: ", abilities, params);
     
         if(!model)
         {
@@ -114,13 +126,15 @@ export class ImportService
                 hasExoticSlot: true,
                 maintOnly: params.maintOnly
             }));
-            console.log("created new model: ", model);
+            console.info("created new model: ", model);
+        }else{
+            if(params.maxCharges !== model.baseCharges) throw `Wrong number of base charges detected, expected ${model.baseCharges} but got ${params.maxCharges}`;
         }
         
         // create item
         const item = await itemService.create({itemModel: model, id:0, itemMods});
         item.legacySerial = params.serial;
         await getRepository(Item).save(item);
-        console.log("created item: ", item);
+        console.debug("created item: ", item);
     }
 }

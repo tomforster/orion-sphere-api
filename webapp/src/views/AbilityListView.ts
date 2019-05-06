@@ -18,7 +18,7 @@ export class AbilityListView extends ListView<IAbility>
     
     getRowData(ability:IAbility)
     {
-        return [m("td", m(`a[href=/ability/${ability.id}]`, {oncreate: m.route.link}, ability.description)), m("td", ability.chargeCost)];
+        return [m("td", m(`a[href=/ability/${ability.id}]`, {oncreate: m.route.link}, ability.description))];//, m("td", ability.chargeCost)];
     }
     
     getUrlPath():string

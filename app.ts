@@ -10,6 +10,7 @@ import * as path from "path";
 import {itemService} from "./routes/ItemRoutes";
 import {Pageable} from "./service/filters/Pageable";
 import {ItemType} from "./entity/ItemType";
+import {Item} from "./entity/Item";
 
 export const appPromise = connectionPromise.then(async connection =>
 {
@@ -99,8 +100,14 @@ export const appPromise = connectionPromise.then(async connection =>
     {
         const ids = req.query.ids.split(",").map(idString => parseInt(idString)).filter(idNum => isFinite(idNum) && idNum > 0);
         
+        function calcExtraCharges(item:Item)
+        {
+            const plusChargeMod = item.itemMods.find(itemMod => itemMod.mod.id === 1);
+            return plusChargeMod.count || 0;
+        }
+        
         itemService.findByIds(ids)
-            .then(items => res.render("lammie-template", {items, ItemType}))
+            .then(items => res.render("lammie-template", {items, ItemType, calcExtraCharges}))
             .then(() => next)
             .catch(err => next(createError(400, err)));
     });

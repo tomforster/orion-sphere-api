@@ -153,11 +153,10 @@ body
                     .lammie-subtitle= ItemType[item.itemModel.itemType]
                     .lammie-abilities Abilities:
                     each ability in item.itemModel.abilities
-                        .lammie-ability= ability.description +" (Cost: "+ability.chargeCost+" Charges)"
+                        .lammie-ability= ability.description
                     .spacer
                     .lammie-charges
-                        div Max Charges - 3
-                        //div Cost: 300
+                        div= "Max Charges - " + (item.itemModel.baseCharges + calcExtraCharges(item))
                 .lammie-tag
                     | EXOTIC
                     br
@@ -176,7 +175,8 @@ body
                         .lammie-mods Mods:
                             each mod in item.itemMods
                                 .lammie-ability= mod.mod.description
-                            if !item.mods
+                            if !item.itemMods.length
+                                br
                                 | None
                         .lammie-qr-container
                             .lammie-qr(id=item.serial)
