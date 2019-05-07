@@ -156,6 +156,9 @@ body
                     .lammie-abilities Abilities:
                     each ability in item.itemModel.abilities
                         .lammie-ability= ability.description
+
+                    each mod in item.itemMods
+                        .lammie-ability= mod.mod.ability.description
                     .spacer
                     .lammie-charges
                         div= "Max Charges - " + (item.itemModel.baseCharges + calcExtraCharges(item))
