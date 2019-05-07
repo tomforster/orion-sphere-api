@@ -152,7 +152,7 @@ body
             .lammie
                 .lammie-main
                     .lammie-title= item.itemModel.name
-                    .lammie-subtitle= ItemType[item.itemModel.itemType]
+                    .lammie-subtitle= item.itemModel.itemType.name
                     .lammie-abilities Abilities:
                     each ability in item.itemModel.abilities
                         .lammie-ability= ability.description
