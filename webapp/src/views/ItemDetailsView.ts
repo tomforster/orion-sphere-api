@@ -59,13 +59,18 @@ export class ItemDetailsView extends DetailsView<IItem>
         return this.loaded && (`${this.entity.itemModel && this.entity.itemModel.name} - ${this.entity.serial}`) || "Loading...";
     }
     
+    onDeleteButtonPress():void
+    {
+        m.request(this.getUrl() + "/" + this.entity.id, {method:"delete"})
+    }
+    
     getControls():Vnode[]
     {
         if (this.id && this.entity)
         {
             return [
                 m(`a.button`, {href: `/lammie-html?ids=${this.entity.id}`, disabled: !this.entity}, "Print Lammie"),
-                m(`a.button.is-danger`, {disabled: !this.entity}, "Delete"),
+                m(`a.button.is-danger`, {disabled: !this.entity, onclick: this.onDeleteButtonPress.bind(this)}, "Delete"),
             ];
         }
         

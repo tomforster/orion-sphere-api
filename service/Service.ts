@@ -100,10 +100,17 @@ export abstract class Service<T extends DomainEntity, F extends FilterOptions> i
         return this.getRepository().save(entity);
     }
     
-    delete(id):Promise<boolean>
+    async delete(id):Promise<boolean>
     {
         if(!Service.validateId(id)) throw new Error("Invalid argument");
-        return this.getRepository().delete(id).then(result => {console.log(result); return true});
+
+        const entity = await this.getRepository().findOne(id);
+        if(entity)
+        {
+            entity.deleted = true;
+            return this.getRepository().save(entity as any).then(result => true);
+        }
+        return false;
     }
     
     static validateId(id):boolean

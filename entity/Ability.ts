@@ -1,4 +1,4 @@
-import {IsPositive, Max, MaxLength, MinLength} from "class-validator";
+import {MaxLength, MinLength} from "class-validator";
 import {DomainEntity} from "./DomainEntity";
 import {Column, Entity, OneToMany} from "typeorm";
 import {Mod} from "./Mod";

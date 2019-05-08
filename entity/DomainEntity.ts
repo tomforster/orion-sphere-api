@@ -1,5 +1,5 @@
 import {IsPositive} from "class-validator";
-import {CreateDateColumn, PrimaryGeneratedColumn, VersionColumn} from "typeorm";
+import {Column, CreateDateColumn, PrimaryGeneratedColumn, VersionColumn} from "typeorm";
 import {IDomainEntity} from "../interfaces/IDomainEntity";
 
 export abstract class DomainEntity implements IDomainEntity
@@ -14,11 +14,13 @@ export abstract class DomainEntity implements IDomainEntity
     @VersionColumn()
     version:number;
     
-    // deleted:boolean;
+    @Column({default: false})
+    deleted:boolean;
     
     constructor(id:number = 0, version = 0)
     {
         this.id = id;
         this.version = version;
+        this.deleted = false;
     }
 }

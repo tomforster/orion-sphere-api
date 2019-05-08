@@ -215,7 +215,7 @@ insert into "audit" ("auditType", "modId", "createdOn") values
 ${[...Array(46).keys()].map(key => `(0, ${key+1},'${ts}')`).join(",")}`);
     
         await queryRunner.query(`SELECT setval('mod_id_seq', ${47})`);
-        await queryRunner.query(`SELECT setval('ability_id_seq', ${39})`);
+        await queryRunner.query(`SELECT setval('ability_id_seq', ${abilities.length})`);
         
         await queryRunner.query(``);
     }

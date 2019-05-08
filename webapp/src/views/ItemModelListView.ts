@@ -1,11 +1,13 @@
 import {ListView} from "./ListView";
 import {IItemModel} from "../../../interfaces/IItemModel";
-import m from "mithril";
+import m, {Vnode} from "mithril";
 import {ItemModelSearchPane} from "../components/ItemModelSearchPane";
 import {ColumnHeader} from "../components/ColumnHeader";
 
 export class ItemModelListView extends ListView<IItemModel>
 {
+    expandable = true;
+    
     getCreateUrl():string
     {
         return "/item-model/create"
@@ -44,5 +46,18 @@ export class ItemModelListView extends ListView<IItemModel>
     getTitle():string
     {
         return "Models";
+    }
+    
+    getExpandedRowContent(r:IItemModel):Vnode
+    {
+        return m(".columns.is-size-7", [
+            m(".column",
+                m(".columns", [
+                    m(".column.is-narrow.has-text-weight-bold", "Abilities"),
+                    m(".column", m("ul.with-bullets", r.abilities.map(ability => m("li", ability.description))))
+                ])
+            ),
+            m(".column.is-narrow.is-vcentered.is-flex", m(`a.button.is-primary.is-small[href=/item-model/${r.id}]`, {oncreate: m.route.link}, "View/Edit"))
+        ]);
     }
 }

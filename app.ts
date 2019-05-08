@@ -80,7 +80,7 @@ export const appPromise = connectionPromise.then(async connection =>
                 }
                 case "delete":
                 {
-                    routePromise = route.action(request.body.id || 0);
+                    routePromise = route.action(request.params.id || 0);
                     break;
                 }
                 default:

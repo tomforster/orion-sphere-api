@@ -22,7 +22,7 @@ export class ItemService extends Service<Item, ItemFilterOptions>
             .leftJoinAndSelect("item.itemMods", "itemMods")
             .leftJoinAndSelect("itemMods.mod", "mod")
             .leftJoinAndSelect("mod.ability", "ability")
-            .where("1=1");
+            .where("item.deleted=false");
     
         if(filterOptions && filterOptions.s)
         {
@@ -77,6 +77,11 @@ export class ItemService extends Service<Item, ItemFilterOptions>
     
     async beforeUpdate(event:UpdateEvent<Item>)
     {
+        if(!event.entity)
+        {
+            console.log("no event", event);
+            return;
+        }
         const oldEntity = await this.getRepository().findOne(event.entity.id);
         const newEntity = event.entity;
     
@@ -84,7 +89,13 @@ export class ItemService extends Service<Item, ItemFilterOptions>
             .filter(col => col.propertyName !== "modCost")
             .filter(col => col.propertyName !== "maintenanceCost")
             .filter(col => col.propertyName !== "serial")
+            .filter(col => col.propertyName !== "deleted")
             .map(col => new Audit(AuditType.update, "Item", newEntity.id, col.propertyName, oldEntity[col.propertyName], newEntity[col.propertyName]));
+        
+        if(event.updatedColumns.find(col => col.propertyName === "deleted"))
+        {
+            audits.push(new Audit(AuditType.delete, "Item", newEntity.id));
+        }
     
         oldEntity.itemMods
             .filter(oldItemMod => !newEntity.itemMods.find(newItemMod => newItemMod.id === oldItemMod.id))

@@ -34,8 +34,8 @@
     "style-loader": "^0.23.1",
     "ts-loader": "^5.3.3",
     "ts-node": "^8.0.1",
-    "typeorm": "^0.2.14",
-    "typescript": "^3.2.4",
+    "typeorm": "^0.2.17",
+    "typescript": "^3.1.6",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1"
   },

@@ -25,6 +25,11 @@ export const ItemRoutes:Route[] = [
         action: itemService.update.bind(itemService)
     },
     {
+        path: "/items/:id",
+        method: "delete",
+        action: itemService.delete.bind(itemService)
+    },
+    {
         path: "/items",
         method: "post",
         action: itemService.create.bind(itemService)
