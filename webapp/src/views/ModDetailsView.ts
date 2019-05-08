@@ -39,7 +39,7 @@ export class ModDetailsView extends DetailsView<IMod>
             this.abilitySelect = new SelectPane<IAbility>("abilities", undefined, ((ability:IAbility) =>
             {
                 this.entity.ability = ability;
-            }));
+            }), this.entity.ability);
             
             m.redraw();
         }

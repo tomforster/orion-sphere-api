@@ -12,8 +12,7 @@ export class AbilityListView extends ListView<IAbility>
     
     getColumns():ColumnHeader[]
     {
-        return [new ColumnHeader("Description", "description"),
-            new ColumnHeader("Charge Cost", "chargeCost")];
+        return [new ColumnHeader("Description", "description")];
     }
     
     getRowData(ability:IAbility)
