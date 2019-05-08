@@ -21,12 +21,19 @@ export class ItemModelListView extends ListView<IItemModel>
         return [new ColumnHeader("Name", "name"),
             new ColumnHeader("Item Type"),
             new ColumnHeader("Base Cost", "baseCost"),
-            new ColumnHeader("Base Charges", "baseCharges")];
+            new ColumnHeader("Base Charges", "baseCharges"),
+            new ColumnHeader("# Abilities")
+        ];
     }
     
     getRowData(itemModel:IItemModel)
     {
-        return [m("td", m(`a[href=/item-model/${itemModel.id}]`, {oncreate: m.route.link}, itemModel.name)), m("td", itemModel.itemType && itemModel.itemType.name || ""), m("td", itemModel.baseCost), m("td", itemModel.baseCharges)];
+        return [m("td", m(`a[href=/item-model/${itemModel.id}]`, {oncreate: m.route.link}, itemModel.name)),
+            m("td", itemModel.itemType && itemModel.itemType.name || ""),
+            m("td", itemModel.baseCost),
+            m("td", itemModel.baseCharges),
+            m("td", itemModel.abilities.length)
+        ];
     }
     
     getUrlPath():string
