@@ -1,7 +1,7 @@
 import {Item} from "../entity/Item";
 import {Service} from "./Service";
 import {ItemFilterOptions} from "./filters/ItemFilterOptions";
-import {Brackets, EventSubscriber, getManager, InsertEvent, UpdateEvent} from "typeorm";
+import {Brackets, EventSubscriber, getManager} from "typeorm";
 import {ItemMod} from "../entity/ItemMod";
 import {Audit} from "../entity/Audit";
 import {AuditType} from "../AuditType";
