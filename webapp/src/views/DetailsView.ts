@@ -4,12 +4,14 @@ import {Page} from "../../../service/filters/Page";
 import {AuditType} from "../../../AuditType";
 import {IDomainEntity} from "../../../interfaces/IDomainEntity";
 import {IAudit} from "../../../interfaces/IAudit";
+import {Dialog} from "../components/Dialog";
 
 export abstract class DetailsView<T extends IDomainEntity> extends View
 {
     entity:T;
     audits:Page<IAudit>;
     id:number;
+    closeDialog:Dialog;
     
     abstract getForm():Vnode;
     
@@ -23,6 +25,8 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
         {
             this.id = (vnode.attrs as any).key;
         }
+        this.closeDialog = new Dialog();
+        
         return super.oninit(vnode);
     }
     
@@ -30,7 +34,10 @@ export abstract class DetailsView<T extends IDomainEntity> extends View
     {
         if(this.loaded)
         {
-            return m(".container", this.getTitleBar(), this.getForm(), this.getHistoryPanel(), this.getSaveButtons());
+            return [
+                m(".container", this.getTitleBar(), this.getForm(), this.getHistoryPanel(), this.getSaveButtons()),
+                m(this.closeDialog)
+            ]
         }
         return super.view(vnode);
     }
