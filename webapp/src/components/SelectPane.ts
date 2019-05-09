@@ -42,7 +42,10 @@ export class SelectPane<T extends IDomainEntity> implements ClassComponent
     
     getSearchPane():SearchPane
     {
-        return new SearchPane(this.fetch.bind(this));
+        return new SearchPane((searchPaneFilterOptions) => {
+            this.filterOptions.s = searchPaneFilterOptions.s;
+            this.fetch();
+        });
     }
     
     async fetch()
