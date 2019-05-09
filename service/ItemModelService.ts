@@ -1,8 +1,9 @@
 import {ItemModel} from "../entity/ItemModel";
 import {Service} from "./Service";
-import {Brackets} from "typeorm";
+import {Brackets, EventSubscriber} from "typeorm";
 import {ItemModelFilterOptions} from "./filters/ItemModelFilterOptions";
 
+@EventSubscriber()
 export class ItemModelService extends Service<ItemModel, ItemModelFilterOptions>
 {
     entityClass:any = ItemModel;

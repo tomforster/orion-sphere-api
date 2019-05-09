@@ -12,6 +12,7 @@ export class ItemService extends Service<Item, ItemFilterOptions>
 {
     entityClass:any = Item;
     allowedSortFields:string[] = ["id", "serial", "maintenanceCost", "modCost", "model.name"];
+    auditExclusions:string[] = ["deleted", "modCost", "serial", "maintenanceCost", "legacySerial"];
     
     getFindQuery = (filterOptions?:ItemFilterOptions) =>
     {
@@ -70,33 +71,8 @@ export class ItemService extends Service<Item, ItemFilterOptions>
         return item.itemModel.itemType.code + item.itemModel.id.toString().padStart(4, "0") + "-" + item.id.toString().padStart(4, "0");
     }
     
-    async afterInsert(event:InsertEvent<Item>)
+    async addAdditionalAudits(audits:Audit[], newEntity:Item, oldEntity:Item)
     {
-        await getManager().getRepository(Audit).save(new Audit(AuditType.insert, "Item", event.entity.id));
-    }
-    
-    async beforeUpdate(event:UpdateEvent<Item>)
-    {
-        if(!event.entity)
-        {
-            console.log("no event", event);
-            return;
-        }
-        const oldEntity = await this.getRepository().findOne(event.entity.id);
-        const newEntity = event.entity;
-    
-        const audits:Audit[] = event.updatedColumns
-            .filter(col => col.propertyName !== "modCost")
-            .filter(col => col.propertyName !== "maintenanceCost")
-            .filter(col => col.propertyName !== "serial")
-            .filter(col => col.propertyName !== "deleted")
-            .map(col => new Audit(AuditType.update, "Item", newEntity.id, col.propertyName, oldEntity[col.propertyName], newEntity[col.propertyName]));
-        
-        if(event.updatedColumns.find(col => col.propertyName === "deleted"))
-        {
-            audits.push(new Audit(AuditType.delete, "Item", newEntity.id));
-        }
-    
         oldEntity.itemMods
             .filter(oldItemMod => !newEntity.itemMods.find(newItemMod => newItemMod.id === oldItemMod.id))
             .forEach(oldItemMod => {
@@ -135,8 +111,5 @@ export class ItemService extends Service<Item, ItemFilterOptions>
     
         //save mods
         await getManager().getRepository(ItemMod).save(newEntity.itemMods);
-        await getManager().getRepository(Audit).save(audits);
-        
-        return;
     }
 }

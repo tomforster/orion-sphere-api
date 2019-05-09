@@ -1,8 +1,9 @@
 import {Mod} from "../entity/Mod";
 import {Service} from "./Service";
-import {Brackets} from "typeorm";
+import {Brackets, EventSubscriber} from "typeorm";
 import {ModFilterOptions} from "./filters/ModFilterOptions";
 
+@EventSubscriber()
 export class ModService extends Service<Mod, ModFilterOptions>
 {
     entityClass:any = Mod;

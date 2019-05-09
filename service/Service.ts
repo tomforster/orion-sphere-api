@@ -7,11 +7,15 @@ import {validateOrReject} from "class-validator";
 import {IDomainEntity} from "../interfaces/IDomainEntity";
 import {Pageable} from "./filters/Pageable";
 import {SortField} from "./filters/SortField";
+import {Audit} from "../entity/Audit";
+import {AuditType} from "../AuditType";
+import {Item} from "../entity/Item";
 
 export abstract class Service<T extends DomainEntity, F extends FilterOptions> implements EntitySubscriberInterface
 {
     abstract entityClass:any;
     allowedSortFields = ["id"];
+    auditExclusions:string[] = ["deleted"];
     
     listenTo()
     {
@@ -21,16 +25,35 @@ export abstract class Service<T extends DomainEntity, F extends FilterOptions> i
     /**
      * Called before entity insertion.
      */
-    async beforeInsert(event:InsertEvent<any>)
+    async afterInsert(event:InsertEvent<Item>)
     {
-        console.debug(`BEFORE ENTITY INSERTED: `, event.entity);
+        await getManager().getRepository(Audit).save(new Audit(AuditType.insert, this.entityClass.name, event.entity.id));
     }
     
-    async beforeUpdate(event:UpdateEvent<any>)
+    async addAdditionalAudits(audits:Audit[], newEntity:T, oldEntity:T) {}
+    
+    async beforeUpdate(event:UpdateEvent<T>)
     {
-        const entity = event.entity;
-        console.log(`Updated ${entity.id}`);
-        console.log(event.updatedColumns.map(col => `Set field ${col.propertyName} to ${entity[col.propertyName]}`));
+        if(!event.entity)
+        {
+            console.log("No event for audit.", event);
+            return;
+        }
+        const oldEntity = await this.getRepository().findOne(event.entity.id);
+        const newEntity = event.entity;
+    
+        const audits:Audit[] = event.updatedColumns
+            .filter(col => this.auditExclusions.indexOf(col.propertyName) < 0)
+            .map(col => new Audit(AuditType.update, this.entityClass.name, newEntity.id, col.propertyName, oldEntity[col.propertyName], newEntity[col.propertyName]));
+    
+        if(event.updatedColumns.find(col => col.propertyName === "deleted"))
+        {
+            audits.push(new Audit(AuditType.delete, this.entityClass.name, newEntity.id));
+        }
+        
+        await this.addAdditionalAudits(audits, newEntity, oldEntity);
+    
+        await getManager().getRepository(Audit).save(audits);
     }
     
     protected getRepository():Repository<T>

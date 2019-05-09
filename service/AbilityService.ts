@@ -1,8 +1,9 @@
 import {Ability} from "../entity/Ability";
 import {Service} from "./Service";
 import {FilterOptions} from "./filters/FilterOptions";
-import {Brackets} from "typeorm";
+import {Brackets, EventSubscriber} from "typeorm";
 
+@EventSubscriber()
 export class AbilityService extends Service<Ability, FilterOptions>
 {
     entityClass:any = Ability;
