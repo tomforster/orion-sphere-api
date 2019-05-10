@@ -1,4 +1,4 @@
-import {MaxLength, MinLength} from "class-validator";
+import {Max, MaxLength, Min, MinLength} from "class-validator";
 import {DomainEntity} from "./DomainEntity";
 import {Column, Entity, OneToMany} from "typeorm";
 import {Mod} from "./Mod";
@@ -19,10 +19,13 @@ export class Ability extends DomainEntity implements IAbility
     @OneToMany(type => ItemModel, itemModel => itemModel.abilities)
     itemModels:ItemModel[];
     
-    // @IsPositive({always:true})
-    // @Max(999, {always:true})
-    // @Column({type: "int", default: "0"})
-    // chargeCost:number;
+    @Min(0, {always:true})
+    @Max(999, {always:true})
+    @Column({type: "int", default: "0"})
+    chargeCost:number;
+    
+    @Column({default: false})
+    hideOnLammie:boolean;
     
     constructor(params?:IAbility)
     {
@@ -30,7 +33,8 @@ export class Ability extends DomainEntity implements IAbility
         {
             super(params.id, params.version);
             this.description = params.description;
-            // this.chargeCost = params.chargeCost;
+            this.chargeCost = params.chargeCost;
+            this.hideOnLammie = params.hideOnLammie;
         }
         else
         {

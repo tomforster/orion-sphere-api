@@ -106,8 +106,22 @@ export const appPromise = connectionPromise.then(async connection =>
             return plusChargeMod && plusChargeMod.count*2 || 0;
         }
         
+        function getAllFreeAbilities(item:Item)
+        {
+            return item.itemMods.map(itemMod => itemMod.mod.ability)
+                .concat(item.itemModel.abilities)
+                .filter(ability => !ability.chargeCost && !ability.hideOnLammie);
+        }
+    
+        function getAllCostedAbilities(item:Item)
+        {
+            return item.itemMods.map(itemMod => itemMod.mod.ability)
+                .concat(item.itemModel.abilities)
+                .filter(ability => ability.chargeCost && !ability.hideOnLammie);
+        }
+        
         itemService.findByIds(ids)
-            .then(items => res.render("lammie-template", {items, ItemType, calcExtraCharges}))
+            .then(items => res.render("lammie-template", {items, ItemType, calcExtraCharges, getAllFreeAbilities, getAllCostedAbilities}))
             .then(() => next)
             .catch(err => next(createError(400, err)));
     });

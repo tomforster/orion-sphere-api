@@ -12,12 +12,12 @@ export class AbilityListView extends ListView<IAbility>
     
     getColumns():ColumnHeader[]
     {
-        return [new ColumnHeader("Description", "description")];
+        return [new ColumnHeader("Description", "description"), new ColumnHeader("Charge Cost", "chargeCost")];
     }
     
     getRowData(ability:IAbility)
     {
-        return [m("td", m(`a[href=/ability/${ability.id}]`, {oncreate: m.route.link}, ability.description))];//, m("td", ability.chargeCost)];
+        return [m("td", m(`a[href=/ability/${ability.id}]`, {oncreate: m.route.link}, ability.description)), m("td", {style: "min-width: 8em"}, ability.chargeCost)];
     }
     
     getUrlPath():string

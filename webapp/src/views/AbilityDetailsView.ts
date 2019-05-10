@@ -32,7 +32,7 @@ export class AbilityDetailsView extends DetailsView<IAbility>
     {
         return m("form", [
             m(".field", m("label.label", "Description"), m(".control", m("input.input[type=text]", {value: this.entity.description, oninput: (e:any) => this.entity.description = e.target.value}))),
-            // m(".field", m("label.label", "Charge Cost"), m(".control", m("input.input[type=number]", {min: 0, value: this.entity.chargeCost, oninput: (e:any) => this.entity.chargeCost = Number.parseInt(e.target.value)}))),
+            m(".field", m("label.label", "Charge Cost"), m(".control", m("input.input[type=number]", {min: 0, value: this.entity.chargeCost, oninput: (e:any) => this.entity.chargeCost = Number.parseInt(e.target.value)}))),
         ]);
     }
 }

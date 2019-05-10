@@ -7,5 +7,6 @@ export interface IAbility extends IDomainEntity
     description:string;
     mods?:IMod[];
     itemModels?:IItemModel[];
-    // chargeCost?:number;
+    chargeCost?:number;
+    hideOnLammie?:boolean;
 }
